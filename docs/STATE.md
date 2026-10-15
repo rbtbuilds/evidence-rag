@@ -19,7 +19,7 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | 1: Application shell | Complete | Health404 RED ->1pass GREEN; Ruff/Pyright strict0errors; TS strict/build pass; Python3.12.14,project-local Node24. |
 | 2: Sessions/storage | Complete | 10 pytest pass, strict Pyright 0 errors; real cookies, CSRF, expiry/reset, rate limit and role denial. |
 | 3: Corpus/version transactions | Complete | 24 owned versions, 72 frozen questions, validator passes; 5 chunk/version tests including injected SQL rollback and budget limit. |
-| 4: Retrieval | Not started | Algorithms specified, no run |
+| 4: Retrieval | Complete | Real FTS5, authorised dense cosine, deduplicated RRF and bounded rerank; fixture doubles labelled; access/rank invariance tests pass. |
 | 5: Jobs/lifecycle | Not started | Transaction/race contract only |
 | 6: Local models | Not started | Cards verified; no downloads, weight loads or benchmarks |
 | 7: Answers/citations/cache | Not started | No implementation |
@@ -42,3 +42,5 @@ Next: Task2 server-side sessions,CSRF and transactional schema. No app servers o
 Task2: Session suite RED -> GREEN (successful login rate-limit regression corrected). 10 tests pass; strict Pyright 0 errors. Codes are mode0600 digests; session IDs hashed in SQLite. Next: corpus and transactional indexes.
 
 Task3: corpus validator passes hashes, 12 document pairs, section word limits and disjoint family/template groups. Five focused tests pass; strict Pyright 0 errors. SQLite trigger failure proves old FTS and revision survive rollback. No model work performed.
+
+Task4: retrieval/access tests RED missing modules -> GREEN. Fixture seeding now uses normalized hash embeddings. Four pipelines retain at most five authorized current chunks; revision mismatches refuse dense use. No actual models loaded.

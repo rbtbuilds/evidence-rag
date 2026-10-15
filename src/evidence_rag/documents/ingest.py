@@ -7,7 +7,8 @@ from pydantic import BaseModel
 from evidence_rag.contracts import Role, VersionInput
 from evidence_rag.db.repository import Repository
 from evidence_rag.documents.chunking import chunk_document
-from evidence_rag.retrieval.types import IndexDraft
+from evidence_rag.models.fixture import FixtureEmbedder
+from evidence_rag.retrieval.service import build_index
 
 FIXTURES = Path(__file__).resolve().parents[3] / "fixtures"
 
@@ -126,7 +127,6 @@ def seed(repo: Repository) -> None:
         for record in manifest.documents:
             text = contained(FIXTURES / "corpus", record.path).read_text()
             chunks = chunk_document(record.version_id, text)
-            vectors = tuple(tuple([1.0] + [0.0] * 383) for _ in chunks)
             metadata = VersionInput(
                 title=record.title,
                 min_role=record.min_role,
@@ -138,7 +138,7 @@ def seed(repo: Repository) -> None:
                 db,
                 record.document_id,
                 0 if record.label == "v1" else 1,
-                IndexDraft(chunks, vectors, "fixture-unit-seed-v0"),
+                build_index(chunks, FixtureEmbedder()),
                 metadata,
             )
         for tombstone in manifest.tombstones:
