@@ -8,7 +8,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from evidence_rag.api import admin, documents
+from evidence_rag.answers.publish import PublicationGate
+from evidence_rag.answers.service import AnswerService
+from evidence_rag.api import admin, documents, questions
 from evidence_rag.api.guard import Guard
 from evidence_rag.api.session import router
 from evidence_rag.config import Settings
@@ -41,9 +43,12 @@ def create_app(settings: Settings) -> FastAPI:
         try:
             yield
         finally:
+            answers.runner.cancel()
             await jobs.stop()
 
     app = FastAPI(title="Evidence RAG", version="0.1.0", lifespan=lifespan)
+    answers = AnswerService(repo, settings)
+    app.state.answers = answers
     app.state.jobs = jobs
     app.state.settings = settings
     app.state.repo = repo
@@ -66,6 +71,7 @@ def create_app(settings: Settings) -> FastAPI:
         return {"status": "ok", "execution_profile": settings.profile}
 
     app.include_router(router(repo))
+    app.include_router(questions.router(answers, PublicationGate(repo, lock)))
     app.include_router(documents.router(repo))
     app.include_router(admin.router(repo, jobs))
     app.add_middleware(

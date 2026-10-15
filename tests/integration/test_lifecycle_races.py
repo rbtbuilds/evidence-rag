@@ -69,3 +69,54 @@ def test_delete_wins_against_staged_replacement(demo: DemoHarness) -> None:
     finally:
         release.set()
         jobs.builder = original
+
+
+import asyncio
+
+import pytest
+from starlette.types import Message
+
+from evidence_rag.answers.publish import PublicationGate
+from evidence_rag.answers.service import AnswerService
+from evidence_rag.config import Settings
+from evidence_rag.contracts import QuestionRequest
+from evidence_rag.documents.ingest import seed, validate_corpus
+
+
+@pytest.mark.asyncio
+async def test_complete_answer_body_precedes_delete_success(demo: DemoHarness) -> None:
+    seed(demo.repo)
+    token = demo.reader()["Cookie"].split("=", 1)[1]
+    pending = AnswerService(demo.repo, Settings(demo.repo.path.parent)).answer(
+        demo.repo.resolve_scope(token), QuestionRequest(question="circulation display limit")
+    )
+    source = next(
+        d for d in validate_corpus().documents if d.logical_id == "circulation" and d.label == "v2"
+    )
+    lock = asyncio.Lock()
+    entered = asyncio.Event()
+    release = asyncio.Event()
+    deleted = asyncio.Event()
+    bodies: list[bytes] = []
+
+    async def send(message: Message) -> None:
+        if message["type"] == "http.response.body":
+            entered.set()
+            await release.wait()
+            bodies.append(message["body"])
+
+    async def remove() -> None:
+        async with lock:
+            demo.repo.delete(source.document_id, 2)
+            deleted.set()
+
+    answer = asyncio.create_task(
+        PublicationGate(demo.repo, lock).send_checked(token, pending, send)
+    )
+    await asyncio.wait_for(entered.wait(), 2)
+    deletion = asyncio.create_task(remove())
+    await asyncio.sleep(0.02)
+    assert not deleted.is_set()
+    release.set()
+    await asyncio.gather(answer, deletion)
+    assert b"35 units" in bodies[0] and deleted.is_set()

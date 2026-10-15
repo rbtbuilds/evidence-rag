@@ -22,7 +22,7 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | 4: Retrieval | Complete | Real FTS5, authorised dense cosine, deduplicated RRF and bounded rerank; fixture doubles labelled; access/rank invariance tests pass. |
 | 5: Jobs/lifecycle | Complete | Import/replace/delete API, single worker, bounded jobs/cancel/recovery; staged-delete barrier and failed-build rollback pass. |
 | 6: Local models | Complete | Pinned public snapshots downloaded/hash recorded; actual leased smoke 33.64s, 384 dimensions, 0 embedding truncations; JSON generation fails required schema and must abstain. |
-| 7: Answers/citations/cache | Not started | No implementation |
+| 7: Answers/citations/cache | Complete | 48 disclosure cells plus cache repeats, exact citations, malformed generation abstention, expiry and bidirectional publication/deletion barriers pass. |
 | 8: Web interface | Not started | Design specified, no rendered UI |
 | 9: Evaluation | Not started | No measured metrics or human review |
 | 10: Full verification | Not started | No application checks or clean-clone evidence |
@@ -48,3 +48,5 @@ Task4: retrieval/access tests RED missing modules -> GREEN. Fixture seeding now 
 Task5: real API lifecycle suite passes import, replacement, stale revision, deletion and absence of source marker across stored payloads/indexes. Eight pending jobs bounded; cancellation idempotent; running jobs interrupted on restart. Next: leased optional inference.
 
 Task6: exclusive lease/ownership/timeout/RSS/malformed-output/missing-snapshot/queue tests pass. Public snapshots recorded in config/models.lock.json; CPU four-thread float32 worker exits before lease release. Actual smoke returned an unsupported citation_ids key and omitted insufficient_evidence: this is a real generation failure, not a valid answer. Task7 will enforce abstention. No resident model process or owned lease remains.
+
+Task7: full Python suite 46 tests passes; strict Pyright 0 errors. Responses recheck session/role/epoch/current citations and cache only inside the publication lock. Deletion during generation returns 409 without source text; a blocked ASGI body holds deletion until full publication. Public prompt instructions cannot change access.
