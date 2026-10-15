@@ -1,0 +1,18 @@
+CREATE TABLE schema_migrations(version INTEGER PRIMARY KEY);
+CREATE TABLE meta(singleton INTEGER PRIMARY KEY CHECK(singleton=1),schema_version INTEGER NOT NULL,reader_epoch INTEGER NOT NULL,maintainer_epoch INTEGER NOT NULL);
+INSERT INTO meta VALUES(1,1,0,0);
+CREATE TABLE users(id TEXT PRIMARY KEY,role TEXT NOT NULL CHECK(role IN ('reader','maintainer')),enabled INTEGER NOT NULL CHECK(enabled IN (0,1)));
+INSERT INTO users VALUES('reader','reader',1),('maintainer','maintainer',1);
+CREATE TABLE sessions(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),csrf_token TEXT NOT NULL,expires_at REAL NOT NULL);
+CREATE INDEX session_expiry ON sessions(expires_at);
+CREATE TABLE documents(id TEXT PRIMARY KEY,title TEXT NOT NULL,min_role TEXT NOT NULL CHECK(min_role IN ('reader','maintainer')),active_version_id TEXT,deleted_at TEXT,revision INTEGER NOT NULL);
+CREATE TABLE versions(id TEXT PRIMARY KEY,document_id TEXT NOT NULL REFERENCES documents(id),label TEXT NOT NULL,effective_date TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN ('staged','active','superseded','deleted')),text TEXT,sha256 TEXT NOT NULL,UNIQUE(document_id,label));
+CREATE UNIQUE INDEX one_active_version ON versions(document_id) WHERE status='active';
+CREATE TABLE chunks(id TEXT PRIMARY KEY,version_id TEXT NOT NULL REFERENCES versions(id),section_id TEXT NOT NULL,start_char INTEGER NOT NULL,end_char INTEGER NOT NULL,text TEXT NOT NULL,CHECK(start_char>=0 AND end_char>start_char));
+CREATE TABLE vectors(chunk_id TEXT PRIMARY KEY REFERENCES chunks(id) ON DELETE CASCADE,model_revision TEXT NOT NULL,dim INTEGER NOT NULL CHECK(dim=384),vector BLOB NOT NULL CHECK(length(vector)=1536));
+CREATE VIRTUAL TABLE fts_reader USING fts5(chunk_id UNINDEXED,text,tokenize='unicode61 remove_diacritics 2');
+CREATE VIRTUAL TABLE fts_maintainer USING fts5(chunk_id UNINDEXED,text,tokenize='unicode61 remove_diacritics 2');
+CREATE TABLE jobs(id TEXT PRIMARY KEY,kind TEXT NOT NULL CHECK(kind IN ('import','replace','rebuild')),document_id TEXT,expected_revision INTEGER NOT NULL,status TEXT NOT NULL CHECK(status IN ('queued','running','succeeded','failed','cancelled','interrupted')),payload_json TEXT,error_code TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE INDEX pending_jobs ON jobs(status,created_at);
+CREATE TABLE answer_cache(key TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),role TEXT NOT NULL,epoch INTEGER NOT NULL,payload_json TEXT NOT NULL,expires_at REAL NOT NULL);
+INSERT INTO schema_migrations VALUES(1);

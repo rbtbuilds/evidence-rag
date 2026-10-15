@@ -17,7 +17,7 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | Task | State | Evidence |
 | --- | --- | --- |
 | 1: Application shell | Complete | Health404 RED ->1pass GREEN; Ruff/Pyright strict0errors; TS strict/build pass; Python3.12.14,project-local Node24. |
-| 2: Sessions/storage | Not started | No application files |
+| 2: Sessions/storage | Complete | 10 pytest pass, strict Pyright 0 errors; real cookies, CSRF, expiry/reset, rate limit and role denial. |
 | 3: Corpus/version transactions | Not started | Corpus design only |
 | 4: Retrieval | Not started | Algorithms specified, no run |
 | 5: Jobs/lifecycle | Not started | Transaction/race contract only |
@@ -38,3 +38,5 @@ Next action: Matthew pastes CHAT-HANDOFF.md's prompt into the intended fork. Exe
 Task1: isolated Git root initialized on feat/evidence-rag-v1; baseline63df9d3. Installed locked project dependencies and project-local Node24 without global runtime changes. Health test failed404 then passed200. Doctor confirms FTS5. Ruff,strict Pyright(including tests),strict TypeScript and Vite production build pass. pytest temp is isolated under .runtime. Added httpx2 because current Starlette TestClient explicitly requires it.
 
 Next: Task2 server-side sessions,CSRF and transactional schema. No app servers or ML lease owned.
+
+Task2: Session suite RED -> GREEN (successful login rate-limit regression corrected). 10 tests pass; strict Pyright 0 errors. Codes are mode0600 digests; session IDs hashed in SQLite. Next: corpus and transactional indexes.

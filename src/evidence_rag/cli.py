@@ -3,13 +3,17 @@ import json
 import sqlite3
 import sys
 
+from evidence_rag.auth.sessions import initialize
 from evidence_rag.config import Settings
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Evidence RAG local workbench")
-    parser.add_argument("command", choices=["doctor"])
-    parser.parse_args()
+    parser.add_argument("command", choices=["doctor", "init", "reset"])
+    args = parser.parse_args()
+    if args.command in {"init", "reset"}:
+        print(json.dumps(initialize(Settings.from_env().root, reset=args.command == "reset")))
+        return
     with sqlite3.connect(":memory:") as db:
         db.execute("CREATE VIRTUAL TABLE probe USING fts5(text)")
     print(
