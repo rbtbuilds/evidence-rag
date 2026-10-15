@@ -1,3 +1,5 @@
+import pytest
+
 from evidence_rag.documents.ingest import seed
 from tests.helpers import DemoHarness
 
@@ -149,3 +151,40 @@ def test_cache_budget_and_expiry(demo: DemoHarness) -> None:
     with demo.repo.transaction() as db:
         db.execute("UPDATE answer_cache SET expires_at=0")
     assert cache.get(scope, "129") is None
+
+
+@pytest.mark.parametrize("mode", ["bm25", "dense", "hybrid", "hybrid_rerank"])
+def test_simultaneous_roles_keep_cold_and_warm_answers_isolated(
+    demo: DemoHarness, mode: str
+) -> None:
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+
+    seed(demo.repo)
+    service: AnswerService = cast(FastAPI, demo.client.app).state.answers
+    generation_barrier = threading.Barrier(2)
+    calls: list[int] = []
+
+    def together(question: str, citations: list[Citation]) -> Generated:
+        calls.append(len(citations))
+        generation_barrier.wait(3)
+        return extractive(question, citations)
+
+    service.generator = together
+    body = {"question": "What is the calibration marker?", "retrieval_mode": mode}
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        for _ in range(2):
+            privileged = pool.submit(
+                demo.client.post, "/api/questions", json=body, headers=demo.maintainer()
+            )
+            reader = pool.submit(
+                demo.client.post, "/api/questions", json=body, headers=demo.reader()
+            )
+            private_response, public_response = (
+                privileged.result(timeout=4),
+                reader.result(timeout=4),
+            )
+            assert private_response.status_code == public_response.status_code == 200
+            assert "MAINTAINER-CAL-7391" in private_response.text
+            assert "MAINTAINER-CAL-7391" not in public_response.text
+    assert len(calls) == 2

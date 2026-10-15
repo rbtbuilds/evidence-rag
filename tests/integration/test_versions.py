@@ -129,3 +129,12 @@ def test_rebuild_cannot_publish_chunks_that_disagree_with_source(demo: DemoHarne
         demo.repo.replace_index(db, doc, bad)
     with demo.repo.connection() as db:
         assert db.execute("SELECT text FROM chunks").fetchone()[0] == text
+
+
+def test_citation_sections_do_not_merge_colliding_headings(demo: DemoHarness) -> None:
+    text = "# Flow\nFirst.\n# Flow\nSecond.\n# Between\nUnrelated.\n# Flow-2\nThird."
+    indexed = draft(text)
+    demo.repo.publish(str(uuid4()), 0, indexed, metadata(text))
+    scope = demo.repo.resolve_scope(demo.reader()["Cookie"].split("=", 1)[1])
+    for chunk in indexed.chunks:
+        assert demo.repo.citation(scope, chunk.id).section_text == chunk.text

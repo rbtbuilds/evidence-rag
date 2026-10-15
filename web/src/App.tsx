@@ -84,48 +84,49 @@ function Workbench({
     }
   }
   const match = /^\/citations\/([^/]+)$/.exec(path);
-  if (match?.[1])
-    return (
-      <CitationViewer
-        id={decodeURIComponent(match[1])}
-        back={() => navigate("/")}
-      />
-    );
   return (
-    <main>
-      {error && <ErrorNotice message={error} />}
-      <section className="panel">
-        <h2>Ask the current manuals</h2>
-        <QuestionForm
-          profile={profile}
-          busy={busy}
-          ask={(input) => {
-            void ask(input);
-          }}
+    <>
+      {match?.[1] && (
+        <CitationViewer
+          id={decodeURIComponent(match[1])}
+          back={() => navigate("/")}
         />
-        <AnswerPanel
-          answer={answer}
-          open={(id) => {
-            lastCitation.current = id;
-            navigate("/citations/" + encodeURIComponent(id));
-          }}
-        />
-      </section>
-      <section className="corpus-summary">
-        <h2>Available manuals</h2>
-        <p>
-          {documents.length
-            ? documents.map((doc) => doc.title).join(", ")
-            : "No active manuals are available to this session."}
-        </p>
-        <p className="meta">
-          Only sources available to your identity are listed.
-        </p>
-      </section>
-      {session.role === "maintainer" && (
-        <DocumentAdmin documents={documents} changed={refresh} />
       )}
-    </main>
+      <main hidden={Boolean(match?.[1])}>
+        {error && <ErrorNotice message={error} />}
+        <section className="panel">
+          <h2>Ask the current manuals</h2>
+          <QuestionForm
+            profile={profile}
+            busy={busy}
+            ask={(input) => {
+              void ask(input);
+            }}
+          />
+          <AnswerPanel
+            answer={answer}
+            open={(id) => {
+              lastCitation.current = id;
+              navigate("/citations/" + encodeURIComponent(id));
+            }}
+          />
+        </section>
+        <section className="corpus-summary">
+          <h2>Available manuals</h2>
+          <p>
+            {documents.length
+              ? documents.map((doc) => doc.title).join(", ")
+              : "No active manuals are available to this session."}
+          </p>
+          <p className="meta">
+            Only sources available to your identity are listed.
+          </p>
+        </section>
+        {session.role === "maintainer" && (
+          <DocumentAdmin documents={documents} changed={refresh} />
+        )}
+      </main>
+    </>
   );
 }
 export default function App() {

@@ -19,3 +19,17 @@ class DemoHarness:
 
     def maintainer(self) -> dict[str, str]:
         return self.credentials["maintainer"]
+
+
+RESTRICTED_MARKERS = ("MAINTAINER-CAL-7391", "REPLACED-MARKER")
+
+
+def disclosed_markers(text: str, role: Role, lifecycle: str) -> list[str]:
+    forbidden = (
+        RESTRICTED_MARKERS
+        if role == "reader" or lifecycle == "deleted"
+        else (RESTRICTED_MARKERS[0],)
+        if lifecycle == "replaced"
+        else ()
+    )
+    return [marker for marker in forbidden if marker in text]

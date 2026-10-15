@@ -127,3 +127,52 @@ async def test_complete_answer_body_precedes_delete_success(demo: DemoHarness) -
     release.set()
     await asyncio.gather(answer, deletion)
     assert b"35 units" in bodies[0] and deleted.is_set()
+
+
+def test_delete_during_rebuild_cannot_restore_snapshot(demo: DemoHarness) -> None:
+    seed(demo.repo)
+    source = next(
+        d for d in validate_corpus().documents if d.logical_id == "circulation" and d.label == "v2"
+    )
+    jobs = cast(JobService, cast(FastAPI, demo.client.app).state.jobs)
+    reached, release = threading.Event(), threading.Event()
+    original = jobs.builder
+
+    def blocked(chunks: tuple[Chunk, ...]) -> IndexDraft:
+        result = build_index(chunks, FixtureEmbedder())
+        reached.set()
+        assert release.wait(3)
+        return result
+
+    jobs.builder = blocked
+    try:
+        response = demo.client.post("/api/admin/rebuild", json={}, headers=demo.maintainer())
+        assert response.status_code == 202 and reached.wait(3)
+        deleted = demo.client.delete(
+            "/api/admin/documents/" + source.document_id,
+            headers={**demo.maintainer(), "If-Match": "2"},
+        )
+        assert deleted.status_code == 204
+        release.set()
+        assert wait_job(demo, response.json()["job_id"]) == "failed"
+        job = demo.client.get(
+            "/api/admin/jobs/" + response.json()["job_id"], headers=demo.maintainer()
+        ).json()
+        assert job["error_code"] == "stale_job"
+        assert (
+            demo.client.get(
+                "/api/documents/" + source.document_id, headers=demo.reader()
+            ).status_code
+            == 404
+        )
+        with demo.repo.connection() as db:
+            assert (
+                db.execute(
+                    "SELECT count(*) FROM chunks c JOIN versions v ON c.version_id=v.id WHERE v.document_id=?",
+                    (source.document_id,),
+                ).fetchone()[0]
+                == 0
+            )
+    finally:
+        release.set()
+        jobs.builder = original

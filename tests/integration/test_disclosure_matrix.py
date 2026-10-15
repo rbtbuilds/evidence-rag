@@ -7,7 +7,7 @@ from evidence_rag.documents.chunking import chunk_document
 from evidence_rag.documents.ingest import seed, validate_corpus
 from evidence_rag.models.fixture import FixtureEmbedder
 from evidence_rag.retrieval.service import build_index
-from tests.helpers import DemoHarness
+from tests.helpers import DemoHarness, disclosed_markers
 from tests.integration.test_versions import metadata
 
 
@@ -29,8 +29,7 @@ def test_disclosure_matrix(demo: DemoHarness, mode: RetrievalMode, role: Role) -
         for _ in range(2):
             response = demo.client.post("/api/questions", json=body, headers=demo.credentials[role])
             assert response.status_code == 200
-            if role == "reader" or state != "active":
-                assert "MAINTAINER-CAL-7391" not in response.text
+            assert not disclosed_markers(response.text, role, state)
         if state == "active":
             text = "# Calibration overview\nThe calibration marker is REPLACED-MARKER."
             demo.repo.publish(

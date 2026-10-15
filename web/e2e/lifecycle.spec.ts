@@ -31,6 +31,9 @@ test("import replacement deletion and stale links use the real API", async ({
   await expect(page.getByLabel("Cited quotation")).toContainText("<img src=");
   await expect(page.locator("img")).toHaveCount(0);
   await page.getByRole("button", { name: "Back to answer" }).click();
+  await expect(
+    page.getByLabel("Indexing job").getByRole("status"),
+  ).toContainText("Job succeeded");
   await page
     .getByRole("button", {
       name: "Replace Browser specimen manual",

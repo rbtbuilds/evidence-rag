@@ -15,14 +15,14 @@ from evidence_rag.auth.sessions import initialize
 from evidence_rag.config import Settings
 from evidence_rag.contracts import QuestionRequest, RetrievalMode, Role
 from evidence_rag.db.repository import AccessScope, Repository
-from evidence_rag.documents.chunking import Chunk
+from evidence_rag.documents.chunking import CHUNKER_REVISION, Chunk
 from evidence_rag.documents.ingest import FIXTURES, seed, validate_corpus
 from evidence_rag.documents.jobs import JobService
 from evidence_rag.models.local import snapshots
 from evidence_rag.models.runner import ModelRunner, ModelSession
 from evidence_rag.retrieval.service import build_index
 from evidence_rag.retrieval.types import IndexDraft
-from tests.helpers import ORIGIN, DemoHarness
+from tests.helpers import ORIGIN, RESTRICTED_MARKERS, DemoHarness, disclosed_markers
 from tests.integration.test_jobs import wait_job
 
 
@@ -111,10 +111,8 @@ def test_actual_models_respect_access_cache_and_lifecycle() -> None:
                                     assert response.status_code == 200
                                     data = response.json()
                                     assert data["execution_profile"] == "local"
-                                    if role == "reader" or lifecycle != "active":
-                                        assert "MAINTAINER-CAL-7391" not in response.text
-                                    if lifecycle == "deleted":
-                                        assert "REPLACED-MARKER" not in response.text
+                                    forbidden = disclosed_markers(response.text, role, lifecycle)
+                                    assert not forbidden
                                     if (
                                         lifecycle == "active"
                                         and role == "maintainer"
@@ -144,7 +142,7 @@ def test_actual_models_respect_access_cache_and_lifecycle() -> None:
                                             "status": response.status_code,
                                             "abstained": data["abstained"],
                                             "citation_count": len(data["citations"]),
-                                            "forbidden_disclosure": False,
+                                            "forbidden_disclosure": bool(forbidden),
                                         }
                                     )
                         if lifecycle == "active":
@@ -180,7 +178,10 @@ def test_actual_models_respect_access_cache_and_lifecycle() -> None:
             print(f"Actual-model access matrix passed: {mode}", flush=True)
     report = {
         "execution_profile": "local",
+        "chunker_revision": CHUNKER_REVISION,
+        "test_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "request_count": len(rows),
+        "restricted_markers_checked": list(RESTRICTED_MARKERS),
         "model_revisions": {name: model.revision for name, model in snapshots(root).models.items()},
         "corpus_manifest_sha256": hashlib.sha256(
             (FIXTURES / "corpus/manifest.json").read_bytes()

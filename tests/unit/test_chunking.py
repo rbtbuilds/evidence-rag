@@ -19,3 +19,11 @@ def test_admission_rejects_empty_html_and_large_input() -> None:
             VersionInput(title="A", label="v2", effective_date="2026-10-15", markdown=text)
     with pytest.raises(ValueError):
         VersionInput(title="A", label="v2", effective_date="yesterday", markdown="body")
+
+
+def test_repeated_and_suffixed_headings_have_unique_sections() -> None:
+    text = "# Flow\nFirst.\n# Flow\nSecond.\n# Flow-2\nThird.\n# Flow\nFourth.\n# !!!\nFifth.\n# !!!\nSixth."
+    chunks = chunk_document("version", text)
+    assert len(chunks) == 6
+    assert len({c.section_id for c in chunks}) == 6
+    assert all(c.section_id for c in chunks)

@@ -11,12 +11,12 @@ from evidence_rag.evaluation.report import EvaluationReport
 from evidence_rag.models.local import PROJECT
 
 RUNS = {
-    "fixture-dev-extractive": "eval-fixture-dev-v2",
-    "fixture-test-extractive": "eval-fixture-test-v2",
-    "local-dev-extractive": "eval-local-dev-extractive-v1",
-    "local-dev-generated": "eval-local-dev-local-v1",
-    "local-test-extractive": "eval-local-test-extractive-v1",
-    "local-test-generated": "eval-local-test-local-v1",
+    "fixture-dev-extractive": "eval-fixture-dev-v3",
+    "fixture-test-extractive": "eval-fixture-test-v3",
+    "local-dev-extractive": "eval-local-dev-extractive-v3",
+    "local-dev-generated": "eval-local-dev-local-v3",
+    "local-test-extractive": "eval-local-test-extractive-v3",
+    "local-test-generated": "eval-local-test-local-v3",
 }
 
 
@@ -51,16 +51,16 @@ def main() -> None:
             sheet = TypeAdapter(list[dict[str, object]]).validate_json(source.read_text())
             if len(sheet) != 24 or any(row["reviewer"] is not None for row in sheet):
                 raise ValueError("Unexpected review status")
-            (PROJECT / "reports" / f"review-{name}.json").write_bytes(source.read_bytes())
+            (PROJECT / "reports" / f"review-v2-{name}.json").write_bytes(source.read_bytes())
     summary = {
         "curated_at": datetime.now(UTC).isoformat(),
         "cpu": "Apple M5 Pro (observed with sysctl machdep.cpu.brand_string)",
         "interpretation": "Synthetic owned scenario; no customer-impact claim. Warm model timing excludes separately recorded load/index warmup. Light development ran concurrently. Actual generation abstained on invalid output; this is a failure, not evidence of useful answer quality. Human support/completeness remain unmeasured.",
         "runs": runs,
     }
-    (PROJECT / "reports/evaluation-v1.json").write_text(json.dumps(summary, indent=2) + "\n")
-    smoke = PROJECT / ".runtime/model-smoke.json"
-    (PROJECT / "reports/local-smoke.json").write_bytes(smoke.read_bytes())
+    (PROJECT / "reports/evaluation-v2.json").write_text(json.dumps(summary, indent=2) + "\n")
+    smoke = PROJECT / ".runtime/model-smoke-final.json"
+    (PROJECT / "reports/local-smoke-v2.json").write_bytes(smoke.read_bytes())
 
 
 if __name__ == "__main__":

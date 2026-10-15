@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api, errorMessage } from "../api";
-import type { DocumentSummary, ImportInput } from "../contracts";
+import type { DocumentSummary, ImportInput, JobView } from "../contracts";
 import { ErrorNotice } from "./StatusNotice";
 import { JobStatus } from "./JobStatus";
 export function DocumentAdmin({
@@ -18,6 +18,11 @@ export function DocumentAdmin({
   const [role, setRole] = useState<"" | "reader" | "maintainer">("");
   const [text, setText] = useState("");
   const [job, setJob] = useState("");
+  const [pending, setPending] = useState(false);
+  const [submitted, setSubmitted] = useState<{
+    input: ImportInput;
+    target: DocumentSummary | null;
+  } | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [deleting, setDeleting] = useState<DocumentSummary | null>(null);
@@ -35,7 +40,28 @@ export function DocumentAdmin({
       });
     }
   }, [deleting]);
+  const settled = useCallback(
+    (value: JobView) => {
+      setPending(false);
+      if (value.status === "succeeded") setSubmitted(null);
+      changed();
+    },
+    [changed],
+  );
+  function recover() {
+    if (!submitted || pending) return;
+    load.current?.abort();
+    setSelected(submitted.target);
+    setTitle(submitted.input.title);
+    setLabel(submitted.input.label);
+    setDate(submitted.input.effective_date);
+    setRole(submitted.input.min_role ?? "reader");
+    setText(submitted.input.markdown);
+    setEditing(true);
+    requestAnimationFrame(() => document.getElementById("doc-title")?.focus());
+  }
   function fresh() {
+    if (pending) return;
     load.current?.abort();
     setSelected(null);
     setEditing(true);
@@ -67,7 +93,7 @@ export function DocumentAdmin({
     }
   }
   async function save() {
-    if (role === "") return;
+    if (role === "" || pending || busy) return;
     setBusy(true);
     setError("");
     const input: ImportInput = {
@@ -84,6 +110,8 @@ export function DocumentAdmin({
             expected_revision: selected.revision,
           })
         : await api.import(input);
+      setSubmitted({ input, target: selected });
+      setPending(true);
       setJob(value.job_id);
       setEditing(false);
       setSelected(null);
@@ -100,6 +128,10 @@ export function DocumentAdmin({
     try {
       await api.remove(deleting.id, deleting.revision);
       setDeleting(null);
+      if (submitted?.target?.id === deleting.id) {
+        setSubmitted(null);
+        setJob("");
+      }
       setEditing(false);
       setSelected(null);
       changed();
@@ -123,18 +155,26 @@ export function DocumentAdmin({
           </p>
         </div>
         <div className="actions">
-          <button className="secondary" disabled={busy} onClick={fresh}>
+          <button
+            className="secondary"
+            disabled={busy || pending}
+            onClick={fresh}
+          >
             New document
           </button>
           <button
             className="secondary"
-            disabled={busy}
+            disabled={busy || pending}
             onClick={() => {
               setBusy(true);
               setError("");
               void api
                 .rebuild()
-                .then((value) => setJob(value.job_id))
+                .then((value) => {
+                  setSubmitted(null);
+                  setPending(true);
+                  setJob(value.job_id);
+                })
                 .catch((e: unknown) => setError(errorMessage(e)))
                 .finally(() => setBusy(false));
             }}
@@ -156,7 +196,7 @@ export function DocumentAdmin({
             <div className="actions">
               <button
                 className="secondary"
-                disabled={busy}
+                disabled={busy || pending}
                 aria-label={"Replace " + doc.title}
                 onClick={() => {
                   void edit(doc);
@@ -166,7 +206,7 @@ export function DocumentAdmin({
               </button>
               <button
                 className="danger secondary"
-                disabled={busy}
+                disabled={busy || pending}
                 aria-label={"Delete " + doc.title}
                 onClick={(event) => {
                   opener.current = event.currentTarget;
@@ -253,7 +293,7 @@ export function DocumentAdmin({
             displayed as text.
           </p>
           <div className="actions">
-            <button disabled={busy}>
+            <button disabled={busy || pending}>
               {busy
                 ? "Submitting..."
                 : selected
@@ -263,7 +303,7 @@ export function DocumentAdmin({
             <button
               type="button"
               className="secondary"
-              disabled={busy}
+              disabled={busy || pending}
               onClick={() => setEditing(false)}
             >
               Close editor
@@ -271,7 +311,20 @@ export function DocumentAdmin({
           </div>
         </form>
       )}
-      {job && <JobStatus key={job} id={job} changed={changed} />}
+      {job && (
+        <JobStatus
+          key={job}
+          id={job}
+          settled={settled}
+          retry={submitted ? recover : undefined}
+        />
+      )}
+      {pending && (
+        <p className="meta">
+          Finish or cancel the indexing job before submitting another change.
+          Its status remains available when you return from a citation.
+        </p>
+      )}
       <dialog
         ref={dialog}
         aria-labelledby="delete-title"
@@ -289,14 +342,14 @@ export function DocumentAdmin({
         <div className="actions">
           <button
             className="secondary"
-            disabled={busy}
+            disabled={busy || pending}
             onClick={() => setDeleting(null)}
           >
             Keep document
           </button>
           <button
             className="danger"
-            disabled={busy}
+            disabled={busy || pending}
             onClick={() => {
               void remove();
             }}

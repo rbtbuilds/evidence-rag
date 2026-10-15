@@ -2,7 +2,7 @@ import hashlib
 import re
 from dataclasses import dataclass
 
-CHUNKER_REVISION = "heading-window-v1"
+CHUNKER_REVISION = "heading-window-v2"
 
 
 @dataclass(frozen=True)
@@ -23,11 +23,15 @@ def chunk_document(version_id: str, text: str) -> tuple[Chunk, ...]:
     if not headings or text[: headings[0].start()].strip():
         raise ValueError("Markdown must start with a heading")
     result: list[Chunk] = []
-    seen: dict[str, int] = {}
+    used: set[str] = set()
     for i, heading in enumerate(headings):
-        slug = re.sub(r"[^\w]+", "-", heading.group(1).lower()).strip("-")
-        seen[slug] = seen.get(slug, 0) + 1
-        section = slug if seen[slug] == 1 else f"{slug}-{seen[slug]}"
+        slug = re.sub(r"[^\w]+", "-", heading.group(1).lower()).strip("-") or "section"
+        section = slug
+        suffix = 2
+        while section in used:
+            section = f"{slug}-{suffix}"
+            suffix += 1
+        used.add(section)
         limit = headings[i + 1].start() if i + 1 < len(headings) else len(text)
         start = heading.start()
         while start < limit:

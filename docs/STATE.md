@@ -1,6 +1,6 @@
 # Evidence RAG state
 
-Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
+Updated: 2026-10-15. State: all ten tasks implemented; final review fixes verified; refreshed model evidence and clean-checkout verification pending on feat/evidence-rag-v1.
 
 ## Verified during planning
 
@@ -29,13 +29,13 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 
 ## Current limits and next action
 
-The application is implemented and current local strict/offline/browser checks pass. Actual-model evidence is separate from fixture evidence; Qwen generation currently abstains on invalid output, and human citation support/completeness is unmeasured. Next: finish clean-checkout verification, refresh post-hardening model reports and perform the single fresh whole-branch review. Publication, push and deployment remain unauthorised.
+The application is implemented and current local strict/offline/browser checks pass. Actual-model evidence is separate from fixture evidence; Qwen generation currently abstains on invalid output, and human citation support/completeness is unmeasured. The single fresh whole-branch review found four Important findings, all fixed with failing-then-passing regressions. Current checks: 73 Python fixture tests, 11 web tests and five real-API browser scenarios; strict checks/build/contracts pass. Next: retain refreshed evidence under heading-window-v2 and verify the new source commit in a clean checkout. Publication, push and deployment remain unauthorised.
 
 ## Native execution evidence
 
 Task1: isolated Git root initialized on feat/evidence-rag-v1; baseline63df9d3. Installed locked project dependencies and project-local Node24 without global runtime changes. Health test failed404 then passed200. Doctor confirms FTS5. Ruff,strict Pyright(including tests),strict TypeScript and Vite production build pass. pytest temp is isolated under .runtime. Added httpx2 because current Starlette TestClient explicitly requires it.
 
-Next: Task2 server-side sessions,CSRF and transactional schema. No app servers or ML lease owned.
+Historical next step at Task1: Task2 server-side sessions, CSRF and transactional schema. No app servers or ML lease were owned then.
 
 Task2: Session suite RED -> GREEN (successful login rate-limit regression corrected). 10 tests pass; strict Pyright 0 errors. Codes are mode0600 digests; session IDs hashed in SQLite. Next: corpus and transactional indexes.
 

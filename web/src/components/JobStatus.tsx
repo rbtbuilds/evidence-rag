@@ -1,18 +1,33 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api, errorMessage } from "../api";
 import type { JobView } from "../contracts";
 import { ErrorNotice } from "./StatusNotice";
 export function JobStatus({
   id,
-  changed,
+  settled,
+  retry,
 }: {
   id: string;
-  changed: () => void;
+  settled: (job: JobView) => void;
+  retry?: (() => void) | undefined;
 }) {
   const [job, setJob] = useState<JobView | null>(null);
   const [error, setError] = useState("");
   const [refresh, setRefresh] = useState(0);
   const completed = useRef("");
+  const receive = useCallback(
+    (value: JobView) => {
+      setJob(value);
+      if (
+        !["queued", "running"].includes(value.status) &&
+        completed.current !== id
+      ) {
+        completed.current = id;
+        settled(value);
+      }
+    },
+    [id, settled],
+  );
   useEffect(() => {
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -21,16 +36,13 @@ export function JobStatus({
       try {
         const value = await api.job(id, controller.signal);
         if (controller.signal.aborted) return;
-        setJob(value);
+        receive(value);
         setError("");
         if (["queued", "running"].includes(value.status)) {
           if (++reads < 600)
             timer = setTimeout(() => {
               void poll();
             }, 1000);
-        } else if (completed.current !== id) {
-          completed.current = id;
-          changed();
         }
       } catch (e: unknown) {
         if (!controller.signal.aborted) setError(errorMessage(e));
@@ -41,7 +53,7 @@ export function JobStatus({
       controller.abort();
       clearTimeout(timer);
     };
-  }, [id, refresh, changed]);
+  }, [id, refresh, receive]);
   return (
     <section className="job-status" aria-label="Indexing job">
       <h3>Indexing job</h3>
@@ -61,13 +73,20 @@ export function JobStatus({
             onClick={() => {
               void api
                 .cancelJob(id)
-                .then(setJob)
+                .then(receive)
                 .catch((e: unknown) => setError(errorMessage(e)));
             }}
           >
             Cancel job
           </button>
         )}
+        {job &&
+          ["failed", "cancelled", "interrupted"].includes(job.status) &&
+          retry && (
+            <button className="secondary" onClick={retry}>
+              Edit/retry draft
+            </button>
+          )}
       </div>
       <p className="meta">
         Refresh checks stop after ten minutes. A cancelled or failed job keeps
