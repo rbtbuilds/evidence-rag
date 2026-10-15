@@ -1,6 +1,6 @@
 # Evidence RAG state
 
-Updated: 2026-10-15. Local v1 implementation and verification are complete on feat/evidence-rag-v1. Human citation review remains unmeasured. No publication, push or deployment occurred.
+Updated: 2026-10-16. Generation repair is in progress; the v1 results below are the retained baseline. Local v1 implementation and verification were complete on feat/evidence-rag-v1. Human citation review remains unmeasured. No publication, push or deployment occurred.
 
 ## Ownership and checkout
 

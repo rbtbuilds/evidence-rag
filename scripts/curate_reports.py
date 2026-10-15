@@ -1,9 +1,12 @@
 """Build small provenance-preserving summaries from completed owned evaluations."""
 
+import argparse
 import hashlib
 import json
+import re
 from collections import Counter
 from datetime import UTC, datetime
+from pathlib import Path
 
 from pydantic import TypeAdapter
 
@@ -11,19 +14,35 @@ from evidence_rag.evaluation.report import EvaluationReport
 from evidence_rag.models.local import PROJECT
 
 RUNS = {
-    "fixture-dev-extractive": "eval-fixture-dev-v3",
-    "fixture-test-extractive": "eval-fixture-test-v3",
-    "local-dev-extractive": "eval-local-dev-extractive-v3",
-    "local-dev-generated": "eval-local-dev-local-v3",
-    "local-test-extractive": "eval-local-test-extractive-v3",
-    "local-test-generated": "eval-local-test-local-v3",
+    "fixture-dev-extractive": "eval-fixture-dev",
+    "fixture-test-extractive": "eval-fixture-test",
+    "local-dev-extractive": "eval-local-dev-extractive",
+    "local-dev-generated": "eval-local-dev-local",
+    "local-test-extractive": "eval-local-test-extractive",
+    "local-test-generated": "eval-local-test-local",
 }
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run-suffix", required=True)
+    parser.add_argument("--revision", required=True)
+    args = parser.parse_args()
+    for value in (args.run_suffix, args.revision):
+        if not re.fullmatch(r"[a-z0-9-]{1,40}", value):
+            raise ValueError("Use short lowercase revision identifiers")
+    destination = PROJECT / "reports" / f"evaluation-{args.revision}.json"
+    outputs = [destination] + [
+        PROJECT / "reports" / f"review-{args.revision}-{name}.json"
+        for name in RUNS
+        if "-test-" in name
+    ]
+    if any(path.exists() for path in outputs):
+        raise ValueError("Evidence revision exists; use a new revision")
     runs: dict[str, object] = {}
+    review_sheets: dict[Path, bytes] = {}
     for name, directory in RUNS.items():
-        path = PROJECT / ".runtime" / directory / "report.json"
+        path = PROJECT / ".runtime" / f"{directory}-{args.run_suffix}" / "report.json"
         report = EvaluationReport.model_validate_json(path.read_text())
         if len(report.rows) != report.manifest.question_count * 4:
             raise ValueError("Incomplete run")
@@ -51,16 +70,20 @@ def main() -> None:
             sheet = TypeAdapter(list[dict[str, object]]).validate_json(source.read_text())
             if len(sheet) != 24 or any(row["reviewer"] is not None for row in sheet):
                 raise ValueError("Unexpected review status")
-            (PROJECT / "reports" / f"review-v2-{name}.json").write_bytes(source.read_bytes())
+            review_sheets[PROJECT / "reports" / f"review-{args.revision}-{name}.json"] = (
+                source.read_bytes()
+            )
     summary = {
         "curated_at": datetime.now(UTC).isoformat(),
         "cpu": "Apple M5 Pro (observed with sysctl machdep.cpu.brand_string)",
-        "interpretation": "Synthetic owned scenario; no customer-impact claim. Warm model timing excludes separately recorded load/index warmup. Light development ran concurrently. Actual generation abstained on invalid output; this is a failure, not evidence of useful answer quality. Human support/completeness remain unmeasured.",
+        "interpretation": "Synthetic owned scenario; no customer-impact claim. Warm model timing excludes separately recorded load/index warmup. Light development ran concurrently. Format/citation validity does not prove factual support. Human support/completeness remain unmeasured.",
         "runs": runs,
     }
-    (PROJECT / "reports/evaluation-v2.json").write_text(json.dumps(summary, indent=2) + "\n")
-    smoke = PROJECT / ".runtime/model-smoke-final.json"
-    (PROJECT / "reports/local-smoke-v2.json").write_bytes(smoke.read_bytes())
+    for path, contents in review_sheets.items():
+        with path.open("xb") as output:
+            output.write(contents)
+    with destination.open("x") as output:
+        output.write(json.dumps(summary, indent=2) + "\n")
 
 
 if __name__ == "__main__":

@@ -62,6 +62,8 @@ class GenerationResult(StrictModel):
     output: str
     revision: str
     dropped_passages: int = 0
+    output_tokens: int = Field(default=0, ge=0)
+    hit_output_limit: bool = False
 
 
 ModelResult = Annotated[
@@ -80,6 +82,8 @@ class ModelSession:
         self.peak_rss = 0
         self.embedding_truncations = 0
         self.dropped_passages = 0
+        self.generation_tokens = 0
+        self.generation_limit_hits = 0
 
     def begin_request(self, timeout: float = 90) -> None:
         self.deadline = time.monotonic() + timeout
@@ -128,6 +132,8 @@ class ModelSession:
         ):
             raise DomainError(503, "model_unavailable")
         self.dropped_passages += result.dropped_passages
+        self.generation_tokens += result.output_tokens
+        self.generation_limit_hits += int(result.hit_output_limit)
         return result
 
     def run(self, request: ModelRequest) -> ModelResult:

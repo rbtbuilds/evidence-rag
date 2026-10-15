@@ -53,7 +53,7 @@ STOPWORDS = {
     "using",
     "exactly",
 }
-PROMPT_REVISION = "evidence-json-v1"
+PROMPT_REVISION = "evidence-json-v2-enforced"
 GENERATOR_REVISION = "extractive-sentences-v1"
 
 

@@ -20,6 +20,9 @@ class EvaluationManifest(BaseModel):
     machine: dict[str, str | int]
     revisions: dict[str, str]
     model_lock: ModelLock | None
+    dependency_lock_sha256: str = ""
+    generation_settings: dict[str, str | int | float | bool] = {}
+    generation_limit_hits: int = 0
     warmup_seconds: float
     embedding_truncations: int
     dropped_passages: int
@@ -52,6 +55,8 @@ class EvaluationRow(BaseModel):
     mrr_at_5: float
     forbidden_disclosure: bool
     citations_valid: int
+    generated_tokens: int = 0
+    generation_hit_limit: bool = False
     latency_ms: float
     embedding_truncations: int
     dropped_passages: int

@@ -1,8 +1,10 @@
 import json
 import time
 
+from evidence_rag.answers.generation import PROMPT_REVISION
 from evidence_rag.config import Settings
 from evidence_rag.contracts import Citation
+from evidence_rag.models.generation import GENERATION_SETTINGS
 from evidence_rag.models.runner import ModelRunner
 
 
@@ -39,6 +41,10 @@ def main() -> None:
                     "rerank_scores": scores,
                     "generation_output": result.output,
                     "generation_revision": result.revision,
+                    "prompt_revision": PROMPT_REVISION,
+                    "generation_settings": GENERATION_SETTINGS,
+                    "output_tokens": result.output_tokens,
+                    "hit_output_limit": result.hit_output_limit,
                     "embedding_truncations": session.embedding_truncations,
                     "elapsed_seconds": time.monotonic() - begin,
                 }

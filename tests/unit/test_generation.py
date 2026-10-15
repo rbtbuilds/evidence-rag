@@ -36,3 +36,17 @@ def test_extractive_quotes_and_abstention() -> None:
     result = extractive("What is the circulation display limit?", [source()])
     assert "35 units." in result.text and not result.abstained
     assert extractive("Certified orbital pressure?", [source()]).abstained
+
+
+def test_generation_never_repairs_fabricated_ids_or_json() -> None:
+    for raw in (
+        '{"answer":"35","cited_chunk_ids":["knowm"],"insufficient_evidence":false}',
+        '{"answer":"35","cited_chunk_ids":["known","unknown"],"insufficient_evidence":false}',
+        '{"answer":"35","cited_chunk_ids":[],"insufficient_evidence":false}',
+        '{"answer":"","cited_chunk_ids":["known"],"insufficient_evidence":false}',
+        '```json\n{"answer":"35","cited_chunk_ids":["known"],"insufficient_evidence":false}\n```',
+        '{"answer":"35","cited_chunk_ids":["known"],"insufficient_evidence":false,"extra":1}',
+    ):
+        result = validate_generation(raw, [source()])
+        assert result.abstained and result.reason == "invalid_generation"
+        assert result.text == "" and result.citations == []

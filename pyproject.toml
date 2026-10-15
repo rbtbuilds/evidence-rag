@@ -16,6 +16,7 @@ evidence-rag = "evidence_rag.cli:main"
 [project.optional-dependencies]
 ml = [
     "huggingface-hub==2.2.0",
+    "lm-format-enforcer==0.11.3",
     "sentence-transformers==5.7.0",
     "torch==2.14.1",
     "transformers==5.20.0",
@@ -45,6 +46,7 @@ markers = ["real_model: explicit local model execution"]
 dev = [
     "httpx==0.28.1",
     "httpx2==2.13.1",
+    "lm-format-enforcer==0.11.3",
     "pyright==1.1.414",
     "pytest==9.1.1",
     "pytest-asyncio==1.4.0",

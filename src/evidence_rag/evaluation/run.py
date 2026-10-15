@@ -14,7 +14,7 @@ import psutil
 
 from evidence_rag.answers.service import AnswerService
 from evidence_rag.config import Profile, Settings
-from evidence_rag.contracts import GenerationMode, QuestionRequest, RetrievalMode
+from evidence_rag.contracts import Citation, GenerationMode, QuestionRequest, RetrievalMode
 from evidence_rag.db.repository import AccessScope, Repository
 from evidence_rag.documents.chunking import chunk_document
 from evidence_rag.documents.ingest import FIXTURES, load_questions, seed, validate_corpus
@@ -206,7 +206,24 @@ def evaluate(
                         )
                 session.rerank("warmup", ["Fictional warmup passage."])
                 if generation == "local":
-                    session.generate("What is the warmup value?", [])
+                    warmup_quote = "The fictional warmup value is 17 units."
+                    session.generate(
+                        "What is the warmup value?",
+                        [
+                            Citation(
+                                chunk_id="warmup",
+                                document_id="warmup",
+                                version_id="warmup",
+                                title="Warmup",
+                                version_label="v1",
+                                effective_date="2026-10-16",
+                                section_id="warmup",
+                                start_char=0,
+                                end_char=len(warmup_quote),
+                                quote=warmup_quote,
+                            )
+                        ],
+                    )
                 warmup = time.perf_counter() - start
                 report = run_rows(
                     repo, Settings(model_root, profile), split, generation, session, warmup
@@ -245,6 +262,8 @@ def run_rows(
                 session.begin_request()
             truncations = session.embedding_truncations if session else 0
             dropped = session.dropped_passages if session else 0
+            generated_tokens = session.generation_tokens if session else 0
+            generation_limit_hits = session.generation_limit_hits if session else 0
             start = time.perf_counter()
             pending = service.answer(scope, request, session)
             latency = (time.perf_counter() - start) * 1000
@@ -271,6 +290,10 @@ def run_rows(
                     forbidden_disclosure=any(value in text for value in question.forbidden_strings),
                     citations_valid=valid,
                     latency_ms=latency,
+                    generated_tokens=session.generation_tokens - generated_tokens if session else 0,
+                    generation_hit_limit=session.generation_limit_hits > generation_limit_hits
+                    if session
+                    else False,
                     embedding_truncations=(session.embedding_truncations - truncations)
                     if session
                     else 0,
@@ -296,6 +319,8 @@ def run_rows(
     dirty = bool(
         subprocess.check_output(["git", "status", "--porcelain"], cwd=PROJECT, text=True).strip()
     )
+    from evidence_rag.models.generation import GENERATION_SETTINGS
+
     manifest = EvaluationManifest(
         execution_profile=settings.profile,
         split=split,
@@ -307,6 +332,9 @@ def run_rows(
             for name in ("dev.jsonl", "test.jsonl", "split.json")
         },
         code_hash=code_hash,
+        dependency_lock_sha256=digest(PROJECT / "uv.lock"),
+        generation_settings=GENERATION_SETTINGS if generation == "local" else {},
+        generation_limit_hits=sum(row.generation_hit_limit for row in rows),
         git_head=head,
         dirty_worktree=dirty,
         machine={
