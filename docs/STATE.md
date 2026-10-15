@@ -20,7 +20,7 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | 2: Sessions/storage | Complete | 10 pytest pass, strict Pyright 0 errors; real cookies, CSRF, expiry/reset, rate limit and role denial. |
 | 3: Corpus/version transactions | Complete | 24 owned versions, 72 frozen questions, validator passes; 5 chunk/version tests including injected SQL rollback and budget limit. |
 | 4: Retrieval | Complete | Real FTS5, authorised dense cosine, deduplicated RRF and bounded rerank; fixture doubles labelled; access/rank invariance tests pass. |
-| 5: Jobs/lifecycle | Not started | Transaction/race contract only |
+| 5: Jobs/lifecycle | Complete | Import/replace/delete API, single worker, bounded jobs/cancel/recovery; staged-delete barrier and failed-build rollback pass. |
 | 6: Local models | Not started | Cards verified; no downloads, weight loads or benchmarks |
 | 7: Answers/citations/cache | Not started | No implementation |
 | 8: Web interface | Not started | Design specified, no rendered UI |
@@ -44,3 +44,5 @@ Task2: Session suite RED -> GREEN (successful login rate-limit regression correc
 Task3: corpus validator passes hashes, 12 document pairs, section word limits and disjoint family/template groups. Five focused tests pass; strict Pyright 0 errors. SQLite trigger failure proves old FTS and revision survive rollback. No model work performed.
 
 Task4: retrieval/access tests RED missing modules -> GREEN. Fixture seeding now uses normalized hash embeddings. Four pipelines retain at most five authorized current chunks; revision mismatches refuse dense use. No actual models loaded.
+
+Task5: real API lifecycle suite passes import, replacement, stale revision, deletion and absence of source marker across stored payloads/indexes. Eight pending jobs bounded; cancellation idempotent; running jobs interrupted on restart. Next: leased optional inference.

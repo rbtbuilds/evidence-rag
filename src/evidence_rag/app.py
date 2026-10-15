@@ -1,24 +1,39 @@
 import asyncio
 import sqlite3
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from evidence_rag.api import admin, documents
 from evidence_rag.api.guard import Guard
 from evidence_rag.api.session import router
 from evidence_rag.config import Settings
 from evidence_rag.db.repository import Repository
+from evidence_rag.documents.jobs import JobService
 from evidence_rag.errors import DomainError
 
 
 def create_app(settings: Settings) -> FastAPI:
     repo = Repository(settings.database)
-    app = FastAPI(title="Evidence RAG", version="0.1.0")
+    lock = asyncio.Lock()
+    jobs = JobService(repo, lock)
+
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
+        jobs.start()
+        try:
+            yield
+        finally:
+            await jobs.stop()
+
+    app = FastAPI(title="Evidence RAG", version="0.1.0", lifespan=lifespan)
+    app.state.jobs = jobs
     app.state.settings = settings
     app.state.repo = repo
-    lock = asyncio.Lock()
     app.state.publication_lock = lock
 
     @app.exception_handler(DomainError)
@@ -38,6 +53,8 @@ def create_app(settings: Settings) -> FastAPI:
         return {"status": "ok", "execution_profile": settings.profile}
 
     app.include_router(router(repo))
+    app.include_router(documents.router(repo))
+    app.include_router(admin.router(repo, jobs))
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[settings.origin],

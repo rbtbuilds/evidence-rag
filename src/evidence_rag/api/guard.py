@@ -99,3 +99,7 @@ class Guard:
                     await self.app(scope, bounded_receive, safe_send)
         except DomainError as error:
             await JSONResponse(error.payload(), status_code=error.status)(scope, receive, safe_send)
+
+        except Exception:  # noqa: BLE001 - never serialize untrusted input in an error.
+            error = DomainError(500, "internal_error")
+            await JSONResponse(error.payload(), status_code=500)(scope, receive, safe_send)

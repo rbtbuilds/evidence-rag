@@ -91,7 +91,7 @@ class Repository:
             raise DomainError(401, "session_required")
         return str(row["csrf_token"])
 
-    def _invalidate(self, db: sqlite3.Connection, old: str | None, new: str | None) -> None:
+    def invalidate(self, db: sqlite3.Connection, old: str | None, new: str | None) -> None:
         roles = ("reader", "maintainer") if "reader" in (old, new) else ("maintainer",)
         for role in roles:
             db.execute(f"UPDATE meta SET {role}_epoch={role}_epoch+1")
@@ -209,7 +209,7 @@ class Repository:
             "UPDATE documents SET title=?,min_role=?,active_version_id=?,revision=revision+1 WHERE id=?",
             (metadata.title, metadata.min_role, version, document_id),
         )
-        self._invalidate(db, str(old["min_role"]) if old else None, metadata.min_role)
+        self.invalidate(db, str(old["min_role"]) if old else None, metadata.min_role)
         return expected_revision + 1
 
     def delete(self, document_id: str, expected_revision: int) -> None:
@@ -233,7 +233,7 @@ class Repository:
                 "UPDATE documents SET active_version_id=NULL,deleted_at=?,revision=revision+1 WHERE id=?",
                 (datetime.now(UTC).isoformat(), document_id),
             )
-            self._invalidate(db, str(row["min_role"]), None)
+            self.invalidate(db, str(row["min_role"]), None)
 
     def documents(self, scope: AccessScope) -> list[DocumentSummary]:
         with self.connection() as db:
@@ -286,3 +286,46 @@ class Repository:
             highlight_start=citation.start_char - start,
             highlight_end=citation.end_char - start,
         )
+
+    def replace_index(self, db: sqlite3.Connection, document_id: str, draft: IndexDraft) -> None:
+        row = db.execute(
+            "SELECT active_version_id,min_role FROM documents WHERE id=? AND deleted_at IS NULL",
+            (document_id,),
+        ).fetchone()
+        if (
+            row is None
+            or not draft.chunks
+            or any(c.version_id != row["active_version_id"] for c in draft.chunks)
+        ):
+            raise DomainError(409, "stale_job")
+        self._remove_indexes(db, document_id)
+        for chunk, vector in zip(draft.chunks, draft.vectors, strict=True):
+            a = np.asarray(vector, dtype=np.float32)
+            if (
+                a.shape != (384,)
+                or not np.isfinite(a).all()
+                or not np.isclose(np.linalg.norm(a), 1, atol=1e-4)
+            ):
+                raise ValueError("Invalid embedding")
+            db.execute(
+                "INSERT INTO chunks VALUES(?,?,?,?,?,?)",
+                (
+                    chunk.id,
+                    chunk.version_id,
+                    chunk.section_id,
+                    chunk.start_char,
+                    chunk.end_char,
+                    chunk.text,
+                ),
+            )
+            db.execute(
+                "INSERT INTO vectors VALUES(?,?,384,?)", (chunk.id, draft.revision, a.tobytes())
+            )
+            for table in (
+                ("fts_reader", "fts_maintainer")
+                if row["min_role"] == "reader"
+                else ("fts_maintainer",)
+            ):
+                db.execute(
+                    f"INSERT INTO {table}(chunk_id,text) VALUES(?,?)", (chunk.id, chunk.text)
+                )
