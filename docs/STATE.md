@@ -21,7 +21,7 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | 3: Corpus/version transactions | Complete | 24 owned versions, 72 frozen questions, validator passes; 5 chunk/version tests including injected SQL rollback and budget limit. |
 | 4: Retrieval | Complete | Real FTS5, authorised dense cosine, deduplicated RRF and bounded rerank; fixture doubles labelled; access/rank invariance tests pass. |
 | 5: Jobs/lifecycle | Complete | Import/replace/delete API, single worker, bounded jobs/cancel/recovery; staged-delete barrier and failed-build rollback pass. |
-| 6: Local models | Not started | Cards verified; no downloads, weight loads or benchmarks |
+| 6: Local models | Complete | Pinned public snapshots downloaded/hash recorded; actual leased smoke 33.64s, 384 dimensions, 0 embedding truncations; JSON generation fails required schema and must abstain. |
 | 7: Answers/citations/cache | Not started | No implementation |
 | 8: Web interface | Not started | Design specified, no rendered UI |
 | 9: Evaluation | Not started | No measured metrics or human review |
@@ -46,3 +46,5 @@ Task3: corpus validator passes hashes, 12 document pairs, section word limits an
 Task4: retrieval/access tests RED missing modules -> GREEN. Fixture seeding now uses normalized hash embeddings. Four pipelines retain at most five authorized current chunks; revision mismatches refuse dense use. No actual models loaded.
 
 Task5: real API lifecycle suite passes import, replacement, stale revision, deletion and absence of source marker across stored payloads/indexes. Eight pending jobs bounded; cancellation idempotent; running jobs interrupted on restart. Next: leased optional inference.
+
+Task6: exclusive lease/ownership/timeout/RSS/malformed-output/missing-snapshot/queue tests pass. Public snapshots recorded in config/models.lock.json; CPU four-thread float32 worker exits before lease release. Actual smoke returned an unsupported citation_ids key and omitted insufficient_evidence: this is a real generation failure, not a valid answer. Task7 will enforce abstention. No resident model process or owned lease remains.

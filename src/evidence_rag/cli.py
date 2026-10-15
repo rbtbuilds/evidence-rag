@@ -12,9 +12,23 @@ from evidence_rag.documents.ingest import seed, validate_corpus
 def main() -> None:
     parser = argparse.ArgumentParser(description="Evidence RAG local workbench")
     parser.add_argument(
-        "command", choices=["doctor", "init", "reset", "seed-fixtures", "validate-corpus"]
+        "command",
+        choices=["doctor", "init", "reset", "seed-fixtures", "validate-corpus", "prepare-models"],
     )
+    parser.add_argument("--models", action="store_true")
     args = parser.parse_args()
+    if args.command == "prepare-models":
+        import runpy
+
+        from evidence_rag.models.local import PROJECT
+
+        runpy.run_path(str(PROJECT / "scripts/prepare_models.py"), run_name="__main__")
+        return
+    if args.models:
+        from evidence_rag.models.local import snapshots
+
+        print(snapshots(Settings.from_env().root, verify_hashes=True).model_dump_json())
+        return
     if args.command == "validate-corpus":
         print(validate_corpus().model_dump_json())
         return

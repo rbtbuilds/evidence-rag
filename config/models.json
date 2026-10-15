@@ -1,0 +1,6 @@
+{
+  "embedding": {"id": "BAAI/bge-small-en-v1.5", "license": "mit", "dimensions": 384},
+  "reranker": {"id": "cross-encoder/ms-marco-MiniLM-L6-v2", "license": "apache-2.0"},
+  "generator": {"id": "Qwen/Qwen2.5-0.5B-Instruct", "license": "apache-2.0"},
+  "runtime": {"device": "cpu", "dtype": "float32", "threads": 4, "batch_size": 4, "seed": 17, "max_input_tokens": 2048, "max_new_tokens": 256, "do_sample": false}
+}

@@ -32,6 +32,8 @@ class JobService:
         builder: Callable[[tuple[Chunk, ...]], IndexDraft] = fixture_builder,
     ) -> None:
         self.repo, self.lock, self.builder = repo, lock, builder
+        self.current_job_id: str | None = None
+        self.cancel_models: Callable[[], None] = lambda: None
         self.wake = asyncio.Event()
         self.task: asyncio.Task[None] | None = None
 
@@ -45,6 +47,7 @@ class JobService:
         self.wake.set()
 
     async def stop(self) -> None:
+        self.cancel_models()
         if self.task:
             self.task.cancel()
             try:
@@ -110,7 +113,17 @@ class JobService:
                 "UPDATE jobs SET status='cancelled',payload_json=NULL,updated_at=? WHERE id=? AND status IN ('queued','running')",
                 (now(), job_id),
             )
+        if job_id == self.current_job_id:
+            self.cancel_models()
         return self.view(job_id)
+
+    def cancel_document(self, document_id: str) -> None:
+        with self.repo.connection() as db:
+            row = db.execute(
+                "SELECT document_id FROM jobs WHERE id=?", (self.current_job_id,)
+            ).fetchone()
+        if row is not None and row["document_id"] == document_id:
+            self.cancel_models()
 
     async def work(self) -> None:
         while True:
@@ -136,6 +149,7 @@ class JobService:
             ):
                 return
             row = db.execute("SELECT * FROM jobs WHERE id=?", (job_id,)).fetchone()
+        self.current_job_id = job_id
         try:
             if row["kind"] == "rebuild":
                 with self.repo.connection() as db:
@@ -145,9 +159,22 @@ class JobService:
                     epoch = tuple(
                         db.execute("SELECT reader_epoch,maintainer_epoch FROM meta").fetchone()
                     )
+                all_chunks = tuple(
+                    c
+                    for r in snapshot
+                    for c in chunk_document(str(r["active_version_id"]), str(r["text"]))
+                )
+                combined = (
+                    await asyncio.to_thread(self.builder, all_chunks)
+                    if all_chunks
+                    else IndexDraft((), (), "empty")
+                )
+                pairs = list(zip(combined.chunks, combined.vectors, strict=True))
                 drafts = [
-                    await asyncio.to_thread(
-                        self.builder, chunk_document(str(r["active_version_id"]), str(r["text"]))
+                    IndexDraft(
+                        tuple(c for c, _ in pairs if c.version_id == r["active_version_id"]),
+                        tuple(v for c, v in pairs if c.version_id == r["active_version_id"]),
+                        combined.revision,
                     )
                     for r in snapshot
                 ]
@@ -196,6 +223,9 @@ class JobService:
                     "UPDATE jobs SET status='failed',error_code='index_failed',payload_json=NULL,updated_at=? WHERE id=? AND status='running'",
                     (now(), job_id),
                 )
+
+        finally:
+            self.current_job_id = None
 
     def require_running(self, db: sqlite3.Connection, job_id: str) -> None:
         row = db.execute("SELECT status FROM jobs WHERE id=?", (job_id,)).fetchone()

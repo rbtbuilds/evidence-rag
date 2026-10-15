@@ -13,14 +13,27 @@ from evidence_rag.api.guard import Guard
 from evidence_rag.api.session import router
 from evidence_rag.config import Settings
 from evidence_rag.db.repository import Repository
+from evidence_rag.documents.chunking import Chunk
 from evidence_rag.documents.jobs import JobService
 from evidence_rag.errors import DomainError
+from evidence_rag.models.runner import ModelRunner
+from evidence_rag.retrieval.service import build_index
+from evidence_rag.retrieval.types import IndexDraft
 
 
 def create_app(settings: Settings) -> FastAPI:
     repo = Repository(settings.database)
     lock = asyncio.Lock()
     jobs = JobService(repo, lock)
+    if settings.profile == "local":
+        model_jobs = ModelRunner(settings.root)
+
+        def local_builder(chunks: tuple[Chunk, ...]) -> IndexDraft:
+            with model_jobs.session("document indexing", timeout=600) as session:
+                return build_index(chunks, session)
+
+        jobs.builder = local_builder
+        jobs.cancel_models = model_jobs.cancel
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:

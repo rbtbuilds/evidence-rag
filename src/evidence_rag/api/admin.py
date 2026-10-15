@@ -37,6 +37,7 @@ def router(repo: Repository, jobs: JobService) -> APIRouter:
         if not if_match.isdecimal():
             raise DomainError(422, "invalid_input")
         repo.delete(str(document_id), int(if_match))
+        jobs.cancel_document(str(document_id))
         return Response(status_code=204)
 
     @routes.get("/documents/{document_id}/versions/{version_id}")
