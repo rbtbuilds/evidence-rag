@@ -57,7 +57,15 @@ Preparation downloads only public safetensors/config/tokenizer/card/licence file
 
 After switching to local profile, use Rebuild index as maintainer before dense/hybrid requests. Missing/mismatched revisions return `model_unavailable`; fixture vectors are never silently treated as real embeddings. Switching back similarly requires an explicit fixture rebuild. After a code upgrade changes the chunker revision, rebuild before using existing indexes; heading-window-v2 allocates unique anchors for repeated and explicitly suffixed headings. Rebuild replaces chunk identifiers and invalidates old citation links. Pending work stays single-worker. Actual requests acquire a machine lease, use one supervised child and exit it before release. Uncached interactive requests may reload weights; do not confuse warm benchmark times with that load cost.
 
-Qwen currently fails this v1 generation contract in the recorded benchmark, so local generated answers abstain. Exact quotations remain useful in local profile. Do not relax output/citation validation to make the displayed success rate look better.
+Local Qwen generation uses constrained decoding with exact supplied IDs and at most two generated citations. The server validator and current-version/access checks remain unchanged. The refreshed test accepted 183/192 answers, abstained on two and rejected seven invalid outputs; all 347 emitted citations resolved. Unsupported-question answers remain unreliable: the sole correct expected abstention out of 48 cases came from invalid-output rejection. Exact quotations remain the default. See [evaluation](../EVALUATION.md) for quality limits and complete counts.
+
+To exercise the supported actual browser path, stop other owned servers and run:
+
+```sh
+uv run --extra ml python -m scripts.actual_generation_browser
+```
+
+This helper acquires the shared lease, starts its own temporary API/browser flow on 8115/5115, generates an answer containing 35 and opens its current citation. It uses actual Qwen and real BM25 without intercepted application fetches. It does not claim dense/reranking browser coverage. Ordinary browser runs explicitly skip this scenario.
 
 ## Shared machine lease and failures
 

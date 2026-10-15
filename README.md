@@ -54,13 +54,17 @@ SQLite WAL transactions publish source metadata, exact Unicode chunks, vectors, 
 
 The web client uses generated OpenAPI TypeScript types plus Zod response validation. Source is escaped text, including HTML and hostile instructions. Both themes, mobile layout, error focus and dialog focus return are exercised in real Chromium. Authentication is explicitly a loopback demo, not a production identity provider.
 
-## Measured results and a failure
+## Measured results and limits
 
-The frozen test set has 48 questions, with 36 having labelled relevant sections. On this small repetitive owned corpus, all four actual retrieval methods achieved recall@5 of 1.0. Dense and hybrid MRR were 1.0 versus BM25 0.9861. MiniLM reranking did not improve test MRR and increased warm quotation p50 latency from roughly 2.5 ms for BM25 to 97.0 ms. These warmed-model development measurements exclude separately recorded load/index warmup and are not interactive cold-start latency.
+The frozen test set has 48 questions, with 36 having labelled relevant sections. On this small repetitive owned corpus, all four actual retrieval methods achieved recall@5 of 1.0. Dense and hybrid MRR were 1.0 versus BM25 and reranked hybrid 0.9861. MiniLM did not improve MRR and increased warm quotation p50 from 2.15 ms for BM25 to 90.23 ms. These warmed-worker measurements exclude separately recorded load/index warmup and are not interactive cold-start latency.
 
-The fixed Qwen generation block failed its output/citation contract on all 192 test outputs and abstained on all of them. A smoke example used the wrong citation key and omitted a required flag. Rejecting that output prevented an invalid answer from being presented; it did not make generation useful. Exact quotations remain the default. Quotation mode also makes errors: sentences with shared query terms can be irrelevant, and expected-abstention accuracy was 8/12 per actual test method.
+The repaired local Qwen block accepted 183/192 test answers, returned two insufficient-evidence abstentions and rejected seven invalid outputs. All 347 emitted citations resolved to accessible current passages. Passing these checks does not establish factual support.
 
-[Evaluation protocol](EVALUATION.md) and [recorded evidence](reports/README.md) include model/file hashes, corpus/split hashes, sample counts, role/stratum aggregates, paired confidence intervals and known failures. Fixture and actual-model results are separate. Citation support and completeness are unmeasured until the anonymised human review sheets are completed; valid IDs alone do not prove factual support.
+The original Qwen policy rejected all 96 development and 192 test outputs. [Diagnosis and repair](docs/GENERATION-REPAIR.md) explain the key/ID errors, unsuccessful prompt-only probes and constrained decoding with a two-citation generation budget. Server validation, exact IDs, access/version checks and final response revalidation remain strict. The same pinned model, corpus and questions were retained; held-out outputs did not change parameters.
+
+Qwen still answers unsupported questions incorrectly. Only 1/48 expected-abstention test cases abstained, through invalid-output rejection; no explicit insufficient-evidence response correctly handled an expected-abstention case. Exact quotations remain the default; they can also select irrelevant matching sentences and correctly abstained on 8/12 expected-abstention cases per actual test method. Human citation support/completeness remain unmeasured.
+
+[Evaluation protocol](EVALUATION.md) and [recorded evidence](reports/README.md) retain the new results and original failures separately, with hashes, counts, role/stratum aggregates and paired confidence intervals. Fixture and actual-model results remain separate.
 
 ## Checks and operation
 

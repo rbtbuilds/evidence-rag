@@ -1,52 +1,44 @@
 # Evidence RAG state
 
-Updated: 2026-10-16. Generation repair is in progress; the v1 results below are the retained baseline. Local v1 implementation and verification were complete on feat/evidence-rag-v1. Human citation review remains unmeasured. No publication, push or deployment occurred.
+Updated: 2026-10-16. Local v1 and the requested Qwen generation repair/evaluation are complete on feat/evidence-rag-v1. Generation is operational under strict citation validation; unsupported-question quality remains weak. No publication, push, deployment, paid work or external send occurred. Human citation support/completeness remain unmeasured.
 
-## Ownership and checkout
+## Ownership and frozen source
 
-This repository is /Users/matthewgoralczyk/BentoLabs/portfolio/evidence-rag. Its Git root is the same directory; the fork's inherited resume workspace was not used. All ten approved tasks ran natively through superpowers:executing-plans in this chat. Only this child was edited. API/web ports are 8115/5115, loopback only. Model work used the shared atomic machine lease and exited its owned worker before release.
+Owned checkout/Git root: /Users/matthewgoralczyk/BentoLabs/portfolio/evidence-rag. The inherited resume workspace was not used. Only this child was edited. Ports 8115/5115 bind loopback. Every actual model run held the shared atomic lease and exited its owned worker before release. No remote is configured.
 
-The baseline planning commit is 63df9d3ba709c63341aa279a821ce9610566db6c. Final application/source fix commit: 5ca23d349e79916a22fb084cf58a41c7bdcda0b6. Subsequent changes retain evidence and document verification. No Git remote is configured. The branch and checkout are preserved locally.
+The original ten approved tasks were completed using superpowers:executing-plans; their application includes server-side opaque demo sessions, four access-filtered retrieval methods, versioned exact citations, scoped caches, transactional replacement/deletion, bounded model/index workers and the React workbench. Baseline implementation source: 5ca23d349e79916a22fb084cf58a41c7bdcda0b6; original final evidence/docs: 30f06cd. Retained baseline evidence: reports/evaluation-v2.json.
 
-## Ten-task outcome
+Repair implementation: d686d9e (schema/ID-constrained generation, typed core adapter, regression tests, provenance and dedicated browser helper), followed by e3823ce (two-citation decoding bound). All six new canonical evaluation blocks use clean source e3823ce2a47d78b336aa0b6476c663f0b3206d6e, heading-window-v2 and evidence-json-v3-bounded. Subsequent commits document/retain those measured results only. Corpus, questions and pinned model lock are unchanged.
 
-| Task | Outcome |
-| --- | --- |
-| 1: Shell | FastAPI health/profile, Python package, React/TypeScript/Vite shell, frozen dependencies and isolated runtimes. |
-| 2: Sessions/storage | SQLite WAL migrations, hashed opaque sessions, role launch codes, CSRF, exact Origin/Host, expiry and atomic failed-login rate limit. |
-| 3: Corpus/versions | 12 owned fictional manual pairs, 72 frozen questions, exact Unicode windows, unique heading anchors and atomic version publication. |
-| 4: Retrieval | Role-partitioned real FTS5 BM25, authorised dense cosine, deduplicated RRF and lightweight reranking; four comparison modes. |
-| 5: Lifecycle | Bounded single-worker import/replace/rebuild jobs, cancellation/restart handling, transactional deletion, stale-snapshot rejection. |
-| 6: Models | Pinned public BGE/MiniLM/Qwen snapshots, hashes/licences, exclusive lease, bounded supervised CPU worker, four-item IPC batches. |
-| 7: Answers/citations | Exact current-version source passages, strict generated-output validation, scoped bounded cache, final session/epoch/citation revalidation through complete response publication. |
-| 8: Interface | Generated OpenAPI types and Zod validation, reader/maintainer workbench, both themes, source focus flow, retained pending jobs and explicit failed-draft recovery. |
-| 9: Evaluation | Six measured fixture/actual dev/test runs, 864 method/question rows, paired metrics, provenance and three anonymised review sheets; human fields unmeasured. |
-| 10: Verification | Strict checks, 73 fixture Python tests, 11 web tests, five real-API browser scenarios, clean checkout and a separate 96-request actual-model access matrix. |
+## Diagnosis and implementation
+
+Qwen renamed/missed required keys and mistyped long citation IDs. Explicit repetition penalty 1.0 alone did not fix it; JSON examples sometimes copied placeholders and were rejected as the solution. A pinned lm-format-enforcer schema and per-request authorised-ID enum fix format/copying, while a two-citation decoding limit leaves room within 256 tokens. The public validator remains unchanged with a five-citation ceiling; malformed JSON, unknown IDs, stale versions and inaccessible sources still fail closed. No fuzzy repair or alias acceptance was added. [Full diagnosis and review](GENERATION-REPAIR.md).
+
+## Current results
+
+| Split | Accepted answers | Insufficient evidence | Invalid output | Citations resolved | Output-limit hits | Correct expected abstentions |
+| --- | --- | --- | --- | --- | --- | --- |
+| Development | 83/96 | 11 | 2 | 160/160 | 2 | 2/24 |
+| Test | 183/192 | 2 | 7 | 347/347 | 9 | 1/48 |
+
+The repaired local Qwen block accepted 183/192 test answers, returned 2 insufficient-evidence abstentions and rejected 7 invalid outputs. All 347/347 emitted citations resolved to accessible current passages; 9 outputs hit the 256-token budget. Expected-abstention decisions were correct in 1/48 method/question cases. The sole correct test expected-abstention decision came from invalid-output rejection; no explicit insufficient-evidence response correctly handled an expected-abstention case. This measures format/citation validity and abstention, not factual support or completeness.
+
+All six blocks total 864 rows, with no forbidden-marker disclosure, embedding truncation or passage dropping. Actual test retrieval recall@5 remains 1.0 for every method on 36 eligible questions per method. Dense/hybrid MRR is 1.0; BM25/reranked hybrid is 0.9861. Quotation expected-abstention result remains 8/12 per actual test method. This repetitive fictional corpus is easy; no customer-impact or enterprise-quality claim is made.
+
+The baseline rejected all 288 generation outputs. The repair makes generation operational, but Qwen still answers unsupported questions incorrectly. Exact quotations remain the default. Citation support/completeness need the new review-v3 sheets and remain unmeasured; no automated score is substituted for human review.
 
 ## Exact verification
 
-- `./scripts/check.sh`: Ruff passes; strict Pyright has zero errors/warnings; 73 Python fixture tests pass with one real-model test deselected and external sockets denied; strict TypeScript including tests/configs, 11 Vitest tests, production build, OpenAPI/type drift and corpus hashes pass.
-- `uv run --extra ml python scripts/e2e_server.py`: five Chromium scenarios pass against the actual API on 8115 and web on 5115, with genuine sessions and no intercepted fetch. Includes access isolation, replacement, deletion, stale citations, literal HTML, job status across source navigation, both themes at 360/900/1440, contrast and keyboard focus.
-- `./scripts/clean_clone_check.sh`: passed at source commit 5ca23d3 with frozen installs in a fresh venv/node_modules, all 73/11 checks, five browser scenarios and 192 fixture test evaluation rows. The task-owned temporary clone was removed by its scoped trap.
-- `uv run --extra ml pytest -m real_model tests/integration/test_actual_disclosure.py -q -s`: passed 96 serial actual-model API requests covering two roles, four retrieval methods, both generation modes, cold/warm caches and active/replaced/deleted sources. Both restricted markers are checked throughout. This serial matrix makes no race claim.
-- Deterministic fixture barriers cover simultaneous privileged/reader generation and separate warm caches for all methods, deletion during full rebuild, deletion during staged replacement and both answer-publication/deletion orders. Injection and transaction-failure tests verify stale work cannot publish.
+- `./scripts/check.sh`: Ruff; strict Pyright with zero errors/warnings; 85 Python fixture tests, one real-model test deselected; strict TypeScript including test/config files; 11 Vitest tests; production build; OpenAPI/type and corpus drift checks.
+- `./scripts/clean_clone_check.sh`: passed at e3823ce with frozen fresh installs, 85/11 tests, five real-API fixture browser scenarios, the actual-model scenario explicitly skipped, and 192 fixture test evaluation rows. Its owned temporary clone was removed.
+- `uv run --extra ml python -m scripts.actual_generation_browser`: one separate genuine browser/API/Qwen scenario passed (10.5-second scenario, 11.4-second Playwright run). BM25 over real FTS, accepted 35 answer, checked current v2 source opened. No fake generation or fetch interception.
+- `uv run --extra ml pytest -m real_model tests/integration/test_actual_disclosure.py -q -s`: passed 96 serial actual-model API requests over two roles, four retrieval methods, both answer modes, cold/warm cache and active/replaced/deleted sources. Both restricted markers checked. Fixture barriers independently verify races/publication ordering.
+- `uv run --extra ml python scripts/model_smoke.py`: actual embedding/reranking/Qwen smoke; 384 dimensions and valid 35-unit JSON; no output-limit hit.
+- Six new evaluation runs: `.runtime/eval-fixture-{dev,test}-v4`, `.runtime/eval-local-{dev,test}-extractive-v4`, `.runtime/eval-local-{dev,test}-local-v4`. Commands are in [EVALUATION](../EVALUATION.md); complete raw hashes/provenance in reports/evaluation-v3.json.
+- `uv run --no-sync python scripts/curate_reports.py --run-suffix v4 --revision v3`: new immutable summary and three anonymised review sheets. Original evidence hashes remained unchanged.
 
-All six final evaluation runs used clean source commit 5ca23d3 and heading-window-v2. The full raw report paths and hashes are retained in reports/evaluation-v2.json. No embedding truncation or dropped passage occurred. The original evaluation-v1 and review/smoke/matrix records remain unchanged. The strengthened access report is reports/actual-access-matrix-v2.json.
+Focused generation review findings were fixed with regression evidence: parser configuration/Unicode preservation, exclusion of warmup token-limit counts, and staging all curation inputs before writes. Strict malformed/unknown-ID/bool/extra-field checks remain covered. Existing original review decisions and deferred long-title mobile overflow remain in [REVIEW.md](REVIEW.md).
 
-## Review and decisions
+## Pickup and limits
 
-One fresh read-only whole-branch reviewer examined 63df9d3..cf846a6. No Critical finding; four Important findings closed in one author fix pass with failing-then-passing regressions: draft recovery, pending job/navigation state, unique section anchors and replacement-marker checks. The full suite then passed. No second reviewer was dispatched. All execution rulings, their costs and the deferred Minor are preserved in [REVIEW.md](REVIEW.md).
-
-Deferred Minor: valid 120-character unbroken titles can overflow some mobile text containers. Existing viewport evidence covers normal fixture titles.
-
-## Results and practical limits
-
-All four actual retrieval methods achieved recall@5 1.0 on 36 eligible test questions per method. BM25 and reranked hybrid MRR were 0.9861; dense and hybrid MRR were 1.0. The small repetitive fictional corpus is an easy benchmark. Quotation mode correctly abstained on 8/12 expected-abstention cases per actual test method and can select irrelevant matching sentences.
-
-Qwen failed the strict output/citation contract on all 96 development and 192 test method/question outputs. Every one abstained; no useful generated-answer quality is claimed. Exact quotations remain the default. Human citation support/completeness and screen-reader use are unverified. Hosted CI, production identity, public hosting, multi-process deployment, OCR/PDF/connectors, real customer data and forensic erasure were not exercised or promised.
-
-Runtime: Python 3.12.14, project-local Node v24.22.0, uv 0.12.5, Apple M5 Pro. No global runtime/configuration, parent/sibling project, vault, operations record or archive was changed.
-
-## Pickup
-
-No implementation task remains from the approved ten-task plan. Start with [README](../README.md), [RUNBOOK](RUNBOOK.md), [VERIFICATION](VERIFICATION.md), [EVALUATION](../EVALUATION.md) and [reports](../reports/README.md). Human citation review can be completed separately using the three current review-v2 sheets. Any public repository creation, push, deployment, paid compute, model upload or external message still needs Matthew's specific authorisation.
+No implementation task remains in the requested repair. Start with [README](../README.md), [RUNBOOK](RUNBOOK.md), [VERIFICATION](VERIFICATION.md), [generation diagnosis](GENERATION-REPAIR.md) and [reports](../reports/README.md). Review-v3 human fields are pending. Qwen semantic/abstention quality, broad multilingual quality, screen-reader use, production identity/public hosting, multiple processes and real customer data are unverified or excluded. No public CI was run. Public repository creation, push, deployment, paid compute, model upload or external send requires specific authorisation.

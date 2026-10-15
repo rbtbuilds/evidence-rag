@@ -1,6 +1,6 @@
 # Evidence RAG evaluation
 
-Measured v1 results are in [reports/evaluation-v2.json](reports/evaluation-v2.json), separately labelled fixture/extractive, actual local/extractive and actual local/Qwen generation. This evidence revision uses heading-window-v2 at source commit 5ca23d3; the original evaluation-v1.json remains unchanged for provenance. The benchmark is an owned fictional scenario; it makes no customer-impact claim.
+Current repair results are in [reports/evaluation-v3.json](reports/evaluation-v3.json), separately labelled fixture/extractive, actual local/extractive and actual local/Qwen generation. All six runs used clean source commit e3823ce2a47d78b336aa0b6476c663f0b3206d6e, heading-window-v2 and the frozen evidence-json-v3-bounded policy. Original [evaluation-v2.json](reports/evaluation-v2.json) and v1 evidence remain unchanged. The benchmark is an owned fictional scenario; it makes no customer-impact claim.
 
 ## Frozen inputs and comparisons
 
@@ -8,7 +8,7 @@ The manifest contains 12 logical manuals with active v2 and superseded v1, eight
 
 Questions are fixed in `fixtures/questions`: 24 development (12 supported, 4 unsupported, 4 version-conflict, 4 restricted) and 48 test (24/8/8/8). Source section families and authored template IDs are disjoint between splits; conflicting and restricted questions refer to split-specific section families. Repeated scenario vocabulary and shared document context make this an easy synthetic benchmark, not a generalisation study. Hashes are frozen in `split.json`; changes require a new evaluation revision.
 
-Compare BM25, BGE dense cosine, hybrid RRF, and hybrid plus MiniLM reranking on the same snapshot with K=5, at most 20 candidates and the same fixed generation policy. Fixture dense/reranking use deterministic doubles. Actual generation is Qwen2.5-0.5B-Instruct: CPU float32, four threads, seed 17, no sampling, 2,048 input and 256 output tokens. Whole low-ranked passages are dropped if needed. Embedding truncation must be zero for a curated actual run. No parameter thresholds were tuned; held-out results did not select a method.
+Compare BM25, BGE dense cosine, hybrid RRF, and hybrid plus MiniLM reranking on the same snapshot with K=5, at most 20 candidates and the same fixed generation policy. Fixture dense/reranking use deterministic doubles. Actual generation is Qwen2.5-0.5B-Instruct: CPU float32, four threads, seed 17, no sampling, 2,048 input and 256 output tokens. Greedy decoding is masked by pinned lm-format-enforcer 0.11.3 against the strict object schema and only the current request's authorised citation IDs. Generation allows at most two citations within 256 tokens; the unchanged application validator still allows five. Repetition penalty is explicitly 1.0. Whole low-ranked passages are dropped if needed. Embedding truncation must be zero for a curated actual run. No parameter thresholds were tuned; held-out results did not select a method.
 
 ## Arithmetic and denominators
 
@@ -20,18 +20,25 @@ Citation-ID/version/offset validity is mechanical. Citation support precision an
 
 ## Actual test observations
 
-| Actual retrieval | Recall@5 (36) | MRR@5 (36) | Warm quotation p50/p95 ms |
-| --- | --- | --- | --- |
-| BM25 | 1.000 | 0.9861 | 2.52 / 3.92 |
-| Dense BGE | 1.000 | 1.0000 | 9.42 / 12.16 |
-| Hybrid RRF | 1.000 | 1.0000 | 9.82 / 11.12 |
-| Hybrid + MiniLM | 1.000 | 0.9861 | 97.01 / 194.62 |
+| Actual retrieval | Recall@5 (36) | MRR@5 (36) | Warm quotation p50/p95 ms | Warm Qwen p50/p95 ms |
+| --- | --- | --- | --- | --- |
+| BM25 | 1.000 | 0.9861 | 2.15 / 2.81 | 4369.25 / 9031.13 |
+| Dense BGE | 1.000 | 1.0000 | 8.37 / 13.96 | 4427.46 / 8039.85 |
+| Hybrid RRF | 1.000 | 1.0000 | 9.25 / 12.57 | 4821.80 / 8914.75 |
+| Hybrid + MiniLM | 1.000 | 0.9861 | 90.23 / 158.75 | 4832.51 / 8954.77 |
 
-These measurements exclude separately recorded index/load warmup, use one leased worker, and were collected during light local development on the M5 Pro. They are not end-user cold-start latency. Peak sampled worker RSS was about 0.56 GiB for the actual quotation test block and 2.39 GiB for Qwen generation; all recorded embedding truncation and dropped-passage counts were zero.
+| Split | Accepted answers | Insufficient evidence | Invalid output | Citations resolved | Output-limit hits | Correct expected abstentions |
+| --- | --- | --- | --- | --- | --- | --- |
+| Development | 83/96 | 11 | 2 | 160/160 | 2 | 2/24 |
+| Test | 183/192 | 2 | 7 | 347/347 | 9 | 1/48 |
 
-Qwen output was rejected as `invalid_generation` for all 192 test outputs and all 96 development outputs. No generated claim was accepted. A smoke output used the wrong citation key and omitted the insufficient-evidence flag. The contract was kept strict and quotation mode remains the default. This is a reported model/prompt/configuration failure, not an assertion that the model can never follow JSON instructions.
+The repaired local Qwen block accepted 183/192 test answers, returned 2 insufficient-evidence abstentions and rejected 7 invalid outputs. All 347/347 emitted citations resolved to accessible current passages; 9 outputs hit the 256-token budget. Two of those still completed valid JSON and were accepted; the other seven were rejected. Expected-abstention decisions were correct in 1/48 method/question cases. The sole correct test expected-abstention decision came from invalid-output rejection; no explicit insufficient-evidence response correctly handled an expected-abstention case. This measures format/citation validity and abstention, not factual support or completeness.
 
-Quotation mode found supported facts but also selected unrelated matching sentences. On each actual test method it correctly abstained on 8/12 expected-abstention cases. Citation support/completeness remain unmeasured. Hybrid MRR was 1.0; adding MiniLM reduced it to 0.9861 on this revision. The small corpus does not show that adding a reranker improves the baseline.
+These runs held one machine lease per complete benchmark on the M5 Pro, excluded separately recorded load/index/decode warmup, and ran during light local development. They are not end-user cold-start latency. No embedding truncation or passage dropping occurred. The repaired policy was frozen before held-out evaluation. No forbidden markers appeared in any of the six evaluation blocks.
+
+The baseline policy failed all 288 development/test generation outputs. Format and exact-ID enforcement plus a bounded citation list make generation operational, but cannot establish support or a sound abstention decision. For example, development BM25 answered "Which lunar alloy is used?" with "Aster bench-top circulation trainer" despite valid citations. The two development output-limit failures remained rejected; they were not repaired or excused. They account for both correct expected-abstention decisions in development; explicit insufficient-evidence responses contributed none. See [diagnosis](docs/GENERATION-REPAIR.md).
+
+Quotation mode correctly abstained on 8/12 expected-abstention cases per actual test method. Adding MiniLM reduced hybrid test MRR from 1.0 to 0.9861. Human support/completeness remain unmeasured; valid IDs are not a quality score.
 
 ## Reproduction
 
@@ -55,4 +62,4 @@ Output directories must be new and inside this checkout. Every run creates its o
 
 Quality averages do not replace boundary tests. Fixture regressions cover both roles, all methods, cold/warm caches, active/replaced/deleted sources, forged identity headers, guessed citations/jobs, source instructions, failed publication, expiry and both orders of response/deletion races. The real browser flow uses actual HTTP/API sessions and verifies source access after identity switching, replacement, deletion and escaped source rendering.
 
-The explicit actual-model matrix test adds serial API requests over both roles, all four methods, both generation modes, two cache states and three source states. It uses actual snapshot-backed indexing/retrieval/generation; Qwen abstention is not evidence of prompt obedience. Race control is tested independently through deterministic barriers. See [VERIFICATION.md](docs/VERIFICATION.md) for exact run outcomes and limits.
+The explicit actual-model matrix test adds serial API requests over both roles, all four methods, both generation modes, two cache states and three source states. It uses actual snapshot-backed indexing/retrieval/generation. Neither Qwen abstention nor an accepted structured answer establishes prompt obedience or factual support. Race control is tested independently through deterministic barriers. See [VERIFICATION.md](docs/VERIFICATION.md) for exact run outcomes and limits.
