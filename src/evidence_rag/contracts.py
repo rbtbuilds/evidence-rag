@@ -132,3 +132,7 @@ class JobView(StrictModel):
     error_code: str | None
     created_at: str
     updated_at: str
+
+
+class JobAccepted(StrictModel):
+    job_id: str

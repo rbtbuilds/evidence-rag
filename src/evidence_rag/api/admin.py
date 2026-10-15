@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Header
 from fastapi.responses import Response
 
-from evidence_rag.contracts import ImportInput, JobView, RebuildInput, ReplaceInput
+from evidence_rag.contracts import ImportInput, JobAccepted, JobView, RebuildInput, ReplaceInput
 from evidence_rag.db.repository import Repository
 from evidence_rag.documents.jobs import JobService
 from evidence_rag.errors import DomainError
@@ -12,15 +12,15 @@ from evidence_rag.errors import DomainError
 def router(repo: Repository, jobs: JobService) -> APIRouter:
     routes = APIRouter(prefix="/api/admin")
 
-    @routes.post("/documents", status_code=202)
+    @routes.post("/documents", status_code=202, response_model=JobAccepted)
     async def create(body: ImportInput) -> dict[str, str]:
         return {"job_id": jobs.enqueue("import", body)}
 
-    @routes.post("/documents/{document_id}/versions", status_code=202)
+    @routes.post("/documents/{document_id}/versions", status_code=202, response_model=JobAccepted)
     async def replace(document_id: UUID, body: ReplaceInput) -> dict[str, str]:
         return {"job_id": jobs.enqueue("replace", body, str(document_id))}
 
-    @routes.post("/rebuild", status_code=202)
+    @routes.post("/rebuild", status_code=202, response_model=JobAccepted)
     async def rebuild(body: RebuildInput) -> dict[str, str]:
         return {"job_id": jobs.enqueue("rebuild", body)}
 
