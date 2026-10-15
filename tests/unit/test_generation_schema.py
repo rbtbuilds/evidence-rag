@@ -32,7 +32,7 @@ def test_schema_enforces_keys_types_known_ids_and_bounds() -> None:
     valid = {"answer": "35 units.", "cited_chunk_ids": ["known"], "insufficient_evidence": False}
     assert accepted(json.dumps(valid))
     assert not accepted(json.dumps({**valid, "cited_chunk_ids": ["knowm"]}))
-    assert not accepted(json.dumps({**valid, "cited_chunk_ids": ["known"] * 6}))
+    assert not accepted(json.dumps({**valid, "cited_chunk_ids": ["known"] * 3}))
     assert not accepted(json.dumps({**valid, "insufficient_evidence": "false"}))
     assert not accepted(json.dumps({**valid, "extra": "ignored"}))
     assert not accepted(json.dumps({**valid, "answer": "x" * 2001}))
