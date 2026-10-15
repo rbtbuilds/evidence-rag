@@ -1,6 +1,6 @@
 # Evidence RAG state
 
-Updated: 2026-10-15. State: planning complete; implementation not started.
+Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 
 ## Verified during planning
 
@@ -16,7 +16,7 @@ Updated: 2026-10-15. State: planning complete; implementation not started.
 
 | Task | State | Evidence |
 | --- | --- | --- |
-| 1: Application shell | Not started | No dependencies or Git initialisation |
+| 1: Application shell | Complete | Health404 RED ->1pass GREEN; Ruff/Pyright strict0errors; TS strict/build pass; Python3.12.14,project-local Node24. |
 | 2: Sessions/storage | Not started | No application files |
 | 3: Corpus/version transactions | Not started | Corpus design only |
 | 4: Retrieval | Not started | Algorithms specified, no run |
@@ -32,3 +32,9 @@ Updated: 2026-10-15. State: planning complete; implementation not started.
 No tests, strict type checks, browser flow, model readiness check or quality benchmark can be reported as passing: no product has been implemented. Python/Node/dependency compatibility, exact model SHAs, observed memory/latency and quality are execution evidence, not planning assumptions. Human citation support/completeness review is pending and cannot be inferred from valid citation IDs.
 
 Next action: Matthew pastes CHAT-HANDOFF.md's prompt into the intended fork. Execute Task 1 after rereading the actual state. Required local branch if Git remains absent: `feat/evidence-rag-v1`. No public repository, push, deployment or paid usage is authorised.
+
+## Native execution evidence
+
+Task1: isolated Git root initialized on feat/evidence-rag-v1; baseline63df9d3. Installed locked project dependencies and project-local Node24 without global runtime changes. Health test failed404 then passed200. Doctor confirms FTS5. Ruff,strict Pyright(including tests),strict TypeScript and Vite production build pass. pytest temp is isolated under .runtime. Added httpx2 because current Starlette TestClient explicitly requires it.
+
+Next: Task2 server-side sessions,CSRF and transactional schema. No app servers or ML lease owned.
