@@ -1,0 +1,34 @@
+# Evidence RAG state
+
+Updated: 2026-10-15. State: planning complete; implementation not started.
+
+## Verified during planning
+
+- Read parent AGENTS.md, existing README.md, EVALUATION.md, .gitignore and LICENSE, plus the writing-plans skill.
+- Directory initially held only README.md, EVALUATION.md, .gitignore and LICENSE. `git rev-parse --show-toplevel` failed with `fatal: not a git repository (or any of the parent directories): .git`.
+- Primary source cards for BGE-small-en-v1.5, ms-marco-MiniLM-L6-v2 and Qwen2.5-0.5B-Instruct were read. Chosen capabilities/licences are documented in SPEC; exact immutable model revisions remain unresolved until execution.
+- Parent probe reports uv Python 3.12.14 available, shell Python 3.14.7, Node 26.7.0, npm 11.19.0, no reserved-port listeners and no machine model lease at that time. Future execution must probe again.
+- Created a concrete specification, ten-task native execution plan, child instructions and copyable handoff. Planning self-review checked all seven owned Markdown files for ASCII text, balanced code fences, Python-fence AST syntax and resolvable local Markdown links; all passed. The plan has ten tasks and 335 lines. A red-flag scan found no unresolved implementation markers or incomplete SQL/function placeholders. These are document checks only, not product tests.
+
+- Read the parent-created docs/RELEASE-STANDARD.md and aligned Task 10 release files and evidence requirements. No parent-owned files were edited.
+
+## Execution ledger
+
+| Task | State | Evidence |
+| --- | --- | --- |
+| 1: Application shell | Not started | No dependencies or Git initialisation |
+| 2: Sessions/storage | Not started | No application files |
+| 3: Corpus/version transactions | Not started | Corpus design only |
+| 4: Retrieval | Not started | Algorithms specified, no run |
+| 5: Jobs/lifecycle | Not started | Transaction/race contract only |
+| 6: Local models | Not started | Cards verified; no downloads, weight loads or benchmarks |
+| 7: Answers/citations/cache | Not started | No implementation |
+| 8: Web interface | Not started | Design specified, no rendered UI |
+| 9: Evaluation | Not started | No measured metrics or human review |
+| 10: Full verification | Not started | No application checks or clean-clone evidence |
+
+## Limits and next action
+
+No tests, strict type checks, browser flow, model readiness check or quality benchmark can be reported as passing: no product has been implemented. Python/Node/dependency compatibility, exact model SHAs, observed memory/latency and quality are execution evidence, not planning assumptions. Human citation support/completeness review is pending and cannot be inferred from valid citation IDs.
+
+Next action: Matthew pastes CHAT-HANDOFF.md's prompt into the intended fork. Execute Task 1 after rereading the actual state. Required local branch if Git remains absent: `feat/evidence-rag-v1`. No public repository, push, deployment or paid usage is authorised.
