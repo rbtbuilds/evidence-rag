@@ -25,7 +25,7 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | 7: Answers/citations/cache | Complete | 48 disclosure cells plus cache repeats, exact citations, malformed generation abstention, expiry and bidirectional publication/deletion barriers pass. |
 | 8: Web interface | Complete | OpenAPI types plus Zod; 6 component/API tests; 2 real-browser flows, both themes at 360/900/1440, focus and contrast regression pass. |
 | 9: Evaluation | Complete | Six frozen fixture/actual dev/test runs; all four methods, model hashes, paired metrics, 24-answer review sheets per block. Human review unmeasured. |
-| 10: Full verification | In progress | 63 socket-restricted fixture tests, 8 web tests, 5 real browser scenarios pass; clean clone and fresh whole-branch review next. |
+| 10: Full verification | Complete | 63 socket-restricted fixture tests, 8 web tests, 5 real browser scenarios; clean clone at a7dafa1 passes frozen setup, all checks and fixture evaluation. Fresh branch review follows. |
 
 ## Current limits and next action
 
@@ -54,3 +54,5 @@ Task8: real browser verified login, question, current source and focus return; E
 Task9: metric tests RED -> GREEN. Six runs completed: fixture/extractive dev+test, local/extractive dev+test and local/Qwen dev+test. All actual embedding truncation counts zero; fixed Qwen output rejected on 96 dev and 192 test method/question outputs. Curated manifests and review sheets are in reports. No human support/completeness claim.
 
 Task10 audit so far: full Python fixture suite includes access, staged budgets, safe logging, bounded model admission, source/chunk rebuild validation and metadata deletion. Actual-model matrix passed 96 serial HTTP-ASGI requests (1 test, 43.93s); a separate retry observed model_busy and did not steal the lease. Model preparation now reuses committed SHAs/file hashes without rewriting provenance. Browser Unicode code-point highlighting regression corrected.
+
+Task10: clean-clone verification passed at a7dafa12a7915c38f8b149c12ade081a431b1c58 with 63 Python fixture tests, 8 web tests, 5 real browser tests, strict checks/build/contracts and frozen fixture evaluation. Runtime Node24.22.0, Python3.12.14, uv0.12.5. No public Git operation or deployment occurred. Post-hardening actual evidence refresh and the native workflow's one fresh whole-branch review remain before final sign-off.
