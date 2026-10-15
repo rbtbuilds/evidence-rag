@@ -30,3 +30,15 @@ def test_oversized_query_and_corrupt_vectors_are_rejected() -> None:
 
     with pytest.raises(ValueError):
         QuestionRequest(question="x" * 501)
+
+
+def test_empty_reranking_does_not_call_a_model() -> None:
+    from evidence_rag.retrieval.rerank import rerank
+
+    class NoModel:
+        revision = "test-no-call"
+
+        def rerank(self, question: str, passages: list[str]) -> list[float]:
+            raise AssertionError("No candidates must abstain without inference")
+
+    assert rerank("empty", [], NoModel()) == []

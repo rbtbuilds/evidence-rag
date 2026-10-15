@@ -39,7 +39,8 @@ export function SessionForm({
           Launch codes stay in this session. They are never saved in browser
           storage.
         </p>
-        <button disabled={busy}>{busy ? "Signing in..." : "Sign in"}</button>
+        <button disabled={busy}>Sign in</button>
+        <p role="status">{busy ? "Updating the demo session..." : ""}</p>
       </form>
     </section>
   );

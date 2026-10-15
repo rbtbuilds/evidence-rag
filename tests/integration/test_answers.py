@@ -13,6 +13,7 @@ def test_supported_answer_and_exact_current_source(demo: DemoHarness) -> None:
     body = response.json()
     assert "35 units" in body["answer"] and not body["abstained"]
     assert body["execution_profile"] == "fixture"
+    assert {"lexical", "dense", "fusion", "rerank", "generation"} <= set(body["timings_ms"])
     for citation in body["citations"]:
         opened = demo.client.get("/api/citations/" + citation["chunk_id"], headers=demo.reader())
         assert opened.status_code == 200

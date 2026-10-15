@@ -122,3 +122,45 @@ def test_failed_builder_preserves_old_version(demo: DemoHarness) -> None:
     )
     assert wait_job(demo, response.json()["job_id"]) == "failed"
     assert "35" in demo.client.get("/api/documents/" + doc, headers=demo.reader()).text
+
+
+def test_staged_version_budget_is_rejected_before_work(demo: DemoHarness) -> None:
+    import asyncio
+    from uuid import uuid4
+
+    import pytest
+
+    from evidence_rag.contracts import ImportInput
+    from evidence_rag.documents.jobs import JobService
+    from evidence_rag.errors import DomainError
+    from tests.integration.test_versions import draft, metadata
+
+    doc = str(uuid4())
+    text = "# Budget\nFictional body."
+    demo.repo.publish(doc, 0, draft(text), metadata(text))
+    with demo.repo.transaction() as db:
+        for i in range(198):
+            db.execute(
+                "INSERT INTO versions VALUES(?,?,?,'2026-10-15','superseded',NULL,'hash')",
+                (str(uuid4()), doc, f"old-{i}"),
+            )
+    jobs = JobService(demo.repo, asyncio.Lock())
+    request = ImportInput(title="New", label="v1", effective_date="2026-10-15", markdown=text)
+    jobs.enqueue("import", request)
+    with pytest.raises(DomainError) as error:
+        jobs.enqueue("import", request)
+    assert error.value.code == "limit_exceeded"
+
+
+def test_import_byte_cap_is_413_before_queueing(demo: DemoHarness) -> None:
+    body = {
+        "title": "Too large",
+        "min_role": "reader",
+        "label": "v1",
+        "effective_date": "2026-10-15",
+        "markdown": "# Flow\n" + "a" * (256 * 1024),
+    }
+    response = demo.client.post("/api/admin/documents", json=body, headers=demo.maintainer())
+    assert response.status_code == 413 and response.json()["error"]["code"] == "limit_exceeded"
+    with demo.repo.connection() as db:
+        assert db.execute("SELECT count(*) FROM jobs").fetchone()[0] == 0

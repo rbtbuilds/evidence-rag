@@ -7,6 +7,8 @@ from evidence_rag.retrieval.types import Candidate
 
 
 def rerank(question: str, items: list[Candidate], model: Reranker) -> list[Candidate]:
+    if not items:
+        return []
     scores = model.rerank(question, [item.text for item in items[:20]])
     if len(scores) != len(items[:20]) or any(not math.isfinite(s) for s in scores):
         raise DomainError(503, "model_unavailable")

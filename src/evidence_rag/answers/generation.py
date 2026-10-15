@@ -68,7 +68,7 @@ class Generated:
 class StructuredGeneration(StrictModel):
     answer: str = Field(max_length=2000)
     cited_chunk_ids: list[str] = Field(max_length=5)
-    insufficient_evidence: bool
+    insufficient_evidence: bool = Field(strict=True)
 
 
 def extractive(question: str, citations: list[Citation]) -> Generated:

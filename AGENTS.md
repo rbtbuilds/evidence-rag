@@ -4,7 +4,7 @@ Read `/Users/matthewgoralczyk/BentoLabs/portfolio/AGENTS.md` first; its ownershi
 
 ## Entry and authorisation
 
-This directory currently contains plans only. Before any write, explicitly set the shell workdir to this directory, prove it with `pwd`, and read CHAT-HANDOFF.md, README.md, docs/SPEC.md, EVALUATION.md, docs/superpowers/plans/2026-10-15-v1.md and docs/STATE.md. Inspect files, Git root/status and listeners before acting. A fork may still display the resume workspace; do not use its Git panel for these files.
+V1 implementation and verification are recorded in docs/STATE.md; inspect actual state before continuing. Before any write, explicitly set the shell workdir to this directory, prove it with `pwd`, and read CHAT-HANDOFF.md, README.md, docs/SPEC.md, EVALUATION.md, docs/superpowers/plans/2026-10-15-v1.md and docs/STATE.md. Inspect files, Git root/status and listeners before acting. A fork may still display the resume workspace; do not use its Git panel for these files.
 
 Matthew's pasted execution prompt authorises reversible local implementation, checks and scoped local commits. Use `superpowers:executing-plans` natively in the current chat. Do not repeat settled discovery or automatically create subagents, other chats or monitors. Do not implement during the planning pass. Public repositories, pushes, deployments, uploads, external sends and paid use require specific authorisation.
 

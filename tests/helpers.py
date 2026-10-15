@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from fastapi.testclient import TestClient
 
@@ -12,7 +12,7 @@ ORIGIN = "http://127.0.0.1:5115"
 class DemoHarness:
     client: TestClient
     repo: Repository
-    credentials: dict[Role, dict[str, str]]
+    credentials: dict[Role, dict[str, str]] = field(repr=False)
 
     def reader(self) -> dict[str, str]:
         return self.credentials["reader"]

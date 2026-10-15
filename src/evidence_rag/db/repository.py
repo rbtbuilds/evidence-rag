@@ -19,6 +19,7 @@ from evidence_rag.contracts import (
     Role,
     VersionInput,
 )
+from evidence_rag.documents.chunking import chunk_document
 from evidence_rag.errors import DomainError
 from evidence_rag.retrieval.types import IndexDraft
 
@@ -127,6 +128,8 @@ class Repository:
             raise ValueError("Incomplete draft")
         version = draft.chunks[0].version_id
         UUID(version)
+        if draft.chunks != chunk_document(version, metadata.markdown):
+            raise ValueError("Draft chunks do not match the exact source/chunker")
         vectors: list[bytes] = []
         for chunk, vector in zip(draft.chunks, draft.vectors, strict=True):
             a = np.asarray(vector, dtype=np.float32)
@@ -227,10 +230,11 @@ class Repository:
                 (datetime.now(UTC).isoformat(), document_id),
             )
             db.execute(
-                "UPDATE versions SET status='deleted',text=NULL WHERE document_id=?", (document_id,)
+                "UPDATE versions SET status='deleted',text=NULL,label='deleted:'||id WHERE document_id=?",
+                (document_id,),
             )
             db.execute(
-                "UPDATE documents SET active_version_id=NULL,deleted_at=?,revision=revision+1 WHERE id=?",
+                "UPDATE documents SET title='Deleted document',min_role='maintainer',active_version_id=NULL,deleted_at=?,revision=revision+1 WHERE id=?",
                 (datetime.now(UTC).isoformat(), document_id),
             )
             self.invalidate(db, str(row["min_role"]), None)
@@ -289,7 +293,7 @@ class Repository:
 
     def replace_index(self, db: sqlite3.Connection, document_id: str, draft: IndexDraft) -> None:
         row = db.execute(
-            "SELECT active_version_id,min_role FROM documents WHERE id=? AND deleted_at IS NULL",
+            "SELECT d.active_version_id,d.min_role,v.text FROM documents d JOIN versions v ON d.active_version_id=v.id AND v.document_id=d.id WHERE d.id=? AND d.deleted_at IS NULL",
             (document_id,),
         ).fetchone()
         if (
@@ -298,6 +302,10 @@ class Repository:
             or any(c.version_id != row["active_version_id"] for c in draft.chunks)
         ):
             raise DomainError(409, "stale_job")
+        if len(draft.chunks) != len(draft.vectors) or draft.chunks != chunk_document(
+            str(row["active_version_id"]), str(row["text"])
+        ):
+            raise ValueError("Rebuild draft differs from retained source")
         self._remove_indexes(db, document_id)
         for chunk, vector in zip(draft.chunks, draft.vectors, strict=True):
             a = np.asarray(vector, dtype=np.float32)

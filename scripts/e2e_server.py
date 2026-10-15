@@ -37,6 +37,7 @@ def main() -> None:
         env = {
             **os.environ,
             "EVIDENCE_HOME": str(root),
+            "npm_config_cache": str(ROOT / ".runtime/npm-cache"),
             "EVIDENCE_PROFILE": "fixture",
             "EVIDENCE_TEST_READER_CODE": codes["reader"],
             "EVIDENCE_TEST_MAINTAINER_CODE": codes["maintainer"],

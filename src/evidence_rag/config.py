@@ -21,4 +21,8 @@ class Settings:
         profile = os.getenv("EVIDENCE_PROFILE", "fixture")
         if profile not in ("fixture", "local"):
             raise ValueError("EVIDENCE_PROFILE must be fixture or local")
-        return cls(Path(os.getenv("EVIDENCE_HOME", ".runtime")).resolve(), profile)
+        runtime = Path(__file__).resolve().parents[2] / ".runtime"
+        root = Path(os.getenv("EVIDENCE_HOME", str(runtime))).expanduser().resolve()
+        if not root.is_relative_to(runtime.resolve()):
+            raise ValueError("EVIDENCE_HOME must stay inside this project .runtime directory")
+        return cls(root, profile)

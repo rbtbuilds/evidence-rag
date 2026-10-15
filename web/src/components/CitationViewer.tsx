@@ -21,6 +21,7 @@ export function CitationViewer({ id, back }: { id: string; back: () => void }) {
   useEffect(() => {
     if (source) heading.current?.focus();
   }, [source]);
+  const sectionChars = Array.from(source?.section_text ?? "");
   return (
     <main className="source-page panel">
       <button className="secondary" onClick={back}>
@@ -40,14 +41,13 @@ export function CitationViewer({ id, back }: { id: string; back: () => void }) {
             Current source passage. The marked text is the cited quotation.
           </p>
           <pre className="source-text">
-            {source.section_text.slice(0, source.highlight_start)}
+            {sectionChars.slice(0, source.highlight_start).join("")}
             <mark aria-label="Cited quotation">
-              {source.section_text.slice(
-                source.highlight_start,
-                source.highlight_end,
-              )}
+              {sectionChars
+                .slice(source.highlight_start, source.highlight_end)
+                .join("")}
             </mark>
-            {source.section_text.slice(source.highlight_end)}
+            {sectionChars.slice(source.highlight_end).join("")}
           </pre>
           <p className="meta id">Version {source.version_id}</p>
         </>

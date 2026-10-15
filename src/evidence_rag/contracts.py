@@ -4,6 +4,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from evidence_rag.errors import DomainError
+
 Role = Literal["reader", "maintainer"]
 RetrievalMode = Literal["bm25", "dense", "hybrid", "hybrid_rerank"]
 GenerationMode = Literal["extractive", "local"]
@@ -89,10 +91,11 @@ class VersionInput(StrictModel):
     @field_validator("markdown")
     @classmethod
     def plain_markdown(cls, value: str) -> str:
+        if len(value.encode("utf-8")) > 256 * 1024:
+            raise DomainError(413, "limit_exceeded")
         if (
             not value.strip()
-            or len(value.encode("utf-8")) > 256 * 1024
-            or "\x00" in value
+            or any((ord(char) < 32 and char not in "\t\n\r") or ord(char) == 127 for char in value)
             or re.search(r"<\s*script\b", value, re.IGNORECASE)
         ):
             raise ValueError("Invalid Markdown or document exceeds 256 KiB")

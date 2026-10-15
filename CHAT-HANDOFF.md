@@ -1,6 +1,6 @@
 # Evidence RAG build-chat handoff
 
-This is an independent project. Plans are complete; no application, dependency installation, Git repository, model run or benchmark existed at handoff. A fork may inherit `/Users/matthewgoralczyk/Desktop/BentoLabs/resume`; the prompt below deliberately anchors every operation to this child. Paste the entire block into the fork to authorise execution.
+This is an independent project. V1 has now been implemented; read docs/STATE.md and inspect Git before continuing. The original approved build prompt below is preserved as history, not an instruction to redo completed tasks. At its original planning handoff no application, dependency installation, Git repository, model run or benchmark existed. A fork may inherit `/Users/matthewgoralczyk/Desktop/BentoLabs/resume`; the prompt below deliberately anchors every operation to this child. Paste the entire block into the fork to authorise execution.
 
 ```text
 Matthew, implement Evidence RAG v1 in /Users/matthewgoralczyk/BentoLabs/portfolio/evidence-rag using the completed specification and plan.

@@ -22,7 +22,7 @@ MAX_MESSAGE = 16 * 1024 * 1024
 
 class EmbedRequest(StrictModel):
     kind: Literal["embed"] = "embed"
-    texts: list[str] = Field(max_length=2000)
+    texts: list[str] = Field(max_length=4)
     is_query: bool = False
 
 
@@ -90,21 +90,42 @@ class ModelSession:
         return "bge:" + lock.models["embedding"].revision if lock else "test-worker"
 
     def embed(self, texts: list[str], *, is_query: bool = False) -> tuple[tuple[float, ...], ...]:
-        result = self.run(EmbedRequest(texts=texts, is_query=is_query))
-        if not isinstance(result, EmbeddingResult) or result.revision != self.revision:
-            raise DomainError(503, "model_unavailable")
-        self.embedding_truncations += result.truncations
-        return tuple(tuple(v) for v in result.vectors)
+        if len(texts) > 2000:
+            raise DomainError(413, "limit_exceeded")
+        vectors: list[tuple[float, ...]] = []
+        for offset in range(0, len(texts), 4):
+            batch = texts[offset : offset + 4]
+            result = self.run(EmbedRequest(texts=batch, is_query=is_query))
+            if (
+                not isinstance(result, EmbeddingResult)
+                or result.revision != self.revision
+                or len(result.vectors) != len(batch)
+                or any(len(v) != 384 for v in result.vectors)
+            ):
+                raise DomainError(503, "model_unavailable")
+            self.embedding_truncations += result.truncations
+            vectors.extend(tuple(v) for v in result.vectors)
+        return tuple(vectors)
 
     def rerank(self, question: str, passages: list[str]) -> list[float]:
         result = self.run(RerankRequest(question=question, passages=passages))
         if not isinstance(result, RerankResult):
+            raise DomainError(503, "model_unavailable")
+        if (
+            self.runner.lock_info
+            and result.revision != "minilm:" + self.runner.lock_info.models["reranker"].revision
+        ):
             raise DomainError(503, "model_unavailable")
         return result.scores
 
     def generate(self, question: str, citations: list[Citation]) -> GenerationResult:
         result = self.run(GenerateRequest(question=question, citations=citations))
         if not isinstance(result, GenerationResult):
+            raise DomainError(503, "model_unavailable")
+        if (
+            self.runner.lock_info
+            and result.revision != "qwen:" + self.runner.lock_info.models["generator"].revision
+        ):
             raise DomainError(503, "model_unavailable")
         self.dropped_passages += result.dropped_passages
         return result

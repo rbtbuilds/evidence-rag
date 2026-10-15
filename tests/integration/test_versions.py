@@ -111,3 +111,21 @@ def test_corpus_document_budget_rejects_without_partial_rows(demo: DemoHarness) 
     assert error.value.status == 413
     with demo.repo.connection() as db:
         assert db.execute("SELECT count(*) FROM versions").fetchone()[0] == 0
+
+
+def test_rebuild_cannot_publish_chunks_that_disagree_with_source(demo: DemoHarness) -> None:
+    from dataclasses import replace
+
+    doc = str(uuid4())
+    text = "# Flow\nThe display limit is 35 units."
+    original = draft(text)
+    demo.repo.publish(doc, 0, original, metadata(text))
+    bad = IndexDraft(
+        (replace(original.chunks[0], text="invented replacement"),),
+        original.vectors,
+        original.revision,
+    )
+    with pytest.raises(ValueError), demo.repo.transaction() as db:
+        demo.repo.replace_index(db, doc, bad)
+    with demo.repo.connection() as db:
+        assert db.execute("SELECT text FROM chunks").fetchone()[0] == text

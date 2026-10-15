@@ -22,6 +22,7 @@ def test_unknown_citations_and_malformed_schema_abstain() -> None:
         '{"answer":"35","cited_chunk_ids":["unknown"],"insufficient_evidence":false}',
         '{"answer":"35","citation_ids":["known"]}',
         "not json",
+        '{"answer":"35","cited_chunk_ids":["known"],"insufficient_evidence":"false"}',
     ]:
         result = validate_generation(text, [source()])
         assert result.abstained and result.reason == "invalid_generation" and not result.citations

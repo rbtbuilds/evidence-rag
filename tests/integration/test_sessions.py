@@ -108,3 +108,58 @@ def test_expired_session_and_admin_authorization(demo: DemoHarness) -> None:
     with demo.repo.transaction() as db:
         db.execute("UPDATE sessions SET expires_at=0")
     assert demo.client.get("/api/session", headers=demo.maintainer()).status_code == 401
+
+
+def test_exact_origin_preflight_works_without_a_session(client: TestClient) -> None:
+    response = client.options(
+        "/api/questions",
+        headers={
+            "Origin": ORIGIN,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "X-CSRF-Token,Content-Type",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == ORIGIN
+    assert (
+        client.options(
+            "/api/questions",
+            headers={
+                "Origin": "https://unrelated.invalid",
+                "Access-Control-Request-Method": "POST",
+            },
+        ).status_code
+        == 403
+    )
+
+
+def test_http_logs_use_templates_and_never_request_content(
+    client: TestClient, caplog: pytest.LogCaptureFixture
+) -> None:
+    import logging
+
+    with caplog.at_level(logging.INFO, logger="uvicorn.error"):
+        response = client.get("/health?question=PRIVATE-QUERY-MARKER")
+    records = [record.getMessage() for record in caplog.records if record.name == "uvicorn.error"]
+    assert any("route=/health" in message for message in records)
+    assert all("PRIVATE-QUERY-MARKER" not in message for message in records)
+    assert response.headers.get("x-request-id")
+
+
+def test_parallel_failed_logins_share_the_same_limit(client: TestClient) -> None:
+    from concurrent.futures import ThreadPoolExecutor
+
+    def attempt(_number: int) -> int:
+        return client.post(
+            "/api/session", json={"code": "bad"}, headers={"Origin": ORIGIN}
+        ).status_code
+
+    with ThreadPoolExecutor(max_workers=10) as pool:
+        statuses = list(pool.map(attempt, range(10)))
+    assert statuses.count(401) == 5 and statuses.count(429) == 5
+
+
+def test_unknown_application_route_uses_the_error_contract(demo: DemoHarness) -> None:
+    response = demo.client.get("/api/does-not-exist", headers=demo.reader())
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "not_found"

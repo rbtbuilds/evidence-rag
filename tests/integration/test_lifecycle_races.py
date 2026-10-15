@@ -32,7 +32,12 @@ def test_delete_wins_against_staged_replacement(demo: DemoHarness) -> None:
     jobs.builder = blocked
     doc = str(uuid4())
     text = "# Flow\nMarker ERASE-ME."
-    demo.repo.publish(doc, 0, draft(text), metadata(text))
+    demo.repo.publish(
+        doc,
+        0,
+        draft(text),
+        metadata(text).model_copy(update={"title": "ERASE-ME", "label": "ERASE-ME"}),
+    )
     try:
         body = {
             **metadata("# Flow\nMarker ERASE-ME new.", "v3").model_dump(),
@@ -54,6 +59,8 @@ def test_delete_wins_against_staged_replacement(demo: DemoHarness) -> None:
         with demo.repo.connection() as db:
             for table, column in [
                 ("versions", "text"),
+                ("versions", "label"),
+                ("documents", "title"),
                 ("chunks", "text"),
                 ("fts_reader", "text"),
                 ("fts_maintainer", "text"),

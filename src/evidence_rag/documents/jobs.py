@@ -66,7 +66,7 @@ class JobService:
         revision = request.expected_revision if isinstance(request, ReplaceInput) else 0
         with self.repo.transaction() as db:
             pending = db.execute(
-                "SELECT payload_json FROM jobs WHERE status IN ('queued','running')"
+                "SELECT kind,payload_json FROM jobs WHERE status IN ('queued','running')"
             ).fetchall()
             if len(pending) >= 8:
                 raise DomainError(429, "queue_full")
@@ -80,10 +80,27 @@ class JobService:
                     raise DomainError(409, "revision_conflict")
             if isinstance(request, VersionInput):
                 staged = 0
+                staged_bytes = 0
+                staged_versions = 0
                 for row in pending:
                     if row["payload_json"] and row["payload_json"] != "{}":
                         item = VersionInput.model_validate_json(row["payload_json"])
                         staged += len(chunk_document("admission", item.markdown))
+                        staged_bytes += len(item.markdown.encode())
+                        staged_versions += 1
+                retained_bytes = db.execute(
+                    "SELECT coalesce(sum(length(cast(text AS BLOB))),0) FROM versions"
+                ).fetchone()[0]
+                versions = db.execute("SELECT count(*) FROM versions").fetchone()[0]
+                documents = db.execute("SELECT count(*) FROM documents").fetchone()[0]
+                imports = sum(row["kind"] == "import" for row in pending)
+                if (
+                    retained_bytes + staged_bytes + len(request.markdown.encode())
+                    > 20 * 1024 * 1024
+                    or versions + staged_versions + 1 > 200
+                    or (kind == "import" and documents + imports + 1 > 50)
+                ):
+                    raise DomainError(413, "limit_exceeded")
                 active = db.execute("SELECT count(*) FROM chunks").fetchone()[0]
                 if active + staged + len(chunk_document("admission", request.markdown)) > 2000:
                     raise DomainError(413, "limit_exceeded")

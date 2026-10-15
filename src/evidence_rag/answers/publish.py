@@ -23,7 +23,9 @@ class PublicationGate:
                 Cache(self.repo).put(current, pending.key, pending.answer)
                 response = JSONResponse(pending.answer.model_dump())
             except DomainError as error:
-                response = JSONResponse(error.payload(), status_code=error.status)
+                response = JSONResponse(
+                    error.payload(pending.answer.request_id), status_code=error.status
+                )
             await response({"type": "http"}, _unused_receive, send)
 
 

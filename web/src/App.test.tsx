@@ -61,3 +61,71 @@ describe("evidence workbench", () => {
     expect(open).toHaveBeenCalledWith("c");
   });
 });
+
+import { CitationViewer } from "./components/CitationViewer";
+import { api } from "./api";
+it("highlights Python Unicode code point offsets after an emoji", async () => {
+  const quote = "café 35 units.";
+  const mock = vi.spyOn(api, "citation").mockResolvedValue({
+    chunk_id: "c",
+    document_id: "d",
+    version_id: "v",
+    title: "Flow",
+    version_label: "v2",
+    effective_date: "2026-10-15",
+    section_id: "flow",
+    start_char: 9,
+    end_char: 23,
+    quote,
+    section_text: "# Flow\n🟣 café 35 units.",
+    section_start_char: 0,
+    highlight_start: 9,
+    highlight_end: 23,
+  });
+  try {
+    render(<CitationViewer id="c" back={() => {}} />);
+    expect((await screen.findByLabelText("Cited quotation")).textContent).toBe(
+      quote,
+    );
+  } finally {
+    mock.mockRestore();
+  }
+});
+
+import App from "./App";
+import { waitFor } from "@testing-library/react";
+it("does not allow another sign in until sign out finishes", async () => {
+  vi.spyOn(api, "health").mockResolvedValue({
+    status: "ok",
+    execution_profile: "fixture",
+  });
+  vi.spyOn(api, "session").mockResolvedValue({
+    user_id: "maintainer",
+    role: "maintainer",
+    csrf_token: "token",
+  });
+  vi.spyOn(api, "documents").mockResolvedValue([]);
+  let finish: () => void = () => {
+    throw new Error("Sign out was not started");
+  };
+  vi.spyOn(api, "logout").mockImplementation(
+    () =>
+      new Promise<void>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  try {
+    render(<App />);
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Sign out" }),
+    );
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeDisabled();
+    finish();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Sign in" })).toBeEnabled(),
+    );
+  } finally {
+    finish();
+    vi.restoreAllMocks();
+  }
+});

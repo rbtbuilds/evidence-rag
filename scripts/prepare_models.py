@@ -3,6 +3,7 @@
 import hashlib
 import importlib.metadata
 import json
+import os
 import urllib.request
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -12,7 +13,6 @@ from typing import cast
 
 from pydantic import BaseModel, Field
 
-hf_hub_download = cast(Callable[..., str], import_module("huggingface_hub").hf_hub_download)
 from evidence_rag.config import Settings
 from evidence_rag.models.lease import ModelLease
 from evidence_rag.models.local import PROJECT, ModelLock, Snapshot
@@ -39,17 +39,42 @@ SPECS = {
 }
 
 
+def configure_downloads(root: Path) -> Callable[..., str]:
+    os.environ["HF_HOME"] = str(root / "hf-cache")
+    os.environ["HF_HUB_CACHE"] = str(root / "hf-cache/hub")
+    os.environ["HF_XET_CACHE"] = str(root / "hf-cache/xet")
+    os.environ["HF_HUB_DISABLE_IMPLICIT_TOKEN"] = "1"
+    return cast(Callable[..., str], import_module("huggingface_hub").hf_hub_download)
+
+
 def main() -> None:
     root = Settings.from_env().root
     root.mkdir(parents=True, exist_ok=True)
+    target = PROJECT / "config/models.lock.json"
+    known = ModelLock.model_validate_json(target.read_text()) if target.exists() else None
+    libraries = {
+        name: importlib.metadata.version(name)
+        for name in ("torch", "transformers", "sentence-transformers", "huggingface-hub")
+    }
+    if known and known.libraries != libraries:
+        raise ValueError(
+            "Install the locked ml dependencies; changing runtime provenance requires a new reviewed lock."
+        )
+    hf_hub_download = configure_downloads(root)
     handle = ModelLease().acquire("prepare public pinned snapshots")
     models: dict[str, Snapshot] = {}
     try:
         for name, (model_id, license_id) in SPECS.items():
+            pinned = known.models[name] if known else None
+            if pinned and (pinned.id != model_id or pinned.license != license_id):
+                raise ValueError("Pinned model differs from declared specification")
+            suffix = "/revision/" + pinned.revision if pinned else ""
             with urllib.request.urlopen(
-                "https://huggingface.co/api/models/" + model_id, timeout=30
+                "https://huggingface.co/api/models/" + model_id + suffix, timeout=30
             ) as response:
                 info = Info.model_validate_json(response.read())
+            if pinned and info.sha != pinned.revision:
+                raise ValueError("Pinned revision mismatch")
             if info.cardData.license != license_id:
                 raise ValueError("Unexpected model licence")
             files = [
@@ -63,21 +88,39 @@ def main() -> None:
                 if f.endswith((".json", ".txt", ".md", ".safetensors", ".model"))
                 or f.upper() in {"LICENSE", "NOTICE"}
             ]
+            if pinned:
+                if not set(pinned.files).issubset(set(files)):
+                    raise ValueError("Pinned file is missing from snapshot metadata")
+                files = list(pinned.files)
             if not any(f.endswith(".safetensors") for f in files):
                 raise ValueError("No safetensors snapshot")
-            directory = root / "models" / name / info.sha
+            directory = (
+                root / pinned.path if pinned else root / "models" / name / info.sha
+            ).resolve()
+            if not directory.is_relative_to(root.resolve()):
+                raise ValueError("Snapshot path escapes runtime")
             hashes: dict[str, str] = {}
             for filename in files:
+                if Path(filename).is_absolute() or not (
+                    directory / filename
+                ).resolve().is_relative_to(directory):
+                    raise ValueError("Snapshot filename escapes model directory")
                 path = Path(
                     hf_hub_download(
                         repo_id=model_id,
                         filename=filename,
                         revision=info.sha,
                         local_dir=directory,
-                        cache_dir=root / "hf-cache",
+                        cache_dir=root / "hf-cache/hub",
+                        token=False,
                     )
                 )
-                hashes[filename] = hashlib.sha256(path.read_bytes()).hexdigest()
+                if not path.resolve().is_relative_to(directory):
+                    raise ValueError("Download path differs from snapshot destination")
+                with path.open("rb") as handle_file:
+                    hashes[filename] = hashlib.file_digest(handle_file, "sha256").hexdigest()
+                if pinned and hashes[filename] != pinned.files[filename]:
+                    raise ValueError("Downloaded file does not match pinned hash")
                 print(f"{name}: {filename}", flush=True)
             models[name] = Snapshot(
                 id=model_id,
@@ -89,13 +132,15 @@ def main() -> None:
         lock = ModelLock(
             prepared_at=datetime.now(UTC).isoformat(),
             models=models,
-            libraries={
-                name: importlib.metadata.version(name)
-                for name in ("torch", "transformers", "sentence-transformers", "huggingface-hub")
-            },
+            libraries=libraries,
         )
-        target = PROJECT / "config/models.lock.json"
-        target.write_text(lock.model_dump_json(indent=2) + "\n")
+        if known is None:
+            temporary = target.with_suffix(".tmp")
+            with temporary.open("x") as handle_file:
+                handle_file.write(lock.model_dump_json(indent=2) + "\n")
+            temporary.replace(target)
+        elif models != known.models:
+            raise ValueError("Prepared snapshots differ from the committed provenance")
         print(json.dumps({"prepared": list(models), "lock": str(target.relative_to(PROJECT))}))
     finally:
         handle.close()

@@ -25,13 +25,11 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | 7: Answers/citations/cache | Complete | 48 disclosure cells plus cache repeats, exact citations, malformed generation abstention, expiry and bidirectional publication/deletion barriers pass. |
 | 8: Web interface | Complete | OpenAPI types plus Zod; 6 component/API tests; 2 real-browser flows, both themes at 360/900/1440, focus and contrast regression pass. |
 | 9: Evaluation | Complete | Six frozen fixture/actual dev/test runs; all four methods, model hashes, paired metrics, 24-answer review sheets per block. Human review unmeasured. |
-| 10: Full verification | Not started | No application checks or clean-clone evidence |
+| 10: Full verification | In progress | 63 socket-restricted fixture tests, 8 web tests, 5 real browser scenarios pass; clean clone and fresh whole-branch review next. |
 
-## Limits and next action
+## Current limits and next action
 
-No tests, strict type checks, browser flow, model readiness check or quality benchmark can be reported as passing: no product has been implemented. Python/Node/dependency compatibility, exact model SHAs, observed memory/latency and quality are execution evidence, not planning assumptions. Human citation support/completeness review is pending and cannot be inferred from valid citation IDs.
-
-Next action: Matthew pastes CHAT-HANDOFF.md's prompt into the intended fork. Execute Task 1 after rereading the actual state. Required local branch if Git remains absent: `feat/evidence-rag-v1`. No public repository, push, deployment or paid usage is authorised.
+The application is implemented and current local strict/offline/browser checks pass. Actual-model evidence is separate from fixture evidence; Qwen generation currently abstains on invalid output, and human citation support/completeness is unmeasured. Next: finish clean-checkout verification, refresh post-hardening model reports and perform the single fresh whole-branch review. Publication, push and deployment remain unauthorised.
 
 ## Native execution evidence
 

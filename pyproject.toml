@@ -38,7 +38,7 @@ line-length = 100
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--basetemp=.runtime/pytest"
+addopts = "--basetemp=.runtime/pytest -m 'not real_model'"
 markers = ["real_model: explicit local model execution"]
 
 [dependency-groups]

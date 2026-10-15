@@ -196,6 +196,7 @@ export default function App() {
     setPath(next);
   }
   async function login(code: string) {
+    if (busy) return;
     setBusy(true);
     setError("");
     setCodeInvalid(false);
@@ -210,6 +211,7 @@ export default function App() {
     }
   }
   async function logout() {
+    setBusy(true);
     setSession(null);
     setError("");
     navigate("/");
@@ -217,6 +219,8 @@ export default function App() {
       await api.logout();
     } catch (e: unknown) {
       setError(errorMessage(e));
+    } finally {
+      setBusy(false);
     }
   }
   return (

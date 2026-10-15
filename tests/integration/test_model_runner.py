@@ -66,3 +66,50 @@ def test_rss_cap_and_busy_and_queue_limit(tmp_path: Path) -> None:
         assert error.value.code == "queue_full"
     finally:
         runner.slots.release()
+
+
+def test_queued_request_has_a_bounded_admission_deadline(tmp_path: Path) -> None:
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    runner = ModelRunner(
+        tmp_path,
+        lease=ModelLease(tmp_path / "lease"),
+        command=[sys.executable, "-c", "import time;time.sleep(10)"],
+        timeout=0.1,
+    )
+
+    def queued() -> str:
+        try:
+            with runner.session("queued", timeout=0.05):
+                return "unexpected_success"
+        except DomainError as error:
+            return error.code
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        with runner.session("held"):
+            future = pool.submit(queued)
+            time.sleep(0.15)
+            completed_before_release = future.done()
+        result = future.result(timeout=3)
+    assert completed_before_release and result == "model_timeout"
+
+
+def test_index_embedding_respects_backend_batch_limit_and_order(tmp_path: Path) -> None:
+    program = """import json,sys
+for line in sys.stdin:
+ request=json.loads(line)
+ if len(request['texts'])>4: raise RuntimeError('backend batch limit exceeded')
+ vectors=[]
+ for text in request['texts']:
+  vector=[0.0]*384;vector[int(text)]=1.0;vectors.append(vector)
+ print(json.dumps({'kind':'embedding','vectors':vectors,'revision':'test-worker','truncations':0}),flush=True)
+"""
+    runner = ModelRunner(
+        tmp_path,
+        lease=ModelLease(tmp_path / "lease"),
+        command=[sys.executable, "-u", "-c", program],
+    )
+    with runner.session("batch-contract") as session:
+        vectors = session.embed([str(i) for i in range(9)])
+    assert len(vectors) == 9 and all(vector[i] == 1 for i, vector in enumerate(vectors))
