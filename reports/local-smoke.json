@@ -1,0 +1,1 @@
+{"execution_profile": "local", "dimensions": 384, "rerank_scores": [9.06173324584961], "generation_output": "{\"answer\": \"35 units.\", \"citation_ids\": [\"smoke\"]}", "generation_revision": "qwen:7ae557604adf67be50417f59c2c2f167def9a775", "embedding_truncations": 0, "elapsed_seconds": 33.6408722079359}

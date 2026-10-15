@@ -1,31 +1,58 @@
-# Evidence RAG evaluation design
+# Evidence RAG evaluation
 
-Status: planned evaluation. No results have been measured.
+Measured v1 results are in [reports/evaluation-v1.json](reports/evaluation-v1.json), separately labelled fixture/extractive, actual local/extractive and actual local/Qwen generation. The benchmark is an owned fictional scenario; it makes no customer-impact claim.
 
-## Baseline and split
+## Frozen inputs and comparisons
 
-Compare lexical, dense and hybrid-reranked retrieval with generation fixed. Use a fictional owned corpus and independently authored questions: supported, unsupported, conflicting versions and restricted content. Hold out document sections and question templates. Evaluate retrieval before model generation so an answer error can be attributed to the correct stage.
+The manifest contains 12 logical manuals with active v2 and superseded v1, eight sections each, plus a deleted tombstone. Eight manuals are reader-visible and four are restricted. All current documents remain indexed. Original content and provenance are MIT; third-party models retain their own licences.
 
-## Measurements
+Questions are fixed in `fixtures/questions`: 24 development (12 supported, 4 unsupported, 4 version-conflict, 4 restricted) and 48 test (24/8/8/8). Source section families and authored template IDs are disjoint between splits; conflicting and restricted questions refer to split-specific section families. Repeated scenario vocabulary and shared document context make this an easy synthetic benchmark, not a generalisation study. Hashes are frozen in `split.json`; changes require a new evaluation revision.
 
-Report retrieval recall at K, reciprocal rank, citation support precision, answer completeness and correct abstention. Audit citation support manually on a labelled subset rather than relying only on an LLM judge. Track latency by stage, model cost where used and document update visibility. Report access-boundary tests separately from average answer quality.
+Compare BM25, BGE dense cosine, hybrid RRF, and hybrid plus MiniLM reranking on the same snapshot with K=5, at most 20 candidates and the same fixed generation policy. Fixture dense/reranking use deterministic doubles. Actual generation is Qwen2.5-0.5B-Instruct: CPU float32, four threads, seed 17, no sampling, 2,048 input and 256 output tokens. Whole low-ranked passages are dropped if needed. Embedding truncation must be zero for a curated actual run. No parameter thresholds were tuned; held-out results did not select a method.
 
-## End to end scenario
+## Arithmetic and denominators
 
-Import manuals, ask a supported question and open its cited passage. Switch to a user without appendix access and attempt the same restricted query, including after a privileged user's cache has warmed. Replace the manual, then delete it; verify retrieval, citations and caches respect the active version and removal. Inject instructions into a source passage and verify that they cannot grant access or override tool permissions.
+Deduplicate section IDs before scoring. Recall@5 is relevant sections found divided by labelled relevant sections; empty relevance sets are null and excluded. MRR@5 is reciprocal first relevant section rank, otherwise zero; retrieval aggregates use the same nonempty-relevance denominator. Test retrieval denominator: 36 of 48 questions per method; 12 are excluded. Development denominator: 18 of 24.
 
-## Release evidence
+Report all role/stratum counts, per-query paired differences and 2,000 bootstrap resamples with seed 17. Report abstention decisions separately: expected-abstention test denominator is 12 per method, whereas overall abstention-decision accuracy includes all 48. A system abstaining on everything can score 100% on expected abstentions and still fail its useful task.
 
-Save corpus provenance, version manifest, permission fixtures, question set, model and index revisions, baseline comparison and a deletion/update runbook. Zero cross-user disclosure in the stated regression matrix is a release gate; do not generalise it into a claim of formal security proof.
+Citation-ID/version/offset validity is mechanical. Citation support precision and answer completeness require the separate 24-answer human review sheet per generation block. Reviewer/date and disagreements must be recorded. They remain unmeasured in v1. An emitted valid citation does not establish entailment; zero emitted citations is not a perfect citation-resolution score.
 
-## Concrete v1 protocol
+## Actual test observations
 
-The [specification](docs/SPEC.md) fixes four pipelines: BM25, dense cosine, hybrid reciprocal rank fusion, and hybrid plus MiniLM reranking. Use the same current corpus, authorised candidates, chunks, K=5 and fixed generation configuration in each comparison. Extractive generation and actual Qwen generation are separate report blocks; deterministic fixture embeddings/reranking validate plumbing only.
+| Actual retrieval | Recall@5 (36) | MRR@5 (36) | Warm quotation p50/p95 ms |
+| --- | --- | --- | --- |
+| BM25 | 1.000 | 0.9861 | 2.28 / 3.01 |
+| Dense BGE | 1.000 | 1.0000 | 8.36 / 9.65 |
+| Hybrid RRF | 1.000 | 0.9861 | 9.24 / 11.96 |
+| Hybrid + MiniLM | 1.000 | 0.9861 | 89.81 / 99.90 |
 
-Use 72 owned questions: 24 development and 48 frozen test, partitioned by section family and question template. Test strata contain 24 supported, 8 unsupported, 8 conflicting-version and 8 restricted questions. Relevant section IDs and atomic expected facts are labelled before evaluation. Record corpus/questions/model/prompt hashes and actual sample counts. Deduplicate repeated chunks of a section when scoring recall@5 and reciprocal rank. Report per-role/stratum metrics and paired differences with seeded bootstrap confidence intervals.
+These measurements exclude separately recorded index/load warmup, use one leased worker, and were collected during light local development on the M5 Pro. They are not end-user cold-start latency. Peak sampled worker RSS was about 0.59 GiB for the actual quotation test block and 2.65 GiB for Qwen generation; all recorded embedding truncation and dropped-passage counts were zero.
 
-Review 24 test answers manually, balanced across methods (6 per method: 3 supported, 1 unsupported, 1 version conflict, 1 restricted), with method labels hidden. Citation support and completeness remain unmeasured until this review occurs. Valid citation IDs alone do not establish factual support.
+Qwen output was rejected as `invalid_generation` for all 192 test outputs and all 96 development outputs. No generated claim was accepted. A smoke output used the wrong citation key and omitted the insufficient-evidence flag. The contract was kept strict and quotation mode remains the default. This is a reported model/prompt/configuration failure, not an assertion that the model can never follow JSON instructions.
 
-Access gates are separate from quality averages: both roles, all four retrieval modes, cold and warmed caches, active/replaced/deleted sources, forged identity headers, source instructions, guessed citation/job IDs, and mutations during in-flight generation/rebuild. No forbidden-string disclosure, every emitted citation resolving to an authorised active version, and no stale answer cache after a completed mutation are release requirements. They are regression results over this matrix, not a general security proof.
+Quotation mode found supported facts but also selected unrelated matching sentences. On each actual test method it correctly abstained on 8/12 expected-abstention cases. Citation support/completeness remain unmeasured. The small corpus does not show that adding a reranker improves the baseline.
 
-Run offline fixture evaluation in CI; execute actual models only with pinned local snapshots and the shared machine lease held for the full benchmark. Keep small reviewed reports under `reports/` and raw runs under ignored `.runtime/`. As of planning, every measured metric and reviewer field is absent.
+## Reproduction
+
+From the checkout after frozen dependency setup:
+
+```sh
+uv run evidence-rag evaluate --profile fixture --split dev --generation extractive --output .runtime/fixture-dev-new
+uv run evidence-rag evaluate --profile fixture --split test --generation extractive --output .runtime/fixture-test-new
+uv sync --frozen --extra ml
+uv run --extra ml evidence-rag prepare-models
+uv run --extra ml evidence-rag doctor --models
+uv run --extra ml evidence-rag evaluate --profile local --split dev --generation extractive --output .runtime/local-dev-quotes-new
+uv run --extra ml evidence-rag evaluate --profile local --split dev --generation local --output .runtime/local-dev-generation-new
+uv run --extra ml evidence-rag evaluate --profile local --split test --generation extractive --output .runtime/local-test-quotes-new
+uv run --extra ml evidence-rag evaluate --profile local --split test --generation local --output .runtime/local-test-generation-new
+```
+
+Output directories must be new and inside this checkout. Every run creates its own database, captures fixed corpus/question/model revisions, holds one lease across all four actual methods, and writes `report.json`, `human-review.json` and an ignored method key. Do not tune on test results. Check the shared lease once; if busy, finish light work and try only after its owner has finished.
+
+## Access and lifecycle evidence
+
+Quality averages do not replace boundary tests. Fixture regressions cover both roles, all methods, cold/warm caches, active/replaced/deleted sources, forged identity headers, guessed citations/jobs, source instructions, failed publication, expiry and both orders of response/deletion races. The real browser flow uses actual HTTP/API sessions and verifies source access after identity switching, replacement, deletion and escaped source rendering.
+
+The explicit actual-model matrix test adds serial API requests over both roles, all four methods, both generation modes, two cache states and three source states. It uses actual snapshot-backed indexing/retrieval/generation; Qwen abstention is not evidence of prompt obedience. Race control is tested independently through deterministic barriers. See [VERIFICATION.md](docs/VERIFICATION.md) for exact run outcomes and limits.

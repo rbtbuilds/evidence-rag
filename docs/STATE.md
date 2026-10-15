@@ -24,7 +24,7 @@ Updated: 2026-10-15. State: implementation in progress on feat/evidence-rag-v1.
 | 6: Local models | Complete | Pinned public snapshots downloaded/hash recorded; actual leased smoke 33.64s, 384 dimensions, 0 embedding truncations; JSON generation fails required schema and must abstain. |
 | 7: Answers/citations/cache | Complete | 48 disclosure cells plus cache repeats, exact citations, malformed generation abstention, expiry and bidirectional publication/deletion barriers pass. |
 | 8: Web interface | Complete | OpenAPI types plus Zod; 6 component/API tests; 2 real-browser flows, both themes at 360/900/1440, focus and contrast regression pass. |
-| 9: Evaluation | Not started | No measured metrics or human review |
+| 9: Evaluation | Complete | Six frozen fixture/actual dev/test runs; all four methods, model hashes, paired metrics, 24-answer review sheets per block. Human review unmeasured. |
 | 10: Full verification | Not started | No application checks or clean-clone evidence |
 
 ## Limits and next action
@@ -52,3 +52,7 @@ Task6: exclusive lease/ownership/timeout/RSS/malformed-output/missing-snapshot/q
 Task7: full Python suite 46 tests passes; strict Pyright 0 errors. Responses recheck session/role/epoch/current citations and cache only inside the publication lock. Deletion during generation returns 409 without source text; a blocked ASGI body holds deletion until full publication. Public prompt instructions cannot change access.
 
 Task8: real browser verified login, question, current source and focus return; Escape restores delete opener. Visual review found dark secondary-button contrast 1.15:1; regression failed then passed after specificity fix. Strict TypeScript/build and six Vitest tests pass. Screenshots inspected; raw captures remain ignored.
+
+Task9: metric tests RED -> GREEN. Six runs completed: fixture/extractive dev+test, local/extractive dev+test and local/Qwen dev+test. All actual embedding truncation counts zero; fixed Qwen output rejected on 96 dev and 192 test method/question outputs. Curated manifests and review sheets are in reports. No human support/completeness claim.
+
+Task10 audit so far: full Python fixture suite includes access, staged budgets, safe logging, bounded model admission, source/chunk rebuild validation and metadata deletion. Actual-model matrix passed 96 serial HTTP-ASGI requests (1 test, 43.93s); a separate retry observed model_busy and did not steal the lease. Model preparation now reuses committed SHAs/file hashes without rewriting provenance. Browser Unicode code-point highlighting regression corrected.

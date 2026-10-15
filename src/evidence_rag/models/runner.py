@@ -77,8 +77,12 @@ class ModelSession:
         self.runner, self.process = runner, process
         self.timeout = timeout
         self.deadline = time.monotonic() + timeout
+        self.peak_rss = 0
         self.embedding_truncations = 0
         self.dropped_passages = 0
+
+    def begin_request(self, timeout: float = 90) -> None:
+        self.deadline = time.monotonic() + timeout
 
     @property
     def revision(self) -> str:
@@ -126,7 +130,10 @@ class ModelSession:
                         raise DomainError(504, "model_timeout")
                     if process.poll() is not None:
                         raise DomainError(503, "model_unavailable")
-                    if psutil.Process(process.pid).memory_info().rss > self.runner.rss_limit:
+                    self.peak_rss = max(
+                        self.peak_rss, psutil.Process(process.pid).memory_info().rss
+                    )
+                    if self.peak_rss > self.runner.rss_limit:
                         raise DomainError(503, "model_memory_limit")
                     for key, _ in selector.select(0.025):
                         if key.fileobj is process.stdin:
@@ -184,15 +191,28 @@ class ModelRunner:
             self.process = None
 
     @contextmanager
+    def admission(self, limit: float) -> Generator[None]:
+        if not self.serial.acquire(timeout=limit):
+            raise DomainError(504, "model_timeout")
+        try:
+            yield
+        finally:
+            self.serial.release()
+
+    @contextmanager
     def session(self, purpose: str, *, timeout: float | None = None) -> Generator[ModelSession]:
         if not self.slots.acquire(blocking=False):
             raise DomainError(429, "queue_full")
+        limit = timeout or self.timeout
+        deadline = time.monotonic() + limit
         try:
-            with self.serial:
+            with self.admission(limit):
                 if not self.command:
                     self.lock_info = snapshots(self.root)
                 handle = self.lease.acquire(purpose)
                 try:
+                    if not self.command:
+                        self.lock_info = snapshots(self.root, verify_hashes=True)
                     env = {
                         **os.environ,
                         "HF_HOME": str(self.root / "hf-cache"),
@@ -210,7 +230,7 @@ class ModelRunner:
                         stderr=subprocess.DEVNULL,
                         env=env,
                     )
-                    yield ModelSession(self, self.process, timeout or self.timeout)
+                    yield ModelSession(self, self.process, max(0, deadline - time.monotonic()))
                 finally:
                     self.cancel()
                     handle.close()

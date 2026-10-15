@@ -1,0 +1,15 @@
+# Evidence recorded for v1
+
+[evaluation-v1.json](evaluation-v1.json) contains inspected summaries of six completed runs: development and frozen test for fixture/extractive, local/extractive, and local/Qwen generation. Each includes corpus/question/code hashes, Git state, runtime/machine details, counts, per-role/stratum aggregates, timing samples' summaries, and paired differences with seeded 2,000-resample intervals. The exact bulk reports and per-answer stage timings remain in their recorded `.runtime` locations; their SHA-256 hashes are retained here. Model file hashes and library versions live in [models.lock.json](../config/models.lock.json).
+
+Fixture hash embeddings and overlap reranking are test doubles. Actual runs loaded BGE, MiniLM and Qwen snapshots under the shared machine lease, on CPU with four threads. Timing rows use warmed model weights and a cold answer cache. Index/load warmup is recorded separately. Lightweight development ran concurrently; these are local development measurements, not isolated hardware performance claims. Interactive uncached requests start a new leased worker and can incur model load time.
+
+All four actual methods achieved recall@5 of 1.0 on 36 test questions with labelled relevant evidence. The other 12 questions have empty relevance sets and are excluded from retrieval means. This small repetitive fictional corpus is easy; the result does not establish enterprise retrieval quality. Actual dense MRR was 1.0 versus BM25 0.9861; reranking did not improve the measured test MRR and added latency. No test-based method selection or score-threshold tuning occurred.
+
+Qwen generation failed the strict output/citation contract on all 96 development and 192 test method/question outputs. Every result abstained. Its 100% abstention on the 12 expected-abstention questions per method is misleading in isolation: overall abstention-decision accuracy was only 25%, because supported questions also received no answer. Citation resolution is 0/0 in that block, not a 100% success claim. [local-smoke.json](local-smoke.json) preserves a minimal actual counterexample using `citation_ids` instead of the required contract.
+
+Exact quotation mode remains the default. It can quote irrelevant sentences sharing query terms, including a public hostile instruction, and abstention was only 8/12 (66.7%) on expected-abstention test cases per method. No forbidden fixture marker was disclosed in the measured reader responses. These checks do not prove factual support or general security.
+
+The three `review-*-test-*.json` files are anonymised 24-answer review sheets: six per method, with three supported, one unsupported, one version-conflict and one restricted case each. Their method keys remain in the corresponding ignored run directories. Reviewer/date/support/completeness fields are deliberately unmeasured. No human review has occurred, and no model judge is being substituted for one.
+
+Reproduce each run using [EVALUATION.md](../EVALUATION.md). Do not place model weights, databases, credentials or private source text in this directory.

@@ -1,0 +1,450 @@
+[
+  {
+    "review_id": "review-001",
+    "question": "Identify the training pause marker.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "green bookmark"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-002",
+    "question": "Identify the display caption language.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Standard Aster"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-003",
+    "question": "Name the troubleshooting replay card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Compass"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-004",
+    "question": "Identify the display caption language.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Standard Aster"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-005",
+    "question": "Count the frames of the cleaning story.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "five"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-006",
+    "question": "Name the calibration review appendix marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-007",
+    "question": "Count the illustrated stages in the power lesson.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "three"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-008",
+    "question": "Count the dialogue cards in a training round.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "eight"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-009",
+    "question": "Identify the machinery serial number.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-010",
+    "question": "Resolve the active assembly handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "fold"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-011",
+    "question": "Name the calibration review appendix marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-012",
+    "question": "Name the power pause card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Lantern"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-013",
+    "question": "Resolve the active display handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "prism"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-014",
+    "question": "Name the circulation reset card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "River"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-015",
+    "question": "Give the factory postal address.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-016",
+    "question": "Give the factory postal address.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-017",
+    "question": "Count the frames of the cleaning story.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "five"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-018",
+    "question": "Give the calibration review reference marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-019",
+    "question": "Identify the machinery serial number.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-020",
+    "question": "Count the illustrated stages in the power lesson.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "three"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-021",
+    "question": "Give the calibration review reference marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-022",
+    "question": "Resolve the active troubleshooting handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "trace"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-023",
+    "question": "Resolve the active display handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "prism"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-024",
+    "question": "Name the assembly replay card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Nest"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  }
+]

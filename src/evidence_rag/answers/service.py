@@ -27,6 +27,8 @@ class PendingAnswer:
     scope: AccessScope
     answer: Answer
     key: str
+    retrieved_sections: tuple[str, ...] = ()
+    retrieved_chunk_ids: tuple[str, ...] = ()
 
 
 class AnswerService:
@@ -98,8 +100,15 @@ class AnswerService:
             reason=generated.reason,
             citations=generated.citations,
             timings_ms={
+                **retriever.timings_ms,
                 "retrieval": (retrieved - begin) * 1000,
                 "generation": (time.perf_counter() - retrieved) * 1000,
             },
         )
-        return PendingAnswer(scope, answer, key)
+        return PendingAnswer(
+            scope,
+            answer,
+            key,
+            tuple(c.section_id for c in candidates),
+            tuple(c.chunk_id for c in candidates),
+        )

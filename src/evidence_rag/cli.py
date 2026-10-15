@@ -2,6 +2,7 @@ import argparse
 import json
 import sqlite3
 import sys
+from pathlib import Path
 
 from evidence_rag.auth.sessions import initialize
 from evidence_rag.config import Settings
@@ -13,10 +14,37 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Evidence RAG local workbench")
     parser.add_argument(
         "command",
-        choices=["doctor", "init", "reset", "seed-fixtures", "validate-corpus", "prepare-models"],
+        choices=[
+            "doctor",
+            "init",
+            "reset",
+            "seed-fixtures",
+            "validate-corpus",
+            "prepare-models",
+            "evaluate",
+        ],
     )
     parser.add_argument("--models", action="store_true")
+    parser.add_argument("--profile", choices=["fixture", "local"], default="fixture")
+    parser.add_argument("--split", choices=["dev", "test"], default="dev")
+    parser.add_argument("--generation", choices=["extractive", "local"], default="extractive")
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    if args.command == "evaluate":
+        from evidence_rag.evaluation.run import evaluate
+
+        if args.output is None:
+            parser.error("evaluate requires --output pointing to a new project folder")
+        report = evaluate(args.profile, args.split, args.generation, args.output)
+        print(
+            json.dumps(
+                {
+                    mode: report.aggregates[mode + "/all/all"].model_dump()
+                    for mode in ("bm25", "dense", "hybrid", "hybrid_rerank")
+                }
+            )
+        )
+        return
     if args.command == "prepare-models":
         import runpy
 
