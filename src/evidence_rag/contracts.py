@@ -1,6 +1,8 @@
+import re
+from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 Role = Literal["reader", "maintainer"]
 RetrievalMode = Literal["bm25", "dense", "hybrid", "hybrid_rerank"]
@@ -76,6 +78,27 @@ class VersionInput(StrictModel):
     label: str = Field(min_length=1, max_length=40)
     effective_date: str
     markdown: str = Field(min_length=1)
+
+    @field_validator("effective_date")
+    @classmethod
+    def valid_date(cls, value: str) -> str:
+        if date.fromisoformat(value).isoformat() != value:
+            raise ValueError("Use ISO date")
+        return value
+
+    @field_validator("markdown")
+    @classmethod
+    def plain_markdown(cls, value: str) -> str:
+        if (
+            not value.strip()
+            or len(value.encode("utf-8")) > 256 * 1024
+            or "\x00" in value
+            or re.search(r"<\s*script\b", value, re.IGNORECASE)
+        ):
+            raise ValueError("Invalid Markdown or document exceeds 256 KiB")
+        if not re.match(r"^#{1,6}\s+\S", value):
+            raise ValueError("Start with a heading")
+        return value
 
 
 class ImportInput(VersionInput):

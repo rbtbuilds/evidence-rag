@@ -1,0 +1,11 @@
+{
+  "revision": "aster-eval-v1",
+  "development_count": 24,
+  "test_count": 48,
+  "grouping": "section_family and authored template; conflict/restricted families are split-specific challenge groups",
+  "hashes": {
+    "corpus/manifest.json": "99c4e5cd707d79d34505f46df2da0756305f3a025c063845b4031dad2e6bfb31",
+    "questions/dev.jsonl": "52ec62ff792577cca3b20889c330b93258da62ec4dc95c42270e2f4e8f19a6eb",
+    "questions/test.jsonl": "b7c63e48ddd8c473de430d9ba59daae9252a6faffac4280df7a8b6ad48c8c805"
+  }
+}
