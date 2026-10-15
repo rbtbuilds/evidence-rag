@@ -1,6 +1,6 @@
 # Evidence RAG evaluation
 
-Measured v1 results are in [reports/evaluation-v1.json](reports/evaluation-v1.json), separately labelled fixture/extractive, actual local/extractive and actual local/Qwen generation. The benchmark is an owned fictional scenario; it makes no customer-impact claim.
+Measured v1 results are in [reports/evaluation-v2.json](reports/evaluation-v2.json), separately labelled fixture/extractive, actual local/extractive and actual local/Qwen generation. This evidence revision uses heading-window-v2 at source commit 5ca23d3; the original evaluation-v1.json remains unchanged for provenance. The benchmark is an owned fictional scenario; it makes no customer-impact claim.
 
 ## Frozen inputs and comparisons
 
@@ -22,16 +22,16 @@ Citation-ID/version/offset validity is mechanical. Citation support precision an
 
 | Actual retrieval | Recall@5 (36) | MRR@5 (36) | Warm quotation p50/p95 ms |
 | --- | --- | --- | --- |
-| BM25 | 1.000 | 0.9861 | 2.28 / 3.01 |
-| Dense BGE | 1.000 | 1.0000 | 8.36 / 9.65 |
-| Hybrid RRF | 1.000 | 0.9861 | 9.24 / 11.96 |
-| Hybrid + MiniLM | 1.000 | 0.9861 | 89.81 / 99.90 |
+| BM25 | 1.000 | 0.9861 | 2.52 / 3.92 |
+| Dense BGE | 1.000 | 1.0000 | 9.42 / 12.16 |
+| Hybrid RRF | 1.000 | 1.0000 | 9.82 / 11.12 |
+| Hybrid + MiniLM | 1.000 | 0.9861 | 97.01 / 194.62 |
 
-These measurements exclude separately recorded index/load warmup, use one leased worker, and were collected during light local development on the M5 Pro. They are not end-user cold-start latency. Peak sampled worker RSS was about 0.59 GiB for the actual quotation test block and 2.65 GiB for Qwen generation; all recorded embedding truncation and dropped-passage counts were zero.
+These measurements exclude separately recorded index/load warmup, use one leased worker, and were collected during light local development on the M5 Pro. They are not end-user cold-start latency. Peak sampled worker RSS was about 0.56 GiB for the actual quotation test block and 2.39 GiB for Qwen generation; all recorded embedding truncation and dropped-passage counts were zero.
 
 Qwen output was rejected as `invalid_generation` for all 192 test outputs and all 96 development outputs. No generated claim was accepted. A smoke output used the wrong citation key and omitted the insufficient-evidence flag. The contract was kept strict and quotation mode remains the default. This is a reported model/prompt/configuration failure, not an assertion that the model can never follow JSON instructions.
 
-Quotation mode found supported facts but also selected unrelated matching sentences. On each actual test method it correctly abstained on 8/12 expected-abstention cases. Citation support/completeness remain unmeasured. The small corpus does not show that adding a reranker improves the baseline.
+Quotation mode found supported facts but also selected unrelated matching sentences. On each actual test method it correctly abstained on 8/12 expected-abstention cases. Citation support/completeness remain unmeasured. Hybrid MRR was 1.0; adding MiniLM reduced it to 0.9861 on this revision. The small corpus does not show that adding a reranker improves the baseline.
 
 ## Reproduction
 

@@ -56,7 +56,7 @@ The web client uses generated OpenAPI TypeScript types plus Zod response validat
 
 ## Measured results and a failure
 
-The frozen test set has 48 questions, with 36 having labelled relevant sections. On this small repetitive owned corpus, all four actual retrieval methods achieved recall@5 of 1.0. Dense MRR was 1.0 versus BM25 0.9861. MiniLM reranking did not improve test MRR and increased warm quotation p50 latency from roughly 2.3 ms for BM25 to 89.8 ms. These warmed-model development measurements exclude separately recorded load/index warmup and are not interactive cold-start latency.
+The frozen test set has 48 questions, with 36 having labelled relevant sections. On this small repetitive owned corpus, all four actual retrieval methods achieved recall@5 of 1.0. Dense and hybrid MRR were 1.0 versus BM25 0.9861. MiniLM reranking did not improve test MRR and increased warm quotation p50 latency from roughly 2.5 ms for BM25 to 97.0 ms. These warmed-model development measurements exclude separately recorded load/index warmup and are not interactive cold-start latency.
 
 The fixed Qwen generation block failed its output/citation contract on all 192 test outputs and abstained on all of them. A smoke example used the wrong citation key and omitted a required flag. Rejecting that output prevented an invalid answer from being presented; it did not make generation useful. Exact quotations remain the default. Quotation mode also makes errors: sentences with shared query terms can be irrelevant, and expected-abstention accuracy was 8/12 per actual test method.
 

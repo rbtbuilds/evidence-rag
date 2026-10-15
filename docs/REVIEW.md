@@ -28,4 +28,4 @@ The fix pass also added deterministic simultaneous reader/maintainer generation 
 
 A valid 120-character unbroken title can overflow some mobile text containers. Existing viewport checks cover ordinary fixture titles. This is recorded for a later focused layout change, following the native execution rule to defer Minors from the final fix pass.
 
-Human citation support/completeness and screen-reader usability remain unverified. Review does not convert them into passing evidence. Refreshed actual-model evidence and clean-checkout outcomes are recorded separately in STATE and VERIFICATION after execution.
+Human citation support/completeness and screen-reader usability remain unverified. Review does not convert them into passing evidence. Refreshed actual-model evidence and clean-checkout outcomes are recorded separately in STATE and VERIFICATION. All six final evaluation runs use clean source commit 5ca23d3 and heading-window-v2; the strengthened actual-model disclosure matrix passed 96 requests.
