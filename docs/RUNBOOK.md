@@ -57,7 +57,11 @@ Preparation downloads only public safetensors/config/tokenizer/card/licence file
 
 After switching to local profile, use Rebuild index as maintainer before dense/hybrid requests. Missing/mismatched revisions return `model_unavailable`; fixture vectors are never silently treated as real embeddings. Switching back similarly requires an explicit fixture rebuild. After a code upgrade changes the chunker revision, rebuild before using existing indexes; heading-window-v2 allocates unique anchors for repeated and explicitly suffixed headings. Rebuild replaces chunk identifiers and invalidates old citation links. Pending work stays single-worker. Actual requests acquire a machine lease, use one supervised child and exit it before release. Uncached interactive requests may reload weights; do not confuse warm benchmark times with that load cost.
 
-Local Qwen generation uses constrained decoding with exact supplied IDs and at most two generated citations. An abstention repair is in progress; consult [STATE](STATE.md) and [ABSTENTION-REPAIR](ABSTENTION-REPAIR.md) before interpreting current model results. The v3 results below are the retained Qwen2.5 baseline. The server validator and current-version/access checks remain unchanged. The refreshed test accepted 183/192 answers, abstained on two and rejected seven invalid outputs; all 347 emitted citations resolved. Unsupported-question answers remain unreliable: the sole correct expected abstention out of 48 cases came from invalid-output rejection. Exact quotations remain the default. See [evaluation](../EVALUATION.md) for quality limits and complete counts.
+Local Qwen generation uses a single constrained pass with exact supplied IDs, at most two generated citations, 180 answer characters and 256 output tokens. Its template explicitly disables thinking; prompt and generation settings are versioned. The prompt requires an empty answer, no citations and insufficient_evidence true for missing facts. The server validator and current-version/access/publication checks remain strict.
+
+The local Qwen3 14B block correctly returned explicit empty insufficient-evidence refusals in 46/48 expected-abstention test method/question cases, compared with 0/48 in v3. It answered 109/144 answerable cases and unnecessarily refused 35; 0 outputs were invalid. All 120/120 emitted citations resolved to accessible current passages. These are abstention and format/access measurements, not human factual-support or completeness scores. Two remaining errors are the same reader question under BM25 and hybrid: the model treats a quoted hostile instruction as evidence for a calibration marker. No restricted marker is disclosed.
+
+This is a conservative configuration: unnecessary refusals on supported facts remain a known limitation. Quotations remain the default. Review [evaluation](../EVALUATION.md) and [abstention diagnosis](ABSTENTION-REPAIR.md) before interpreting model quality. Model JSON/ID errors stay invalid_generation and cannot gain explicit-refusal credit.
 
 To exercise the supported actual browser path, stop other owned servers and run:
 
@@ -65,7 +69,7 @@ To exercise the supported actual browser path, stop other owned servers and run:
 uv run --extra ml python -m scripts.actual_generation_browser
 ```
 
-This helper acquires the shared lease, starts its own temporary API/browser flow on 8115/5115, generates an answer containing 35 and opens its current citation. It uses actual Qwen and real BM25 without intercepted application fetches. It does not claim dense/reranking browser coverage. Ordinary browser runs explicitly skip this scenario.
+This helper acquires the shared lease, starts its own temporary API/browser flow on 8115/5115, generates an answer containing 35 and opens its current citation, requires proper empty refusals for lunar alloy and a reader-private marker, then checks the supported cached answer. It uses actual Qwen and real BM25 without intercepted application fetches. It does not claim dense/reranking browser coverage. Ordinary browser runs explicitly skip this scenario.
 
 ## Shared machine lease and failures
 

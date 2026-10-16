@@ -1,0 +1,45 @@
+{
+  "execution_profile": "local",
+  "dimensions": 384,
+  "rerank_scores": [
+    9.06173324584961
+  ],
+  "generation_output": "{\"answer\":\"35 units\",\"cited_chunk_ids\":[\"smoke\"],\"insufficient_evidence\":false}",
+  "generation_revision": "mlx-qwen:a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+  "prompt_revision": "evidence-json-v4-abstention",
+  "generation_settings": {
+    "generator_backend": "mlx-lm==0.32.2",
+    "enable_thinking": false,
+    "quantization_bits": 4,
+    "quantization_group_size": 64,
+    "accelerator_budget_bytes": 12884901888,
+    "allocator_cache_bytes": 268435456,
+    "abstention_policy": "empty-refusal-and-current-fact-v1",
+    "max_answer_characters": 180,
+    "decoding": "lm-format-enforcer==0.11.3",
+    "schema": "strict-object-and-request-citation-enum-v2",
+    "max_new_tokens": 256,
+    "max_citations": 2,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "force_json_field_order": false,
+    "max_consecutive_whitespaces": 12
+  },
+  "output_tokens": 23,
+  "hit_output_limit": false,
+  "embedding_truncations": 0,
+  "peak_worker_rss_bytes": 2221834240,
+  "peak_accelerator_bytes": 8636529616,
+  "elapsed_seconds": 12.177069291938096,
+  "verification_source_head": "c4b3fffb049a448c4bddaefcfa23128188b0f8df",
+  "dependency_lock_sha256": "b997cb9f17e4cf585fbbaef7a169e1a859e8222cfc741b2205614537ee65fd6c",
+  "model_lock_sha256": "966b2f502a9d4b3a978ac72db6b057fb9857d819c67b5541cfc188b3f8c41882",
+  "acceptance_run_before_source_commit": true,
+  "provenance_note": "Acceptance executed during implementation before the source commit. The unchanged implementation/model/dependency state was subsequently frozen at verification_source_head; canonical evaluation and clean-clone checks separately used that clean committed source.",
+  "model_revisions": {
+    "embedding": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "reranker": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+    "generator": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4"
+  },
+  "raw_log_sha256": "93cf31d43f6e712e7baca2a96ab93f76f915f8b5c1472fb6ee0c30a73641c0a7"
+}

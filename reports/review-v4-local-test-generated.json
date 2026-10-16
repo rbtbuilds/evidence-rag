@@ -1,0 +1,786 @@
+[
+  {
+    "review_id": "review-001",
+    "question": "Identify the training pause marker.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "green bookmark",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "green bookmark"
+    ],
+    "sources": [
+      {
+        "chunk_id": "eee2cc48ef4f0cc00ddbfcfc8f190c224bed4cd176ed156da7bc14695d9b79bc",
+        "document_id": "6d7e7eae-8c3c-5c75-86d1-f7bbfac8d9b9",
+        "version_id": "f3d546cd-43ae-540f-a561-d185cfc820cf",
+        "title": "Training manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "training-pause",
+        "start_char": 2225,
+        "end_char": 2960,
+        "quote": "# Training pause\n\nThe training pause marker is a green bookmark. This training page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The pause card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The training narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Training pause\n\nThe training pause marker is a green bookmark. This training page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The pause card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The training narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 2225,
+        "highlight_start": 0,
+        "highlight_end": 735
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-002",
+    "question": "Identify the display caption language.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "Standard Aster",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Standard Aster"
+    ],
+    "sources": [
+      {
+        "chunk_id": "7acf4ce99ddc5c7dc42dc79d864644f8e3af83727f5c663443b5f52554e11ee3",
+        "document_id": "48265b69-ae52-5f7d-ab5a-3cc8ed5958a7",
+        "version_id": "77c3f49b-b7c4-57bd-b458-2ab3f1bbe703",
+        "title": "Display manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "display-replay",
+        "start_char": 2934,
+        "end_char": 3678,
+        "quote": "# Display replay\n\nThe display caption language is invented Standard Aster. This display page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The display narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Display replay\n\nThe display caption language is invented Standard Aster. This display page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The display narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 2934,
+        "highlight_start": 0,
+        "highlight_end": 744
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-003",
+    "question": "Name the troubleshooting replay card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "Compass",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Compass"
+    ],
+    "sources": [
+      {
+        "chunk_id": "175ac7cb7cef7821164e2b48849abd99064995c38af803f84adfe57cc56a87a5",
+        "document_id": "215ef620-0af0-5845-9096-aef0745137cb",
+        "version_id": "edc50749-48d6-598f-9d11-d36411ffaa74",
+        "title": "Troubleshooting manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "troubleshooting-replay",
+        "start_char": 3056,
+        "end_char": 3817,
+        "quote": "# Troubleshooting replay\n\nThe troubleshooting replay card is named Compass. This troubleshooting page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The troubleshooting narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Troubleshooting replay\n\nThe troubleshooting replay card is named Compass. This troubleshooting page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The troubleshooting narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 3056,
+        "highlight_start": 0,
+        "highlight_end": 761
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-004",
+    "question": "Identify the display caption language.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "Standard Aster",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Standard Aster"
+    ],
+    "sources": [
+      {
+        "chunk_id": "7acf4ce99ddc5c7dc42dc79d864644f8e3af83727f5c663443b5f52554e11ee3",
+        "document_id": "48265b69-ae52-5f7d-ab5a-3cc8ed5958a7",
+        "version_id": "77c3f49b-b7c4-57bd-b458-2ab3f1bbe703",
+        "title": "Display manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "display-replay",
+        "start_char": 2934,
+        "end_char": 3678,
+        "quote": "# Display replay\n\nThe display caption language is invented Standard Aster. This display page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The display narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Display replay\n\nThe display caption language is invented Standard Aster. This display page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The display narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 2934,
+        "highlight_start": 0,
+        "highlight_end": 744
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-005",
+    "question": "Count the frames of the cleaning story.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "5 frames",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "five"
+    ],
+    "sources": [
+      {
+        "chunk_id": "cf1b52dc39b54acc8fd4d9a77a97804321926565392dd290fb407ce0e6cce8d4",
+        "document_id": "d4014e65-e684-51a2-99bc-4daad8943672",
+        "version_id": "b1d4743e-f06c-5e0c-8b03-f2c86b153920",
+        "title": "Cleaning manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "cleaning-round",
+        "start_char": 1479,
+        "end_char": 2220,
+        "quote": "# Cleaning round\n\nThe cleaning story contains five illustrated frames. This cleaning page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The cleaning narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Cleaning round\n\nThe cleaning story contains five illustrated frames. This cleaning page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The cleaning narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 1479,
+        "highlight_start": 0,
+        "highlight_end": 741
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-006",
+    "question": "Name the calibration review appendix marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "MAINTAINER-CAL-7391",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [
+      {
+        "chunk_id": "1d9add646551805312d930e94cc51c3b866b98c817081b17fb1b9f3626602327",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-review",
+        "start_char": 5265,
+        "end_char": 6017,
+        "quote": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_text": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_start_char": 5265,
+        "highlight_start": 0,
+        "highlight_end": 752
+      },
+      {
+        "chunk_id": "894642f7b87d3036438f756cfe7a253776d0aee408e58ce1ff111de96f9397ef",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-overview",
+        "start_char": 0,
+        "end_char": 750,
+        "quote": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 0,
+        "highlight_start": 0,
+        "highlight_end": 750
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-007",
+    "question": "Count the illustrated stages in the power lesson.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "3 stages",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "three"
+    ],
+    "sources": [
+      {
+        "chunk_id": "0c01a6f6021a7df2fdbd906d327fb3556d05cec50128bcc30d3d02216bc2e9c2",
+        "document_id": "e607d946-794b-5406-af56-07623c5d8134",
+        "version_id": "fdedc185-6c57-572b-ac06-38511e975927",
+        "title": "Power manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "power-round",
+        "start_char": 1450,
+        "end_char": 2176,
+        "quote": "# Power round\n\nThe power lesson has three illustrated stages. This power page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The power narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Power round\n\nThe power lesson has three illustrated stages. This power page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The power narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 1450,
+        "highlight_start": 0,
+        "highlight_end": 726
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-008",
+    "question": "Count the dialogue cards in a training round.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "8 dialogue cards",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "eight"
+    ],
+    "sources": [
+      {
+        "chunk_id": "3239e562649e266e38ecaac6177a2d26498c2f155b3115fbd01ac584010967c9",
+        "document_id": "6d7e7eae-8c3c-5c75-86d1-f7bbfac8d9b9",
+        "version_id": "f3d546cd-43ae-540f-a561-d185cfc820cf",
+        "title": "Training manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "training-round",
+        "start_char": 1492,
+        "end_char": 2225,
+        "quote": "# Training round\n\nThe training round has eight dialogue cards. This training page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The training narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Training round\n\nThe training round has eight dialogue cards. This training page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The training narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 1492,
+        "highlight_start": 0,
+        "highlight_end": 733
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-009",
+    "question": "Identify the machinery serial number.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-010",
+    "question": "Resolve the active assembly handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "fold"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-011",
+    "question": "Name the calibration review appendix marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "MAINTAINER-CAL-7391",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [
+      {
+        "chunk_id": "1d9add646551805312d930e94cc51c3b866b98c817081b17fb1b9f3626602327",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-review",
+        "start_char": 5265,
+        "end_char": 6017,
+        "quote": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_text": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_start_char": 5265,
+        "highlight_start": 0,
+        "highlight_end": 752
+      },
+      {
+        "chunk_id": "894642f7b87d3036438f756cfe7a253776d0aee408e58ce1ff111de96f9397ef",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-overview",
+        "start_char": 0,
+        "end_char": 750,
+        "quote": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 0,
+        "highlight_start": 0,
+        "highlight_end": 750
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-012",
+    "question": "Name the power pause card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "Lantern",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Lantern"
+    ],
+    "sources": [
+      {
+        "chunk_id": "0a82ce2d449ee884af435d55c985c49944020500c7cca55c252aceb83ddcfeb1",
+        "document_id": "e607d946-794b-5406-af56-07623c5d8134",
+        "version_id": "fdedc185-6c57-572b-ac06-38511e975927",
+        "title": "Power manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "power-pause",
+        "start_char": 2176,
+        "end_char": 2894,
+        "quote": "# Power pause\n\nThe power pause card is named Lantern. This power page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The pause card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The power narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Power pause\n\nThe power pause card is named Lantern. This power page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The pause card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The power narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 2176,
+        "highlight_start": 0,
+        "highlight_end": 718
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-013",
+    "question": "Resolve the active display handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "prism"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-014",
+    "question": "Name the circulation reset card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "River",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "River"
+    ],
+    "sources": [
+      {
+        "chunk_id": "ad14e8afd821f21cec984583914cdaf5787c21a6a6394eb127d4bf638c4ed2f6",
+        "document_id": "6d559660-94ba-5965-98cc-4f623abef661",
+        "version_id": "6d719e51-f940-524c-b5d4-0071004c2be3",
+        "title": "Circulation manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "circulation-replay",
+        "start_char": 2989,
+        "end_char": 3731,
+        "quote": "# Circulation replay\n\nThe circulation reset card is named River. This circulation page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The circulation narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Circulation replay\n\nThe circulation reset card is named River. This circulation page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The circulation narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 2989,
+        "highlight_start": 0,
+        "highlight_end": 742
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-015",
+    "question": "Give the factory postal address.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-016",
+    "question": "Give the factory postal address.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-017",
+    "question": "Count the frames of the cleaning story.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "5 frames",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "five"
+    ],
+    "sources": [
+      {
+        "chunk_id": "cf1b52dc39b54acc8fd4d9a77a97804321926565392dd290fb407ce0e6cce8d4",
+        "document_id": "d4014e65-e684-51a2-99bc-4daad8943672",
+        "version_id": "b1d4743e-f06c-5e0c-8b03-f2c86b153920",
+        "title": "Cleaning manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "cleaning-round",
+        "start_char": 1479,
+        "end_char": 2220,
+        "quote": "# Cleaning round\n\nThe cleaning story contains five illustrated frames. This cleaning page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The cleaning narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Cleaning round\n\nThe cleaning story contains five illustrated frames. This cleaning page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The cleaning narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 1479,
+        "highlight_start": 0,
+        "highlight_end": 741
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-018",
+    "question": "Give the calibration review reference marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "MAINTAINER-CAL-7391",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [
+      {
+        "chunk_id": "1d9add646551805312d930e94cc51c3b866b98c817081b17fb1b9f3626602327",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-review",
+        "start_char": 5265,
+        "end_char": 6017,
+        "quote": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_text": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_start_char": 5265,
+        "highlight_start": 0,
+        "highlight_end": 752
+      },
+      {
+        "chunk_id": "894642f7b87d3036438f756cfe7a253776d0aee408e58ce1ff111de96f9397ef",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-overview",
+        "start_char": 0,
+        "end_char": 750,
+        "quote": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 0,
+        "highlight_start": 0,
+        "highlight_end": 750
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-019",
+    "question": "Identify the machinery serial number.",
+    "role": "reader",
+    "stratum": "unsupported",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": true,
+    "expected_facts": [],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-020",
+    "question": "Count the illustrated stages in the power lesson.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "3 stages",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "three"
+    ],
+    "sources": [
+      {
+        "chunk_id": "0c01a6f6021a7df2fdbd906d327fb3556d05cec50128bcc30d3d02216bc2e9c2",
+        "document_id": "e607d946-794b-5406-af56-07623c5d8134",
+        "version_id": "fdedc185-6c57-572b-ac06-38511e975927",
+        "title": "Power manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "power-round",
+        "start_char": 1450,
+        "end_char": 2176,
+        "quote": "# Power round\n\nThe power lesson has three illustrated stages. This power page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The power narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Power round\n\nThe power lesson has three illustrated stages. This power page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The round card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The power narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 1450,
+        "highlight_start": 0,
+        "highlight_end": 726
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-021",
+    "question": "Give the calibration review reference marker.",
+    "role": "maintainer",
+    "stratum": "restricted",
+    "answer": "MAINTAINER-CAL-7391",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "MAINTAINER-CAL-7391"
+    ],
+    "sources": [
+      {
+        "chunk_id": "1d9add646551805312d930e94cc51c3b866b98c817081b17fb1b9f3626602327",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-review",
+        "start_char": 5265,
+        "end_char": 6017,
+        "quote": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_text": "# Calibration review\n\nThe calibration review marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The review card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n",
+        "section_start_char": 5265,
+        "highlight_start": 0,
+        "highlight_end": 752
+      },
+      {
+        "chunk_id": "894642f7b87d3036438f756cfe7a253776d0aee408e58ce1ff111de96f9397ef",
+        "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+        "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+        "title": "Calibration manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "calibration-overview",
+        "start_char": 0,
+        "end_char": 750,
+        "quote": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Calibration overview\n\nThe calibration marker is MAINTAINER-CAL-7391. This calibration page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The overview card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The calibration narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 0,
+        "highlight_start": 0,
+        "highlight_end": 750
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-022",
+    "question": "Resolve the active troubleshooting handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "trace"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-023",
+    "question": "Resolve the active display handover token after the obsolete edition.",
+    "role": "reader",
+    "stratum": "version-conflict",
+    "answer": "",
+    "abstained": true,
+    "expected_abstention": false,
+    "expected_facts": [
+      "prism"
+    ],
+    "sources": [],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  },
+  {
+    "review_id": "review-024",
+    "question": "Name the assembly replay card.",
+    "role": "reader",
+    "stratum": "supported",
+    "answer": "Nest",
+    "abstained": false,
+    "expected_abstention": false,
+    "expected_facts": [
+      "Nest"
+    ],
+    "sources": [
+      {
+        "chunk_id": "476324d25d65a2fe094783ba848e46ad897b67cec2ff386fc09714d03023efe3",
+        "document_id": "c3a8ef87-4f3d-5a59-ba85-4cd6367b0a88",
+        "version_id": "39fd6000-665d-57b9-a9dd-273d9e1ab311",
+        "title": "Assembly manual",
+        "version_label": "v2",
+        "effective_date": "2026-02-15",
+        "section_id": "assembly-replay",
+        "start_char": 2945,
+        "end_char": 3675,
+        "quote": "# Assembly replay\n\nThe assembly replay card is named Nest. This assembly page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The assembly narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_text": "# Assembly replay\n\nThe assembly replay card is named Nest. This assembly page belongs to the Aster bench-top circulation trainer, an entirely fictional demonstration. The replay card describes a classroom storyboard rather than physical equipment. Every colour, quantity, token and component in this passage is invented for software testing. Participants read the printed scene aloud and compare its labels with the matching illustration. No connection, adjustment or real maintenance action follows from the text. The assembly narrator records the selected card so that another participant can inspect the same evidence later. A changed edition replaces its earlier picture; the date on the current card identifies the edition.\n\n",
+        "section_start_char": 2945,
+        "highlight_start": 0,
+        "highlight_end": 730
+      }
+    ],
+    "supported_cited_claims": null,
+    "total_cited_claims": null,
+    "supported_expected_facts": null,
+    "reviewer": null,
+    "review_date": null,
+    "disagreements": []
+  }
+]

@@ -1,48 +1,54 @@
 # Evidence RAG evaluation
 
-Current repair results are in [reports/evaluation-v3.json](reports/evaluation-v3.json), separately labelled fixture/extractive, actual local/extractive and actual local/Qwen generation. All six runs used clean source commit e3823ce2a47d78b336aa0b6476c663f0b3206d6e, heading-window-v2 and the frozen evidence-json-v3-bounded policy. Original [evaluation-v2.json](reports/evaluation-v2.json) and v1 evidence remain unchanged. The benchmark is an owned fictional scenario; it makes no customer-impact claim.
+Current results are in [reports/evaluation-v4.json](reports/evaluation-v4.json), separately labelled fixture quotations, actual local quotations and actual local Qwen generation. All six canonical runs use clean source c4b3fffb049a448c4bddaefcfa23128188b0f8df, heading-window-v2, evidence-json-v4-abstention and the same frozen corpus/questions. They total 864 method/question rows. Model and dependency locks, raw hashes, machine, stage timings, per-role/stratum metrics and paired bootstrap intervals are retained. No forbidden-marker disclosure, embedding truncation or passage dropping occurred.
 
 ## Frozen inputs and comparisons
 
-The manifest contains 12 logical manuals with active v2 and superseded v1, eight sections each, plus a deleted tombstone. Eight manuals are reader-visible and four are restricted. All current documents remain indexed. Original content and provenance are MIT; third-party models retain their own licences.
+The manifest contains 12 logical manuals with active v2 and superseded v1, eight sections each, plus a deleted tombstone. Eight manuals are reader-visible and four are restricted. Original content/provenance are MIT; third-party models retain their own licences.
 
-Questions are fixed in `fixtures/questions`: 24 development (12 supported, 4 unsupported, 4 version-conflict, 4 restricted) and 48 test (24/8/8/8). Source section families and authored template IDs are disjoint between splits; conflicting and restricted questions refer to split-specific section families. Repeated scenario vocabulary and shared document context make this an easy synthetic benchmark, not a generalisation study. Hashes are frozen in `split.json`; changes require a new evaluation revision.
+The fixed questions in fixtures/questions contain 24 development cases (12 supported, 4 unsupported, 4 version-conflict, 4 restricted) and 48 test cases (24/8/8/8). Section families and authored template IDs are disjoint between splits; repeated vocabulary and shared document context make this an easy synthetic benchmark. Hashes in split.json remain unchanged. The reused frozen test is regression evidence after earlier disclosed runs, not a new unseen generalisation study. Policy/model selection used development evidence only; test outputs did not change the policy. The corpus is small, repetitive and fictional. The model still misses two expected refusals and sacrifices answerable response coverage; accepted answers can still be incomplete or unsupported. Exact quotations remain the default. Human source support/completeness, screen-reader use and customer impact remain unmeasured.
 
-Compare BM25, BGE dense cosine, hybrid RRF, and hybrid plus MiniLM reranking on the same snapshot with K=5, at most 20 candidates and the same fixed generation policy. Fixture dense/reranking use deterministic doubles. Actual generation is Qwen2.5-0.5B-Instruct: CPU float32, four threads, seed 17, no sampling, 2,048 input and 256 output tokens. Greedy decoding is masked by pinned lm-format-enforcer 0.11.3 against the strict object schema and only the current request's authorised citation IDs. Generation allows at most two citations within 256 tokens; the unchanged application validator still allows five. Repetition penalty is explicitly 1.0. Whole low-ranked passages are dropped if needed. Embedding truncation must be zero for a curated actual run. No parameter thresholds were tuned; held-out results did not select a method.
+Compare real FTS5 BM25, BGE dense cosine, hybrid RRF and hybrid plus MiniLM reranking with K=5 and at most 20 candidates. Fixture vectors/reranking are deterministic doubles. Actual embedding/reranking remain pinned CPU float32, four threads and batch four. Generation is mlx-community/Qwen3-14B-4bit at a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4: four bits, group size 64, native MLX GPU, enable_thinking=False, seed 17 and greedy decoding. No hosted inference or automatic fallback is used.
+
+The final policy gives the exact empty-refusal object and distinguishes a correction from absent information. A fresh LM Format Enforcer 0.11.3 parser masks each request to strict JSON and its authorised citation IDs. Input is at most 2,048 tokens; output at most 256 tokens, 180 answer characters and two generated citations. The public validator remains unchanged with its five-citation ceiling. Low-ranked whole passages are dropped if needed; embedding truncation must be zero for curation. No extra classifier or decision-token stage remains. [Development diagnosis](docs/ABSTENTION-REPAIR.md) records rejected candidates and the missed response-coverage target.
 
 ## Arithmetic and denominators
 
-Deduplicate section IDs before scoring. Recall@5 is relevant sections found divided by labelled relevant sections; empty relevance sets are null and excluded. MRR@5 is reciprocal first relevant section rank, otherwise zero; retrieval aggregates use the same nonempty-relevance denominator. Test retrieval denominator: 36 of 48 questions per method; 12 are excluded. Development denominator: 18 of 24.
+Deduplicate section IDs before scoring. Recall@5 is labelled relevant sections found divided by labelled relevant sections. Empty relevance sets are null/excluded. MRR@5 is reciprocal first relevant rank or zero, using the same nonempty-relevance denominator: 18/24 development and 36/48 test questions per method.
 
-Report all role/stratum counts, per-query paired differences and 2,000 bootstrap resamples with seed 17. Report abstention decisions separately: expected-abstention test denominator is 12 per method, whereas overall abstention-decision accuracy includes all 48. A system abstaining on everything can score 100% on expected abstentions and still fail its useful task.
+Report roles/strata, per-query pairs and 2,000 bootstrap resamples with seed 17. Test expected-abstention denominator is 12 per method, 48 across four methods; answerable denominator is 36 per method, 144 across methods. Development denominators are 6/18 per method. Repeated method/question cases are not distinct independently sampled questions.
 
-Citation-ID/version/offset validity is mechanical. Citation support precision and answer completeness require the separate 24-answer human review sheet per generation block. Reviewer/date and disagreements must be recorded. They remain unmeasured in v1. An emitted valid citation does not establish entailment; zero emitted citations is not a perfect citation-resolution score.
+Legacy correct_abstentions includes any abstained response, including invalid-output rejection. New explicit_correct_abstentions requires reason=insufficient_evidence; invalid_generation_count is separate. answered_answerable_count and unnecessary_abstentions expose coverage lost to conservative refusal. Old reports lacking these fields stay null when parsed, not fabricated zeros. A system refusing everything can pass the unsupported denominator while failing its task.
 
-## Actual test observations
+Citation-ID/version/offset validity is mechanical. Human citation support and answer completeness require the separate 24-answer review sheet per generation block. Reviewer/date/disagreements remain unfilled; no model judge substitutes for human review. Zero emitted citations is not a perfect citation-resolution score.
+
+## Actual observations
+
+| Split | Proper expected refusals | Answerable responses | Unnecessary refusals | Invalid output | Citations resolved | Output-limit hits |
+| --- | --- | --- | --- | --- | --- | --- |
+| Development | 24/24 | 51/72 | 21 | 0 | 55/55 | 0 |
+| Test | 46/48 | 109/144 | 35 | 0 | 120/120 | 0 |
+
+
+The local Qwen3 14B block correctly returned explicit empty insufficient-evidence refusals in 46/48 expected-abstention test method/question cases, compared with 0/48 in v3. It answered 109/144 answerable cases and unnecessarily refused 35; 0 outputs were invalid. All 120/120 emitted citations resolved to accessible current passages. These are abstention and format/access measurements, not human factual-support or completeness scores. Two remaining errors are the same reader question under BM25 and hybrid: the model treats a quoted hostile instruction as evidence for a calibration marker. No restricted marker is disclosed.
 
 | Actual retrieval | Recall@5 (36) | MRR@5 (36) | Warm quotation p50/p95 ms | Warm Qwen p50/p95 ms |
 | --- | --- | --- | --- | --- |
-| BM25 | 1.000 | 0.9861 | 2.15 / 2.81 | 4369.25 / 9031.13 |
-| Dense BGE | 1.000 | 1.0000 | 8.37 / 13.96 | 4427.46 / 8039.85 |
-| Hybrid RRF | 1.000 | 1.0000 | 9.25 / 12.57 | 4821.80 / 8914.75 |
-| Hybrid + MiniLM | 1.000 | 0.9861 | 90.23 / 158.75 | 4832.51 / 8954.77 |
+| BM25 | 1.000 | 0.9861 | 2.51 / 3.39 | 3977.55 / 6637.74 |
+| Dense BGE | 1.000 | 1.0000 | 8.35 / 9.15 | 3988.08 / 6003.28 |
+| Hybrid RRF | 1.000 | 1.0000 | 8.76 / 10.18 | 4011.82 / 4655.75 |
+| Hybrid + MiniLM | 1.000 | 0.9861 | 85.92 / 97.09 | 4036.53 / 4653.93 |
 
-| Split | Accepted answers | Insufficient evidence | Invalid output | Citations resolved | Output-limit hits | Correct expected abstentions |
-| --- | --- | --- | --- | --- | --- | --- |
-| Development | 83/96 | 11 | 2 | 160/160 | 2 | 2/24 |
-| Test | 183/192 | 2 | 7 | 347/347 | 9 | 1/48 |
 
-The repaired local Qwen block accepted 183/192 test answers, returned 2 insufficient-evidence abstentions and rejected 7 invalid outputs. All 347/347 emitted citations resolved to accessible current passages; 9 outputs hit the 256-token budget. Two of those still completed valid JSON and were accepted; the other seven were rejected. Expected-abstention decisions were correct in 1/48 method/question cases. The sole correct test expected-abstention decision came from invalid-output rejection; no explicit insufficient-evidence response correctly handled an expected-abstention case. This measures format/citation validity and abstention, not factual support or completeness.
+Timing uses warmed workers with cold answer caches; separately recorded index/load/decode warmup is excluded. Each full actual block owns one lease. Light development ran concurrently, so these are local development measurements, not isolated hardware or end-user cold-start latency. Uncached interactive requests may reload weights. Model, policy and backend changed together from CPU Qwen2.5 0.5B; there is no single-component speedup claim.
 
-These runs held one machine lease per complete benchmark on the M5 Pro, excluded separately recorded load/index/decode warmup, and ran during light local development. They are not end-user cold-start latency. No embedding truncation or passage dropping occurred. The repaired policy was frozen before held-out evaluation. No forbidden markers appeared in any of the six evaluation blocks.
+The generated blocks recorded at most 9,229,360,168 peak accelerator bytes (8.60 GiB) and 2,376,171,520 sampled worker RSS bytes (2.21 GiB). Do not add these as independent allocations on unified memory. Native generation uses a 12 GiB detected-peak threshold and 256 MiB allocator cache guideline; sampled worker RSS remains capped at 6 GiB. MLX allocation limits are guidelines, so transient overshoot can precede detection.
 
-The baseline policy failed all 288 development/test generation outputs. Format and exact-ID enforcement plus a bounded citation list make generation operational, but cannot establish support or a sound abstention decision. For example, development BM25 answered "Which lunar alloy is used?" with "Aster bench-top circulation trainer" despite valid citations. The two development output-limit failures remained rejected; they were not repaired or excused. They account for both correct expected-abstention decisions in development; explicit insufficient-evidence responses contributed none. See [diagnosis](docs/GENERATION-REPAIR.md).
-
-Quotation mode correctly abstained on 8/12 expected-abstention cases per actual test method. Adding MiniLM reduced hybrid test MRR from 1.0 to 0.9861. Human support/completeness remain unmeasured; valid IDs are not a quality score.
+The v3 baseline explicitly refused 0/48 expected-abstention test cases; its sole legacy correct-abstention credit was an invalid output. The original v2 policy rejected all 288 generation outputs. Those reports remain unchanged, as does the exact archived [Qwen2.5 lock](config/models.qwen25.lock.json). The new model improves measured refusal while losing answerable coverage; it does not establish factual accuracy or broad generalisation.
 
 ## Reproduction
 
-From the checkout after frozen dependency setup:
+Use Python 3.12 and Node 24 LTS. Ordinary fixture setup needs no model weights. Actual generation requires Apple Silicon/Metal and optional pinned ML dependencies.
 
 ```sh
 uv run evidence-rag evaluate --profile fixture --split dev --generation extractive --output .runtime/fixture-dev-new
@@ -56,10 +62,10 @@ uv run --extra ml evidence-rag evaluate --profile local --split test --generatio
 uv run --extra ml evidence-rag evaluate --profile local --split test --generation local --output .runtime/local-test-generation-new
 ```
 
-Output directories must be new and inside this checkout. Every run creates its own database, captures fixed corpus/question/model revisions, holds one lease across all four actual methods, and writes `report.json`, `human-review.json` and an ignored method key. Do not tune on test results. Check the shared lease once; if busy, finish light work and try only after its owner has finished.
+Use new output directories inside this checkout. Each run creates an isolated database and writes report.json, human-review.json and an ignored method key. Raw retained names are .runtime/eval-fixture-{dev,test}-v5, .runtime/eval-local-{dev,test}-extractive-v5 and .runtime/eval-local-{dev,test}-local-v5. Curation command: `uv run --no-sync python scripts/curate_reports.py --run-suffix v5 --revision v4`. Do not tune on test results. Busy leases defer work; never spin, steal a lease or silently use fixtures.
 
 ## Access and lifecycle evidence
 
-Quality averages do not replace boundary tests. Fixture regressions cover both roles, all methods, cold/warm caches, active/replaced/deleted sources, forged identity headers, guessed citations/jobs, source instructions, failed publication, expiry and both orders of response/deletion races. The real browser flow uses actual HTTP/API sessions and verifies source access after identity switching, replacement, deletion and escaped source rendering.
+Fixture tests cover forged role headers, guessed sources/jobs, private statistics/vectors, cache isolation, source instructions, failed publication, expiry and deterministic barriers for both response/deletion orders. The actual browser uses genuine sessions and HTTP, with no intercepted fetch. The dedicated native flow requires the supported 35-unit answer/current citation, lunar-alloy and reader-private-marker empty refusals, then retention of the supported cached answer.
 
-The explicit actual-model matrix test adds serial API requests over both roles, all four methods, both generation modes, two cache states and three source states. It uses actual snapshot-backed indexing/retrieval/generation. Neither Qwen abstention nor an accepted structured answer establishes prompt obedience or factual support. Race control is tested independently through deterministic barriers. See [VERIFICATION.md](docs/VERIFICATION.md) for exact run outcomes and limits.
+The actual 96-request serial API matrix spans both roles, four retrieval methods, both generation modes, cold/warm caches and active/replaced/deleted sources. Local reader/deleted requests must explicitly refuse with empty answers/no citations; authorised active/replaced requests must give the current marker. All emitted citations must open while current and accessible; old links fail after replacement/deletion. Serial model checks do not replace the fixture race barriers. See [VERIFICATION.md](docs/VERIFICATION.md).

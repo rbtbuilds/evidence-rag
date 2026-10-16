@@ -56,15 +56,21 @@ The web client uses generated OpenAPI TypeScript types plus Zod response validat
 
 ## Measured results and limits
 
-The frozen test set has 48 questions, with 36 having labelled relevant sections. On this small repetitive owned corpus, all four actual retrieval methods achieved recall@5 of 1.0. Dense and hybrid MRR were 1.0 versus BM25 and reranked hybrid 0.9861. MiniLM did not improve MRR and increased warm quotation p50 from 2.15 ms for BM25 to 90.23 ms. These warmed-worker measurements exclude separately recorded load/index warmup and are not interactive cold-start latency.
+The local Qwen3 14B block correctly returned explicit empty insufficient-evidence refusals in 46/48 expected-abstention test method/question cases, compared with 0/48 in v3. It answered 109/144 answerable cases and unnecessarily refused 35; 0 outputs were invalid. All 120/120 emitted citations resolved to accessible current passages. These are abstention and format/access measurements, not human factual-support or completeness scores. Two remaining errors are the same reader question under BM25 and hybrid: the model treats a quoted hostile instruction as evidence for a calibration marker. No restricted marker is disclosed.
 
-The repaired local Qwen block accepted 183/192 test answers, returned two insufficient-evidence abstentions and rejected seven invalid outputs. All 347 emitted citations resolved to accessible current passages. Passing these checks does not establish factual support.
+| Split | Proper expected refusals | Answerable responses | Unnecessary refusals | Invalid output | Citations resolved | Output-limit hits |
+| --- | --- | --- | --- | --- | --- | --- |
+| Development | 24/24 | 51/72 | 21 | 0 | 55/55 | 0 |
+| Test | 46/48 | 109/144 | 35 | 0 | 120/120 | 0 |
 
-The original Qwen policy rejected all 96 development and 192 test outputs. [Diagnosis and repair](docs/GENERATION-REPAIR.md) explain the key/ID errors, unsuccessful prompt-only probes and constrained decoding with a two-citation generation budget. Server validation, exact IDs, access/version checks and final response revalidation remain strict. The same pinned model, corpus and questions were retained; held-out outputs did not change parameters.
 
-Qwen still answers unsupported questions incorrectly. Only 1/48 expected-abstention test cases abstained, through invalid-output rejection; no explicit insufficient-evidence response correctly handled an expected-abstention case. Exact quotations remain the default; they can also select irrelevant matching sentences and correctly abstained on 8/12 expected-abstention cases per actual test method. Human citation support/completeness remain unmeasured.
+The selected generator is a pinned local four-bit Qwen3 14B model running through MLX on Apple Silicon, with thinking disabled. A short empty-refusal instruction and 180-character answer bound preserve the strict JSON/exact-ID decoder. The original 0.5B model and several smaller-model/classifier trials failed useful abstention checks; [diagnosis and decisions](docs/ABSTENTION-REPAIR.md) retain those failures and the coverage cost.
 
-[Evaluation protocol](EVALUATION.md) and [recorded evidence](reports/README.md) retain the new results and original failures separately, with hashes, counts, role/stratum aggregates and paired confidence intervals. Fixture and actual-model results remain separate.
+Actual retrieval recall@5 remains 1.0 for all four methods on 36 eligible test questions per method. Dense/hybrid MRR is 1.0 versus BM25/reranked hybrid 0.9861; MiniLM did not improve that ranking. Warm timings and all denominators are in [EVALUATION.md](EVALUATION.md). Native generation and the CPU baseline differ in model, policy and backend, so timing differences are not attributed to a single change.
+
+The reused frozen test is regression evidence after earlier disclosed runs, not a new unseen generalisation study. Policy/model selection used development evidence only; test outputs did not change the policy. The corpus is small, repetitive and fictional. The model still misses two expected refusals and sacrifices answerable response coverage; accepted answers can still be incomplete or unsupported. Exact quotations remain the default. Human source support/completeness, screen-reader use and customer impact remain unmeasured.
+
+[Recorded evidence](reports/README.md) separates fixture, actual-model and pending human-review results. The earlier [generation-format repair](docs/GENERATION-REPAIR.md), v3 baseline and original all-invalid reports remain unchanged. Citation identity/version/access/publication checks were not relaxed.
 
 ## Checks and operation
 

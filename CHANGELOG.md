@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased - local abstention repair (2026-10-16)
+
+Use pinned native Qwen3 14B four-bit generation with thinking disabled, an explicit empty-refusal/current-fact prompt and 180-character answer bound. Keep strict exact-ID/current-version/access/publication checks. Add separate proper-refusal, invalid-output and answerable-coverage counters, optional pinned MLX dependencies, full weight-file-set checks and non-finite-safe token masking.
+
+Test regression: 46/48 proper expected refusals, 109/144 answerable responses, 35 unnecessary refusals and 0 invalid outputs. Retain v4 evidence and all original reports. The conservative policy improves refusal but retains two errors and a disclosed coverage cost; human factual support/completeness remain unmeasured. Actual browser, 96-request lifecycle matrix, strict checks and clean checkout passed. No public release occurred.
+
 ## Unreleased - local generation repair (2026-10-16)
 
 Make pinned Qwen generation operational with strict schema/authorised-ID decoding and a two-citation generation budget. Preserve server validation, current-version/access checks and publication ordering. Add a compatible typed token-enforcement bridge, Unicode/configuration regressions, token-limit provenance, safe evidence curation and a genuine local browser/Qwen check.
