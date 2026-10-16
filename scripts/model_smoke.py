@@ -46,6 +46,8 @@ def main() -> None:
                     "output_tokens": result.output_tokens,
                     "hit_output_limit": result.hit_output_limit,
                     "embedding_truncations": session.embedding_truncations,
+                    "peak_worker_rss_bytes": session.peak_rss,
+                    "peak_accelerator_bytes": session.peak_accelerator_bytes,
                     "elapsed_seconds": time.monotonic() - begin,
                 }
             )

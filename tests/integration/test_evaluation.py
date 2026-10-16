@@ -14,6 +14,7 @@ def test_fixture_report_counts_and_honest_provenance(tmp_path: Path) -> None:
     assert {row.mode for row in report.rows} == {"bm25", "dense", "hybrid", "hybrid_rerank"}
     assert not any(row.forbidden_disclosure for row in report.rows)
     assert report.manifest.model_lock is None
+    assert report.manifest.model_dump().get("peak_accelerator_bytes") == 0
 
 
 def test_measured_output_limits_exclude_warmup(tmp_path: Path) -> None:
@@ -27,6 +28,7 @@ def test_measured_output_limits_exclude_warmup(tmp_path: Path) -> None:
     class WarmSession(ModelSession):
         def __init__(self) -> None:
             self.peak_rss = self.embedding_truncations = self.dropped_passages = 0
+            self.peak_accelerator_bytes = 0
             self.generation_tokens = 0
             self.generation_limit_hits = 7
 

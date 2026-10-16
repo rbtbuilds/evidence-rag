@@ -8,7 +8,9 @@ import pytest
 
 from evidence_rag.contracts import Citation
 from evidence_rag.models import worker
+from evidence_rag.models.decoding import TokenSequence
 from evidence_rag.models.local import PROJECT, ModelLock
+from evidence_rag.models.native import NativeOutput
 from evidence_rag.models.runner import GenerateRequest, GenerationResult
 from tests.unit.test_generation import source
 
@@ -31,6 +33,7 @@ class Tokenizer:
         self.force_trim = force_trim
         self.all_special_ids: list[int] = [0]
         self.messages: list[dict[str, str]] = []
+        self.template_kwargs: dict[str, object] = {}
 
     def encode(self, text: str, **kwargs: object) -> list[int]:
         if self.force_trim and json.loads(self.messages[-1]["content"])["evidence"]:
@@ -39,6 +42,7 @@ class Tokenizer:
 
     def apply_chat_template(self, messages: list[dict[str, str]], **kwargs: object) -> str:
         self.messages = messages
+        self.template_kwargs = kwargs
         return "rendered prompt"
 
     def decode(self, ids: list[int], **kwargs: object) -> str:
@@ -50,6 +54,8 @@ class Generator:
         self.arguments: dict[str, object] = {}
         self.schema: object = None
         self.configuration: dict[str, object] = {}
+        self.native_calls = 0
+        self.native_limits: list[int | None] = []
 
     def generate(self, **kwargs: object) -> Tensor:
         self.arguments = kwargs
@@ -65,6 +71,8 @@ def run_backend(
     *,
     citations: list[Citation] | None = None,
     force_trim: bool = False,
+    native: bool = False,
+    native_output: str = '{"answer":"35 units.","cited_chunk_ids":["known"],"insufficient_evidence":false}',
 ) -> tuple[Tokenizer, Generator, GenerationResult]:
     backend = object.__new__(worker.Backends)
     backend.root = tmp_path
@@ -73,6 +81,30 @@ def run_backend(
     backend.tokenizer, backend.generator = tokenizer, generator
     backend.encoder = backend.cross = None
     backend.tokenizer_data = None
+    backend.lock.models["generator"] = backend.lock.models["generator"].model_copy(
+        update={"backend": "mlx" if native else "transformers"}
+    )
+    if native:
+
+        class NativeDouble:
+            def generate(
+                self,
+                ids: list[int],
+                prefix: Callable[[int, TokenSequence], list[int]],
+                *,
+                max_tokens: int | None = None,
+            ) -> NativeOutput:
+                generator.native_calls += 1
+                generator.native_limits.append(max_tokens)
+                assert ids == [1, 2, 3] and callable(prefix)
+                return NativeOutput(
+                    native_output,
+                    23,
+                    False,
+                    123,
+                )
+
+        monkeypatch.setattr(backend, "native", NativeDouble(), raising=False)
 
     def factory(module: str, name: str) -> Callable[..., object]:
         if (module, name) == ("torch", "tensor"):
@@ -170,3 +202,38 @@ def test_worker_keeps_unicode_from_authorised_request(
     _, generator, _ = run_backend(monkeypatch, tmp_path, citations=[quoted])
     alphabet = cast(str, generator.configuration["alphabet"])
     assert "🛰" in alphabet and "𐐷" in alphabet
+
+
+def test_declared_native_backend_uses_the_same_request_constraints(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _, generator, result = run_backend(monkeypatch, tmp_path, native=True)
+    assert generator.native_calls == 1 and generator.arguments == {}
+    assert generator.native_limits == [256]
+    assert generator.schema is not None
+    assert result.output_tokens == 23
+    assert result.model_dump().get("peak_accelerator_bytes") == 123
+
+
+def test_native_refusal_preserves_the_strict_empty_output(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from evidence_rag.answers.generation import validate_generation
+
+    _, generator, result = run_backend(
+        monkeypatch,
+        tmp_path,
+        native=True,
+        native_output='{"answer":"","cited_chunk_ids":[],"insufficient_evidence":true}',
+    )
+    validated = validate_generation(result.output, [source()])
+    assert validated.abstained and validated.reason == "insufficient_evidence"
+    assert validated.text == "" and validated.citations == []
+    assert generator.native_calls == 1
+
+
+def test_native_chat_template_explicitly_disables_thinking(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    tokenizer, _, _ = run_backend(monkeypatch, tmp_path, native=True)
+    assert tokenizer.template_kwargs.get("enable_thinking") is False

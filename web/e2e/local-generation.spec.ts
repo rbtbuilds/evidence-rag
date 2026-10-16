@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import type { Answer } from "../src/contracts";
 import { login } from "./helpers";
 
-test("actual local Qwen answer opens its checked current source", async ({
+test("actual local Qwen answers supported facts and refuses unsupported questions", async ({
   page,
 }) => {
   test.skip(
@@ -40,4 +40,30 @@ test("actual local Qwen answer opens its checked current source", async ({
     .first()
     .click();
   await expect(page.getByLabel("Cited quotation")).toContainText("35 units");
+  await page.getByRole("button", { name: "Back to answer" }).click();
+  for (const question of [
+    "Which lunar alloy is used?",
+    "What is the calibration marker?",
+  ]) {
+    await page.getByLabel("Question", { exact: true }).fill(question);
+    const refusedResponse = page.waitForResponse(
+      (value) =>
+        value.url().endsWith("/api/questions") &&
+        value.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "Ask question", exact: true }).click();
+    const refused = (await (await refusedResponse).json()) as Answer;
+    expect(refused.execution_profile).toBe("local");
+    expect(refused.abstained).toBe(true);
+    expect(refused.reason).toBe("insufficient_evidence");
+    expect(refused.answer).toBe("");
+    expect(refused.citations).toEqual([]);
+    await expect(page.getByTestId("answer")).toContainText("Insufficient evidence");
+    await expect(page.getByTestId("answer").getByRole("link")).toHaveCount(0);
+  }
+  await page
+    .getByLabel("Question", { exact: true })
+    .fill("What is the circulation display limit?");
+  await page.getByRole("button", { name: "Ask question", exact: true }).click();
+  await expect(page.getByTestId("answer")).toContainText("35");
 });

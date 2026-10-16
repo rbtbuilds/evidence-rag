@@ -17,6 +17,9 @@ evidence-rag = "evidence_rag.cli:main"
 ml = [
     "huggingface-hub==2.2.0",
     "lm-format-enforcer==0.11.3",
+    "mlx==0.32.2 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "mlx-lm==0.32.2 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "mlx-metal==0.32.2 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
     "sentence-transformers==5.7.0",
     "torch==2.14.1",
     "transformers==5.20.0",

@@ -1,6 +1,35 @@
 {
-  "embedding": {"id": "BAAI/bge-small-en-v1.5", "license": "mit", "dimensions": 384},
-  "reranker": {"id": "cross-encoder/ms-marco-MiniLM-L6-v2", "license": "apache-2.0"},
-  "generator": {"id": "Qwen/Qwen2.5-0.5B-Instruct", "license": "apache-2.0"},
-  "runtime": {"device": "cpu", "dtype": "float32", "threads": 4, "batch_size": 4, "seed": 17, "max_input_tokens": 2048, "max_new_tokens": 256, "do_sample": false}
+  "embedding": {
+    "id": "BAAI/bge-small-en-v1.5",
+    "license": "mit",
+    "dimensions": 384
+  },
+  "reranker": {
+    "id": "cross-encoder/ms-marco-MiniLM-L6-v2",
+    "license": "apache-2.0"
+  },
+  "generator": {
+    "id": "mlx-community/Qwen3-14B-4bit",
+    "license": "apache-2.0",
+    "backend": "mlx",
+    "quantization_bits": 4,
+    "quantization_group_size": 64
+  },
+  "runtime": {
+    "embedding_reranker_device": "cpu",
+    "embedding_reranker_dtype": "float32",
+    "generator_device": "mlx-gpu",
+    "generator_platform": "darwin-arm64",
+    "threads": 4,
+    "batch_size": 4,
+    "seed": 17,
+    "max_input_tokens": 2048,
+    "max_new_tokens": 256,
+    "do_sample": false,
+    "worker_rss_limit_bytes": 6442450944,
+    "accelerator_detected_peak_limit_bytes": 12884901888,
+    "allocator_cache_bytes": 268435456,
+    "max_answer_characters": 180,
+    "enable_thinking": false
+  }
 }

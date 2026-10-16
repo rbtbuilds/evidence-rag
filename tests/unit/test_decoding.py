@@ -110,3 +110,16 @@ def test_byte_assembled_unicode_and_environment_overrides(monkeypatch: pytest.Mo
         assert token in prefix(0, Sequence(ids))
         ids.append(token)
     assert tokenizer.eos_token_id in prefix(0, Sequence(ids))
+
+
+def test_decoding_bounds_answer_text_without_loosening_ids() -> None:
+    data = build_tokenizer_data(AsciiTokenizer())
+    prefix = allowed_tokens(data, core("JsonSchemaParser")(generation_schema([source()])))
+    ids = [65, 66]
+    text = '{"answer":"' + "a" * 180
+    for char in text:
+        assert ord(char) in prefix(0, Sequence(ids))
+        ids.append(ord(char))
+    choices = prefix(0, Sequence(ids))
+    assert ord('"') in choices
+    assert ord("a") not in choices

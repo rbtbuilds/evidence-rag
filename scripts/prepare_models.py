@@ -9,7 +9,7 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from importlib import import_module
 from pathlib import Path
-from typing import cast
+from typing import Literal, cast
 
 from pydantic import BaseModel, Field
 
@@ -35,8 +35,18 @@ class Info(BaseModel):
 SPECS = {
     "embedding": ("BAAI/bge-small-en-v1.5", "mit"),
     "reranker": ("cross-encoder/ms-marco-MiniLM-L6-v2", "apache-2.0"),
-    "generator": ("Qwen/Qwen2.5-0.5B-Instruct", "apache-2.0"),
+    "generator": ("mlx-community/Qwen3-14B-4bit", "apache-2.0"),
 }
+BACKENDS: dict[str, Literal["mlx", "transformers"]] = {"generator": "mlx"}
+LIBRARIES = (
+    "torch",
+    "transformers",
+    "sentence-transformers",
+    "huggingface-hub",
+    "mlx",
+    "mlx-lm",
+    "mlx-metal",
+)
 
 
 def configure_downloads(root: Path) -> Callable[..., str]:
@@ -52,10 +62,7 @@ def main() -> None:
     root.mkdir(parents=True, exist_ok=True)
     target = PROJECT / "config/models.lock.json"
     known = ModelLock.model_validate_json(target.read_text()) if target.exists() else None
-    libraries = {
-        name: importlib.metadata.version(name)
-        for name in ("torch", "transformers", "sentence-transformers", "huggingface-hub")
-    }
+    libraries = {name: importlib.metadata.version(name) for name in LIBRARIES}
     if known and known.libraries != libraries:
         raise ValueError(
             "Install the locked ml dependencies; changing runtime provenance requires a new reviewed lock."
@@ -66,7 +73,10 @@ def main() -> None:
     try:
         for name, (model_id, license_id) in SPECS.items():
             pinned = known.models[name] if known else None
-            if pinned and (pinned.id != model_id or pinned.license != license_id):
+            backend = BACKENDS.get(name, "transformers")
+            if pinned and (
+                pinned.id != model_id or pinned.license != license_id or pinned.backend != backend
+            ):
                 raise ValueError("Pinned model differs from declared specification")
             suffix = "/revision/" + pinned.revision if pinned else ""
             with urllib.request.urlopen(
@@ -85,7 +95,7 @@ def main() -> None:
             files = [
                 f
                 for f in files
-                if f.endswith((".json", ".txt", ".md", ".safetensors", ".model"))
+                if f.endswith((".json", ".txt", ".md", ".safetensors", ".model", ".jinja"))
                 or f.upper() in {"LICENSE", "NOTICE"}
             ]
             if pinned:
@@ -128,6 +138,7 @@ def main() -> None:
                 license=license_id,
                 path=str(directory.relative_to(root)),
                 files=hashes,
+                backend=backend,
             )
         lock = ModelLock(
             prepared_at=datetime.now(UTC).isoformat(),

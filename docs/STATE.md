@@ -1,6 +1,8 @@
 # Evidence RAG state
 
-Updated: 2026-10-16. Local v1 and the requested Qwen generation repair/evaluation are complete on feat/evidence-rag-v1. Generation is operational under strict citation validation; unsupported-question quality remains weak. No publication, push, deployment, paid work or external send occurred. Human citation support/completeness remain unmeasured.
+Updated: 2026-10-16. Abstention repair is in progress; see [ABSTENTION-REPAIR.md](ABSTENTION-REPAIR.md). Active local generation is now pinned native Qwen3 14B four-bit, thinking disabled, explicit empty-refusal/current-fact policy and 180-character answer bound. In 36 development probes it correctly refused all 12 unsupported cases and answered 19/24 answerable cases; five false refusals remain a known coverage cost. The 4B candidate passed BM25/browser checks but failed a dense-reader refusal and was rejected as a complete repair. The 14B actual browser flow passed, as did the stricter 96-request actual access/lifecycle matrix across all four methods (82.59 seconds). Strict checks pass 110 Python tests, 11 web tests and build/contracts/corpus checks. Canonical evaluation and final clean-checkout verification remain pending. Resource policy: 6 GiB sampled worker RSS, 12 GiB detected accelerator peak, 256 MiB allocator cache guideline. Strict citation/access/version/publication checks remain unchanged. No publication, push, deployment, paid work or external send occurred. Human citation support/completeness remain unmeasured.
+
+The generation-format repair and evaluation below remain the retained v3 baseline on feat/evidence-rag-v1.
 
 ## Ownership and frozen source
 

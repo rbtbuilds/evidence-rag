@@ -41,6 +41,7 @@ def digest(path: Path) -> str:
 def aggregate(rows: Sequence[EvaluationRow]) -> Aggregate:
     relevant = [row for row in rows if row.recall_at_5 is not None]
     abstention = [row for row in rows if row.expected_abstention]
+    answerable = [row for row in rows if not row.expected_abstention]
     correct = sum(row.answer.abstained for row in abstention)
     return Aggregate(
         count=len(rows),
@@ -54,6 +55,14 @@ def aggregate(rows: Sequence[EvaluationRow]) -> Aggregate:
         expected_abstention_count=len(abstention),
         correct_abstentions=correct,
         correct_abstention_rate=correct / len(abstention) if abstention else None,
+        explicit_correct_abstentions=sum(
+            row.answer.abstained and row.answer.reason == "insufficient_evidence"
+            for row in abstention
+        ),
+        invalid_generation_count=sum(row.answer.reason == "invalid_generation" for row in rows),
+        answerable_count=len(answerable),
+        answered_answerable_count=sum(not row.answer.abstained for row in answerable),
+        unnecessary_abstentions=sum(row.answer.abstained for row in answerable),
         abstention_decision_accuracy=sum(
             row.answer.abstained == row.expected_abstention for row in rows
         )
@@ -350,6 +359,7 @@ def run_rows(
         embedding_truncations=session.embedding_truncations if session else 0,
         dropped_passages=session.dropped_passages if session else 0,
         peak_worker_rss_bytes=session.peak_rss if session else 0,
+        peak_accelerator_bytes=session.peak_accelerator_bytes if session else 0,
     )
     groups, pairs = summary(rows)
     return EvaluationReport(

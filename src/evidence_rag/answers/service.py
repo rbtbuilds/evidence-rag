@@ -17,7 +17,7 @@ from evidence_rag.db.repository import AccessScope, Repository
 from evidence_rag.documents.chunking import CHUNKER_REVISION
 from evidence_rag.errors import DomainError
 from evidence_rag.models.fixture import FixtureEmbedder, FixtureReranker
-from evidence_rag.models.local import snapshots
+from evidence_rag.models.local import generation_revision, snapshots
 from evidence_rag.models.runner import ModelRunner, ModelSession
 from evidence_rag.retrieval.service import Retriever
 
@@ -48,7 +48,7 @@ class AnswerService:
             embedding = "bge:" + lock.models["embedding"].revision
             reranker = "minilm:" + lock.models["reranker"].revision
             if request.generation_mode == "local":
-                generator = "qwen:" + lock.models["generator"].revision
+                generator = generation_revision(lock)
         return RevisionSet(
             CHUNKER_REVISION, embedding, reranker, generator, PROMPT_REVISION, self.settings.profile
         )

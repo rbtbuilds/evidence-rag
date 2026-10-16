@@ -68,6 +68,30 @@ def test_rss_cap_and_busy_and_queue_limit(tmp_path: Path) -> None:
         runner.slots.release()
 
 
+@pytest.mark.parametrize(
+    "payload",
+    [
+        '{"kind":"error","code":"model_memory_limit"}',
+        '{"kind":"generation","revision":"test-worker","output":"{}","peak_accelerator_bytes":13958643712}',
+    ],
+)
+def test_accelerator_failure_joins_before_releasing_lease(tmp_path: Path, payload: str) -> None:
+    lease = tmp_path / "lease"
+    runner = ModelRunner(
+        tmp_path,
+        lease=ModelLease(lease),
+        command=[
+            sys.executable,
+            "-c",
+            "import sys\nfor line in sys.stdin:\n print(" + repr(payload) + ",flush=True)",
+        ],
+    )
+    with pytest.raises(DomainError) as error, runner.session("accelerator cap") as session:
+        session.generate("What fact?", [])
+    assert error.value.code == "model_memory_limit"
+    assert not lease.exists() and runner.process is None
+
+
 def test_queued_request_has_a_bounded_admission_deadline(tmp_path: Path) -> None:
     import time
     from concurrent.futures import ThreadPoolExecutor
@@ -113,3 +137,20 @@ for line in sys.stdin:
     with runner.session("batch-contract") as session:
         vectors = session.embed([str(i) for i in range(9)])
     assert len(vectors) == 9 and all(vector[i] == 1 for i, vector in enumerate(vectors))
+
+
+def test_native_peak_within_the_documented_model_budget_is_accepted(tmp_path: Path) -> None:
+    payload = '{"kind":"generation","revision":"test-worker","output":"{}","peak_accelerator_bytes":9663676416}'
+    runner = ModelRunner(
+        tmp_path,
+        lease=ModelLease(tmp_path / "lease"),
+        command=[
+            sys.executable,
+            "-c",
+            "import sys\nfor line in sys.stdin:\n print(" + repr(payload) + ",flush=True)",
+        ],
+    )
+    with runner.session("native bounded result") as session:
+        result = session.generate("What fact?", [])
+        assert result.peak_accelerator_bytes == 9663676416
+    assert runner.process is None and not (tmp_path / "lease").exists()

@@ -113,6 +113,20 @@ def test_actual_models_respect_access_cache_and_lifecycle() -> None:
                                     assert data["execution_profile"] == "local"
                                     forbidden = disclosed_markers(response.text, role, lifecycle)
                                     assert not forbidden
+                                    if generation == "local":
+                                        if role == "reader" or lifecycle == "deleted":
+                                            assert data["abstained"], (mode, lifecycle, role, data)
+                                            assert data["reason"] == "insufficient_evidence"
+                                            assert data["answer"] == ""
+                                            assert data["citations"] == []
+                                        else:
+                                            marker = (
+                                                "MAINTAINER-CAL-7391"
+                                                if lifecycle == "active"
+                                                else "REPLACED-MARKER"
+                                            )
+                                            assert not data["abstained"]
+                                            assert marker in data["answer"]
                                     if (
                                         lifecycle == "active"
                                         and role == "maintainer"
@@ -141,6 +155,8 @@ def test_actual_models_respect_access_cache_and_lifecycle() -> None:
                                             "cache": heat,
                                             "status": response.status_code,
                                             "abstained": data["abstained"],
+                                            "reason": data["reason"],
+                                            "answer_empty": data["answer"] == "",
                                             "citation_count": len(data["citations"]),
                                             "forbidden_disclosure": bool(forbidden),
                                         }
@@ -186,7 +202,7 @@ def test_actual_models_respect_access_cache_and_lifecycle() -> None:
         "corpus_manifest_sha256": hashlib.sha256(
             (FIXTURES / "corpus/manifest.json").read_bytes()
         ).hexdigest(),
-        "scope": "Two roles, four retrieval modes, two generation modes, cold/warm cache, active/replaced/deleted source; serial actual API requests, no race claim. Qwen abstentions do not prove prompt obedience.",
+        "scope": "Two roles, four retrieval modes, two generation modes, cold/warm cache, active/replaced/deleted source; serial actual API requests, no race claim. Local reader/deleted requests must explicitly refuse with empty answers and no citations; authorised active/replaced requests must answer the current marker. No prompt-obedience or entailment claim.",
         "rows": rows,
     }
     (root / "actual-access-matrix.json").write_text(json.dumps(report, indent=2) + "\n")

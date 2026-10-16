@@ -14,8 +14,9 @@ from pydantic import Field, TypeAdapter
 
 from evidence_rag.contracts import Citation, StrictModel
 from evidence_rag.errors import DomainError
+from evidence_rag.models.generation import GENERATION_SETTINGS
 from evidence_rag.models.lease import ModelLease
-from evidence_rag.models.local import ModelLock, snapshots
+from evidence_rag.models.local import ModelLock, generation_revision, snapshots
 
 MAX_MESSAGE = 16 * 1024 * 1024
 
@@ -64,10 +65,16 @@ class GenerationResult(StrictModel):
     dropped_passages: int = 0
     output_tokens: int = Field(default=0, ge=0)
     hit_output_limit: bool = False
+    peak_accelerator_bytes: int = Field(default=0, ge=0)
+
+
+class MemoryFailure(StrictModel):
+    kind: Literal["error"] = "error"
+    code: Literal["model_memory_limit"] = "model_memory_limit"
 
 
 ModelResult = Annotated[
-    EmbeddingResult | RerankResult | GenerationResult, Field(discriminator="kind")
+    EmbeddingResult | RerankResult | GenerationResult | MemoryFailure, Field(discriminator="kind")
 ]
 RESULT = TypeAdapter(ModelResult)
 
@@ -80,6 +87,7 @@ class ModelSession:
         self.timeout = timeout
         self.deadline = time.monotonic() + timeout
         self.peak_rss = 0
+        self.peak_accelerator_bytes = 0
         self.embedding_truncations = 0
         self.dropped_passages = 0
         self.generation_tokens = 0
@@ -126,11 +134,13 @@ class ModelSession:
         result = self.run(GenerateRequest(question=question, citations=citations))
         if not isinstance(result, GenerationResult):
             raise DomainError(503, "model_unavailable")
-        if (
-            self.runner.lock_info
-            and result.revision != "qwen:" + self.runner.lock_info.models["generator"].revision
-        ):
+        if self.runner.lock_info and result.revision != generation_revision(self.runner.lock_info):
             raise DomainError(503, "model_unavailable")
+        self.peak_accelerator_bytes = max(
+            self.peak_accelerator_bytes, result.peak_accelerator_bytes
+        )
+        if result.peak_accelerator_bytes > int(GENERATION_SETTINGS["accelerator_budget_bytes"]):
+            raise DomainError(503, "model_memory_limit")
         self.dropped_passages += result.dropped_passages
         self.generation_tokens += result.output_tokens
         self.generation_limit_hits += int(result.hit_output_limit)
@@ -180,7 +190,10 @@ class ModelSession:
                                 line, rest = output.split(b"\n", 1)
                                 if rest.strip():
                                     raise DomainError(503, "model_unavailable")
-                                return RESULT.validate_json(line)
+                                result = RESULT.validate_json(line)
+                                if isinstance(result, MemoryFailure):
+                                    raise DomainError(503, result.code)
+                                return result
         except (OSError, ValueError, psutil.Error) as error:
             raise DomainError(503, "model_unavailable") from error
 

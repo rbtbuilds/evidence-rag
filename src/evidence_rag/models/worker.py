@@ -14,6 +14,7 @@ from numpy.typing import NDArray
 from evidence_rag.answers.generation import StructuredGeneration
 from evidence_rag.models.decoding import (
     DecodingTokenizer,
+    TokenSequence,
     allowed_tokens,
     build_tokenizer_data,
     tokenizer_alphabet,
@@ -24,7 +25,8 @@ from evidence_rag.models.generation import (
     generation_messages,
     generation_schema,
 )
-from evidence_rag.models.local import snapshots
+from evidence_rag.models.local import generation_revision, snapshots
+from evidence_rag.models.native import AcceleratorMemoryLimit, NativeGenerator
 from evidence_rag.models.runner import (
     MAX_MESSAGE,
     REQUEST,
@@ -32,6 +34,7 @@ from evidence_rag.models.runner import (
     EmbedRequest,
     GenerateRequest,
     GenerationResult,
+    MemoryFailure,
     ModelResult,
     RerankRequest,
     RerankResult,
@@ -81,6 +84,7 @@ class Backends:
         self.generator: Generator | None = None
         self.tokenizer: Tokenizer | None = None
         self.tokenizer_data: object | None = None
+        self.native: NativeGenerator | None = None
         factory("torch", "set_num_threads")(4)
         factory("torch", "manual_seed")(17)
 
@@ -144,8 +148,80 @@ class Backends:
                 scores=[float(v) for v in scores.reshape(-1)],
                 revision="minilm:" + self.lock.models["reranker"].revision,
             )
+        if not request.citations:
+            return GenerationResult(
+                output=StructuredGeneration(
+                    answer="", cited_chunk_ids=[], insufficient_evidence=True
+                ).model_dump_json(),
+                revision=generation_revision(self.lock),
+            )
         if self.tokenizer is None:
             self.tokenizer = cast(Tokenizer, pretrained("AutoTokenizer", self.path("generator")))
+        if self.tokenizer_data is None:
+            self.tokenizer_data = build_tokenizer_data(self.tokenizer)
+        citations = list(request.citations)
+        dropped = 0
+        while True:
+            messages = generation_messages(request.question, citations)
+            text = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=GENERATION_SETTINGS["enable_thinking"],
+            )
+            ids = self.tokenizer.encode(text, add_special_tokens=False)
+            if len(ids) <= 2048:
+                break
+            if not citations:
+                return GenerationResult(
+                    output=StructuredGeneration(
+                        answer="", cited_chunk_ids=[], insufficient_evidence=True
+                    ).model_dump_json(),
+                    revision=generation_revision(self.lock),
+                    dropped_passages=dropped,
+                )
+            citations.pop()
+            dropped += 1
+        if not citations:
+            return GenerationResult(
+                output=StructuredGeneration(
+                    answer="", cited_chunk_ids=[], insufficient_evidence=True
+                ).model_dump_json(),
+                revision=generation_revision(self.lock),
+                dropped_passages=dropped,
+            )
+
+        def constrained(schema: dict[str, object]) -> Callable[[int, TokenSequence], list[int]]:
+            config = factory("lmformatenforcer", "CharacterLevelParserConfig")(
+                alphabet=generation_alphabet(
+                    tokenizer_alphabet(self.tokenizer_data), request.question, citations
+                ),
+                force_json_field_order=GENERATION_SETTINGS["force_json_field_order"],
+                max_consecutive_whitespaces=GENERATION_SETTINGS["max_consecutive_whitespaces"],
+                max_json_array_length=5,
+            )
+            parser = factory("lmformatenforcer", "JsonSchemaParser")(schema, config=config)
+            return allowed_tokens(self.tokenizer_data, parser)
+
+        if self.lock.models["generator"].backend == "mlx":
+            if self.native is None:
+                self.native = NativeGenerator(
+                    self.path("generator"), expected_files=list(self.lock.models["generator"].files)
+                )
+            native = self.native.generate(
+                ids,
+                constrained(generation_schema(citations)),
+                max_tokens=int(GENERATION_SETTINGS["max_new_tokens"]),
+            )
+            return GenerationResult(
+                output=native.output,
+                revision=generation_revision(self.lock),
+                dropped_passages=dropped,
+                output_tokens=native.output_tokens,
+                hit_output_limit=native.hit_output_limit,
+                peak_accelerator_bytes=native.peak_accelerator_bytes,
+            )
+        if self.generator is None:
             self.generator = cast(
                 Generator,
                 pretrained(
@@ -156,57 +232,8 @@ class Backends:
                 ),
             )
             self.generator.eval()
-        assert self.generator is not None
-        if self.tokenizer_data is None:
-            self.tokenizer_data = build_tokenizer_data(self.tokenizer)
-        if not request.citations:
-            return GenerationResult(
-                output=StructuredGeneration(
-                    answer="", cited_chunk_ids=[], insufficient_evidence=True
-                ).model_dump_json(),
-                revision="qwen:" + self.lock.models["generator"].revision,
-            )
-        citations = list(request.citations)
-        dropped = 0
-        while True:
-            messages = generation_messages(request.question, citations)
-            text = self.tokenizer.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=True
-            )
-            ids = self.tokenizer.encode(text, add_special_tokens=False)
-            if len(ids) <= 2048:
-                break
-            if not citations:
-                return GenerationResult(
-                    output=StructuredGeneration(
-                        answer="", cited_chunk_ids=[], insufficient_evidence=True
-                    ).model_dump_json(),
-                    revision="qwen:" + self.lock.models["generator"].revision,
-                    dropped_passages=dropped,
-                )
-            citations.pop()
-            dropped += 1
-        if not citations:
-            return GenerationResult(
-                output=StructuredGeneration(
-                    answer="", cited_chunk_ids=[], insufficient_evidence=True
-                ).model_dump_json(),
-                revision="qwen:" + self.lock.models["generator"].revision,
-                dropped_passages=dropped,
-            )
         tensor = factory("torch", "tensor")([ids])
-        config = factory("lmformatenforcer", "CharacterLevelParserConfig")(
-            alphabet=generation_alphabet(
-                tokenizer_alphabet(self.tokenizer_data), request.question, citations
-            ),
-            force_json_field_order=GENERATION_SETTINGS["force_json_field_order"],
-            max_consecutive_whitespaces=GENERATION_SETTINGS["max_consecutive_whitespaces"],
-            max_json_array_length=5,
-        )
-        parser = factory("lmformatenforcer", "JsonSchemaParser")(
-            generation_schema(citations), config=config
-        )
-        prefix = allowed_tokens(self.tokenizer_data, parser)
+        prefix = constrained(generation_schema(citations))
         output = self.generator.generate(
             input_ids=tensor,
             **{
@@ -218,7 +245,7 @@ class Backends:
         generated = output.tolist()[0][len(ids) :]
         return GenerationResult(
             output=self.tokenizer.decode(generated, skip_special_tokens=True),
-            revision="qwen:" + self.lock.models["generator"].revision,
+            revision=generation_revision(self.lock),
             dropped_passages=dropped,
             output_tokens=len(generated),
             hit_output_limit=len(generated) >= int(GENERATION_SETTINGS["max_new_tokens"]),
@@ -240,7 +267,10 @@ def main() -> None:
         try:
             sys.stdout = sys.stderr
             with cast(AbstractContextManager[object], factory("torch", "inference_mode")()):
-                result = backend.handle(request)
+                try:
+                    result = backend.handle(request)
+                except AcceleratorMemoryLimit:
+                    result = MemoryFailure()
         finally:
             sys.stdout = original
         print(result.model_dump_json(), flush=True)

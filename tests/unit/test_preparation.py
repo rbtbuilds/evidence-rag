@@ -14,8 +14,9 @@ from evidence_rag.models.local import ModelLock, Snapshot
 from scripts import prepare_models
 
 
+@pytest.mark.parametrize("template", [False, True])
 def test_repreparation_uses_existing_revisions_and_preserves_the_lock(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, template: bool
 ) -> None:
     runtime = tmp_path / "runtime"
     runtime.mkdir()
@@ -31,14 +32,19 @@ def test_repreparation_uses_existing_revisions_and_preserves_the_lock(
                 revision=revision,
                 license=license_id,
                 path=f"models/{name}/{revision}",
-                files={"model.safetensors": hashlib.sha256(data).hexdigest()},
+                backend=prepare_models.BACKENDS.get(name, "transformers"),
+                files={
+                    filename: hashlib.sha256(data).hexdigest()
+                    for filename in (
+                        ["model.safetensors", "chat_template.jinja"]
+                        if template
+                        else ["model.safetensors"]
+                    )
+                },
             )
             for name, (model_id, license_id) in prepare_models.SPECS.items()
         },
-        libraries={
-            name: "test-library"
-            for name in ("torch", "transformers", "sentence-transformers", "huggingface-hub")
-        },
+        libraries={name: "test-library" for name in prepare_models.LIBRARIES},
     )
     target = config / "models.lock.json"
     target.write_text(lock.model_dump_json(indent=2) + "\n")
@@ -76,7 +82,14 @@ def test_repreparation_uses_existing_revisions_and_preserves_the_lock(
                 {
                     "sha": revision,
                     "cardData": {"license": license_id},
-                    "siblings": [{"rfilename": "model.safetensors"}],
+                    "siblings": [
+                        {"rfilename": filename}
+                        for filename in (
+                            ["model.safetensors", "chat_template.jinja"]
+                            if template
+                            else ["model.safetensors"]
+                        )
+                    ],
                 }
             ).encode()
         )

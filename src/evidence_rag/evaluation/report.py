@@ -27,13 +27,18 @@ class EvaluationManifest(BaseModel):
     embedding_truncations: int
     dropped_passages: int
     peak_worker_rss_bytes: int
+    peak_accelerator_bytes: int | None = None
     seed: int = 17
     bootstrap_resamples: int = 2000
-    tuning: str = "No score thresholds or test-set parameter selection."
+    tuning: str = (
+        "Model selected using development probes only; no score threshold tuning. "
+        "Frozen test is reused after prior disclosed runs: regression evidence, not fresh unseen data."
+    )
     context_budget: dict[str, int] = {
         "passages": 5,
         "input_tokens": 2048,
         "output_tokens": 256,
+        "max_answer_characters": 180,
         "candidate_limit": 20,
         "batch_size": 4,
         "cpu_threads": 4,
@@ -70,6 +75,11 @@ class Aggregate(BaseModel):
     expected_abstention_count: int
     correct_abstentions: int
     correct_abstention_rate: float | None
+    explicit_correct_abstentions: int | None = None
+    invalid_generation_count: int | None = None
+    answerable_count: int | None = None
+    answered_answerable_count: int | None = None
+    unnecessary_abstentions: int | None = None
     abstention_decision_accuracy: float | None
     forbidden_disclosures: int
     citations_total: int
