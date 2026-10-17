@@ -1,0 +1,665 @@
+{
+  "revision": "quality-v1",
+  "frozen_at_utc": "2026-10-17T19:27:27.256667+00:00",
+  "authorship": "AI-authored in a separate clean-context agent; not human-reviewed or statistically independent",
+  "provenance": {
+    "corpus_revision": "aster-corpus-v1",
+    "corpus_owner": "Bento Labs",
+    "corpus_license": "MIT",
+    "corpus_provenance": "Original fictional classroom scenario authored for Evidence RAG; no real equipment advice.",
+    "new_questions_existing_context": true,
+    "statistically_independent": false,
+    "human_reviewed": false,
+    "implementation_changes_inspected": false,
+    "model_output_files_consulted": false,
+    "individual_model_responses_consulted": false,
+    "models_run_by_author": false,
+    "documentation_exposure": "Required source/release guidance included aggregate prior-result and policy summaries; no individual outputs or implementation changes were inspected.",
+    "old_question_use": "Post-authoring automated normalized-question-hash collision check only; zero collisions.",
+    "challenge_content_exposed_to_implementer_before_freeze": false,
+    "support_boundary": "Current active versions accessible to the case role; superseded facts appear as premises or counterexamples, not cited evidence."
+  },
+  "files": {
+    "dev.json": "35cb2b4de96fa347cc29c1078163554ec03f661a8475426781638314978fde8f",
+    "challenge.json": "a2ebd2f414ee2a11886d0c4bc446c66279e93b75dde473f045357bec3dfce992"
+  },
+  "documentation_hashes": {
+    "README.md": "83a4ac051dab36cbeaeb4ff8adc829b8a21b6b36ce669da5984306571320c5f0"
+  },
+  "source_hashes": {
+    "corpus/assembly-v1.md": "aff5abddd591621404f4aece6f981996fce85ff4b1c4c5259402f9ef1e7555c5",
+    "corpus/assembly-v2.md": "3c32df1e381252d09460e82adb68ca2fd41abb883435021035703feee984f910",
+    "corpus/calibration-v1.md": "9876bcfda45d281ad164b045a6ef0dc6171723bccd64d533637c72de40a196f7",
+    "corpus/calibration-v2.md": "9876bcfda45d281ad164b045a6ef0dc6171723bccd64d533637c72de40a196f7",
+    "corpus/circulation-v1.md": "73dc92d66ce426fc9ede1cc1399052b95bb609c699a9539cbf6b747d46aa7ac9",
+    "corpus/circulation-v2.md": "7dca748d683ada431cb4797dba4bafba0d82320c68c7db3adffbe04255dae5ae",
+    "corpus/cleaning-v1.md": "8a569610eab3f20e96e7a24b38b52195aab2d536c8b24e1d4b83b05754115d8b",
+    "corpus/cleaning-v2.md": "5b1272765a5c2e4f18e166367c30fb4a399996c6e6a060c8da7fa8eb483abd6e",
+    "corpus/diagnostics-v1.md": "0e95798de91c88fc0614bb980564cba32f5829c2a85990b0ba12f597ed82eda7",
+    "corpus/diagnostics-v2.md": "0e95798de91c88fc0614bb980564cba32f5829c2a85990b0ba12f597ed82eda7",
+    "corpus/display-v1.md": "c7e9ca305f2eca316f97615e170d92a0170ae5a4cb0388de44e19d640f86ec7c",
+    "corpus/display-v2.md": "58fab20f79d880c284ec02fd0855339b1911b87afeb4772f5c607dd4fdc11d48",
+    "corpus/manifest.json": "99c4e5cd707d79d34505f46df2da0756305f3a025c063845b4031dad2e6bfb31",
+    "corpus/power-v1.md": "1087fe2683c4a04c0e4626869cdc5242b4b35690a41a40423401e6599f2adea4",
+    "corpus/power-v2.md": "233557ef044709ea32f7b60ef8a358973a78e69dca421c4f7a04bb9fa4a2fb07",
+    "corpus/release-v1.md": "96516715c66c7b108ad0fe4667551c74287322f7b77625eedadac412a91712d2",
+    "corpus/release-v2.md": "96516715c66c7b108ad0fe4667551c74287322f7b77625eedadac412a91712d2",
+    "corpus/service-v1.md": "2c902f4ccf9f3b890f63678f88a9341254672b43f2eaac862cf5f97473df58af",
+    "corpus/service-v2.md": "2c902f4ccf9f3b890f63678f88a9341254672b43f2eaac862cf5f97473df58af",
+    "corpus/storage-v1.md": "4702e4cbd1f6205b19af682b4755dc25e766362acb9e83b0d55f288905169f49",
+    "corpus/storage-v2.md": "b48c648aa091ba3699671aa7b208ddff2281a367dc13e4329f90c71d41d56719",
+    "corpus/training-v1.md": "a744554df6323dbc9384eeab982d3d07080d0e73e7f607b7c224f2be3a3049d3",
+    "corpus/training-v2.md": "1d0757c350c61933b88e9191a3cc2810b6f59f69d3c93669548263b338a17eab",
+    "corpus/troubleshooting-v1.md": "9fdb2593f3108a6690ff1dfe6dec4aaf5cf719e2619e81ce29fb0afcad44148b",
+    "corpus/troubleshooting-v2.md": "602c0cd1a033f2ebd7fddd93673c283a1502950d6dc9e92530c248b351871da8"
+  },
+  "source_document_metadata": [
+    {
+      "logical_id": "circulation",
+      "document_id": "6d559660-94ba-5965-98cc-4f623abef661",
+      "version_id": "d9b9c8a3-46ad-5962-9159-220ebd7cb23c",
+      "path": "circulation-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "73dc92d66ce426fc9ede1cc1399052b95bb609c699a9539cbf6b747d46aa7ac9",
+      "sections": [
+        "circulation-overview",
+        "circulation-legend",
+        "circulation-round",
+        "circulation-pause",
+        "circulation-replay",
+        "circulation-register",
+        "circulation-handover",
+        "circulation-review"
+      ]
+    },
+    {
+      "logical_id": "circulation",
+      "document_id": "6d559660-94ba-5965-98cc-4f623abef661",
+      "version_id": "6d719e51-f940-524c-b5d4-0071004c2be3",
+      "path": "circulation-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "7dca748d683ada431cb4797dba4bafba0d82320c68c7db3adffbe04255dae5ae",
+      "sections": [
+        "circulation-overview",
+        "circulation-legend",
+        "circulation-round",
+        "circulation-pause",
+        "circulation-replay",
+        "circulation-register",
+        "circulation-handover",
+        "circulation-review"
+      ]
+    },
+    {
+      "logical_id": "display",
+      "document_id": "48265b69-ae52-5f7d-ab5a-3cc8ed5958a7",
+      "version_id": "50cc76d0-3e23-591b-9bb1-a7cf2413ec46",
+      "path": "display-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "c7e9ca305f2eca316f97615e170d92a0170ae5a4cb0388de44e19d640f86ec7c",
+      "sections": [
+        "display-overview",
+        "display-legend",
+        "display-round",
+        "display-pause",
+        "display-replay",
+        "display-register",
+        "display-handover",
+        "display-review"
+      ]
+    },
+    {
+      "logical_id": "display",
+      "document_id": "48265b69-ae52-5f7d-ab5a-3cc8ed5958a7",
+      "version_id": "77c3f49b-b7c4-57bd-b458-2ab3f1bbe703",
+      "path": "display-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "58fab20f79d880c284ec02fd0855339b1911b87afeb4772f5c607dd4fdc11d48",
+      "sections": [
+        "display-overview",
+        "display-legend",
+        "display-round",
+        "display-pause",
+        "display-replay",
+        "display-register",
+        "display-handover",
+        "display-review"
+      ]
+    },
+    {
+      "logical_id": "power",
+      "document_id": "e607d946-794b-5406-af56-07623c5d8134",
+      "version_id": "889de2ea-ad87-5363-baeb-78248c066461",
+      "path": "power-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "1087fe2683c4a04c0e4626869cdc5242b4b35690a41a40423401e6599f2adea4",
+      "sections": [
+        "power-overview",
+        "power-legend",
+        "power-round",
+        "power-pause",
+        "power-replay",
+        "power-register",
+        "power-handover",
+        "power-review"
+      ]
+    },
+    {
+      "logical_id": "power",
+      "document_id": "e607d946-794b-5406-af56-07623c5d8134",
+      "version_id": "fdedc185-6c57-572b-ac06-38511e975927",
+      "path": "power-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "233557ef044709ea32f7b60ef8a358973a78e69dca421c4f7a04bb9fa4a2fb07",
+      "sections": [
+        "power-overview",
+        "power-legend",
+        "power-round",
+        "power-pause",
+        "power-replay",
+        "power-register",
+        "power-handover",
+        "power-review"
+      ]
+    },
+    {
+      "logical_id": "assembly",
+      "document_id": "c3a8ef87-4f3d-5a59-ba85-4cd6367b0a88",
+      "version_id": "feca4e57-bb1d-584c-88d0-fc7ea39fa172",
+      "path": "assembly-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "aff5abddd591621404f4aece6f981996fce85ff4b1c4c5259402f9ef1e7555c5",
+      "sections": [
+        "assembly-overview",
+        "assembly-legend",
+        "assembly-round",
+        "assembly-pause",
+        "assembly-replay",
+        "assembly-register",
+        "assembly-handover",
+        "assembly-review"
+      ]
+    },
+    {
+      "logical_id": "assembly",
+      "document_id": "c3a8ef87-4f3d-5a59-ba85-4cd6367b0a88",
+      "version_id": "39fd6000-665d-57b9-a9dd-273d9e1ab311",
+      "path": "assembly-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "3c32df1e381252d09460e82adb68ca2fd41abb883435021035703feee984f910",
+      "sections": [
+        "assembly-overview",
+        "assembly-legend",
+        "assembly-round",
+        "assembly-pause",
+        "assembly-replay",
+        "assembly-register",
+        "assembly-handover",
+        "assembly-review"
+      ]
+    },
+    {
+      "logical_id": "storage",
+      "document_id": "7eec6083-03a1-530f-81ae-2575ad932df2",
+      "version_id": "33cea799-361c-5290-b67a-7df059c2c3cf",
+      "path": "storage-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "4702e4cbd1f6205b19af682b4755dc25e766362acb9e83b0d55f288905169f49",
+      "sections": [
+        "storage-overview",
+        "storage-legend",
+        "storage-round",
+        "storage-pause",
+        "storage-replay",
+        "storage-register",
+        "storage-handover",
+        "storage-review"
+      ]
+    },
+    {
+      "logical_id": "storage",
+      "document_id": "7eec6083-03a1-530f-81ae-2575ad932df2",
+      "version_id": "f35be60e-cddd-53ec-92c4-5b8ab062e289",
+      "path": "storage-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "b48c648aa091ba3699671aa7b208ddff2281a367dc13e4329f90c71d41d56719",
+      "sections": [
+        "storage-overview",
+        "storage-legend",
+        "storage-round",
+        "storage-pause",
+        "storage-replay",
+        "storage-register",
+        "storage-handover",
+        "storage-review"
+      ]
+    },
+    {
+      "logical_id": "cleaning",
+      "document_id": "d4014e65-e684-51a2-99bc-4daad8943672",
+      "version_id": "d9d2c422-9909-54a0-9c8e-8d40dfee7a97",
+      "path": "cleaning-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "8a569610eab3f20e96e7a24b38b52195aab2d536c8b24e1d4b83b05754115d8b",
+      "sections": [
+        "cleaning-overview",
+        "cleaning-legend",
+        "cleaning-round",
+        "cleaning-pause",
+        "cleaning-replay",
+        "cleaning-register",
+        "cleaning-handover",
+        "cleaning-review"
+      ]
+    },
+    {
+      "logical_id": "cleaning",
+      "document_id": "d4014e65-e684-51a2-99bc-4daad8943672",
+      "version_id": "b1d4743e-f06c-5e0c-8b03-f2c86b153920",
+      "path": "cleaning-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "5b1272765a5c2e4f18e166367c30fb4a399996c6e6a060c8da7fa8eb483abd6e",
+      "sections": [
+        "cleaning-overview",
+        "cleaning-legend",
+        "cleaning-round",
+        "cleaning-pause",
+        "cleaning-replay",
+        "cleaning-register",
+        "cleaning-handover",
+        "cleaning-review"
+      ]
+    },
+    {
+      "logical_id": "training",
+      "document_id": "6d7e7eae-8c3c-5c75-86d1-f7bbfac8d9b9",
+      "version_id": "9e5bc6c7-320a-52bc-bbfd-9efed1a66739",
+      "path": "training-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "a744554df6323dbc9384eeab982d3d07080d0e73e7f607b7c224f2be3a3049d3",
+      "sections": [
+        "training-overview",
+        "training-legend",
+        "training-round",
+        "training-pause",
+        "training-replay",
+        "training-register",
+        "training-handover",
+        "training-review"
+      ]
+    },
+    {
+      "logical_id": "training",
+      "document_id": "6d7e7eae-8c3c-5c75-86d1-f7bbfac8d9b9",
+      "version_id": "f3d546cd-43ae-540f-a561-d185cfc820cf",
+      "path": "training-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "1d0757c350c61933b88e9191a3cc2810b6f59f69d3c93669548263b338a17eab",
+      "sections": [
+        "training-overview",
+        "training-legend",
+        "training-round",
+        "training-pause",
+        "training-replay",
+        "training-register",
+        "training-handover",
+        "training-review"
+      ]
+    },
+    {
+      "logical_id": "troubleshooting",
+      "document_id": "215ef620-0af0-5845-9096-aef0745137cb",
+      "version_id": "4d16c49e-97bb-5c5c-b71b-042459e2b60c",
+      "path": "troubleshooting-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "reader",
+      "status": "superseded",
+      "sha256": "9fdb2593f3108a6690ff1dfe6dec4aaf5cf719e2619e81ce29fb0afcad44148b",
+      "sections": [
+        "troubleshooting-overview",
+        "troubleshooting-legend",
+        "troubleshooting-round",
+        "troubleshooting-pause",
+        "troubleshooting-replay",
+        "troubleshooting-register",
+        "troubleshooting-handover",
+        "troubleshooting-review"
+      ]
+    },
+    {
+      "logical_id": "troubleshooting",
+      "document_id": "215ef620-0af0-5845-9096-aef0745137cb",
+      "version_id": "edc50749-48d6-598f-9d11-d36411ffaa74",
+      "path": "troubleshooting-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "reader",
+      "status": "active",
+      "sha256": "602c0cd1a033f2ebd7fddd93673c283a1502950d6dc9e92530c248b351871da8",
+      "sections": [
+        "troubleshooting-overview",
+        "troubleshooting-legend",
+        "troubleshooting-round",
+        "troubleshooting-pause",
+        "troubleshooting-replay",
+        "troubleshooting-register",
+        "troubleshooting-handover",
+        "troubleshooting-review"
+      ]
+    },
+    {
+      "logical_id": "calibration",
+      "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+      "version_id": "62295e19-bf9d-5bf0-8d05-9195f947fb9f",
+      "path": "calibration-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "maintainer",
+      "status": "superseded",
+      "sha256": "9876bcfda45d281ad164b045a6ef0dc6171723bccd64d533637c72de40a196f7",
+      "sections": [
+        "calibration-overview",
+        "calibration-legend",
+        "calibration-round",
+        "calibration-pause",
+        "calibration-replay",
+        "calibration-register",
+        "calibration-handover",
+        "calibration-review"
+      ]
+    },
+    {
+      "logical_id": "calibration",
+      "document_id": "3bff576f-42db-53a6-bfc3-d5890f821c12",
+      "version_id": "3c5c8577-7658-5eb6-87d8-b03c07798724",
+      "path": "calibration-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "maintainer",
+      "status": "active",
+      "sha256": "9876bcfda45d281ad164b045a6ef0dc6171723bccd64d533637c72de40a196f7",
+      "sections": [
+        "calibration-overview",
+        "calibration-legend",
+        "calibration-round",
+        "calibration-pause",
+        "calibration-replay",
+        "calibration-register",
+        "calibration-handover",
+        "calibration-review"
+      ]
+    },
+    {
+      "logical_id": "service",
+      "document_id": "51bb52d1-3040-5adc-bdf1-49e45674d310",
+      "version_id": "31b29ada-650a-5eb8-bab5-870c5a332c50",
+      "path": "service-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "maintainer",
+      "status": "superseded",
+      "sha256": "2c902f4ccf9f3b890f63678f88a9341254672b43f2eaac862cf5f97473df58af",
+      "sections": [
+        "service-overview",
+        "service-legend",
+        "service-round",
+        "service-pause",
+        "service-replay",
+        "service-register",
+        "service-handover",
+        "service-review"
+      ]
+    },
+    {
+      "logical_id": "service",
+      "document_id": "51bb52d1-3040-5adc-bdf1-49e45674d310",
+      "version_id": "e4bdc257-2bae-5678-a885-9f049cf1fc61",
+      "path": "service-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "maintainer",
+      "status": "active",
+      "sha256": "2c902f4ccf9f3b890f63678f88a9341254672b43f2eaac862cf5f97473df58af",
+      "sections": [
+        "service-overview",
+        "service-legend",
+        "service-round",
+        "service-pause",
+        "service-replay",
+        "service-register",
+        "service-handover",
+        "service-review"
+      ]
+    },
+    {
+      "logical_id": "diagnostics",
+      "document_id": "075d838c-4c3c-55f2-be0e-1532a700015e",
+      "version_id": "992256ca-e7bf-5ec4-a104-e1b80cf24778",
+      "path": "diagnostics-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "maintainer",
+      "status": "superseded",
+      "sha256": "0e95798de91c88fc0614bb980564cba32f5829c2a85990b0ba12f597ed82eda7",
+      "sections": [
+        "diagnostics-overview",
+        "diagnostics-legend",
+        "diagnostics-round",
+        "diagnostics-pause",
+        "diagnostics-replay",
+        "diagnostics-register",
+        "diagnostics-handover",
+        "diagnostics-review"
+      ]
+    },
+    {
+      "logical_id": "diagnostics",
+      "document_id": "075d838c-4c3c-55f2-be0e-1532a700015e",
+      "version_id": "5615faa1-a189-58e5-841b-39fc5b79a37d",
+      "path": "diagnostics-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "maintainer",
+      "status": "active",
+      "sha256": "0e95798de91c88fc0614bb980564cba32f5829c2a85990b0ba12f597ed82eda7",
+      "sections": [
+        "diagnostics-overview",
+        "diagnostics-legend",
+        "diagnostics-round",
+        "diagnostics-pause",
+        "diagnostics-replay",
+        "diagnostics-register",
+        "diagnostics-handover",
+        "diagnostics-review"
+      ]
+    },
+    {
+      "logical_id": "release",
+      "document_id": "3bd6ff67-0ee2-51b1-a4c9-d09801ec7580",
+      "version_id": "f90e962b-2a71-56fb-ad11-e606a574a61c",
+      "path": "release-v1.md",
+      "label": "v1",
+      "effective_date": "2026-01-15",
+      "min_role": "maintainer",
+      "status": "superseded",
+      "sha256": "96516715c66c7b108ad0fe4667551c74287322f7b77625eedadac412a91712d2",
+      "sections": [
+        "release-overview",
+        "release-legend",
+        "release-round",
+        "release-pause",
+        "release-replay",
+        "release-register",
+        "release-handover",
+        "release-review"
+      ]
+    },
+    {
+      "logical_id": "release",
+      "document_id": "3bd6ff67-0ee2-51b1-a4c9-d09801ec7580",
+      "version_id": "04d84424-be2c-533b-b551-53711fb7dd0b",
+      "path": "release-v2.md",
+      "label": "v2",
+      "effective_date": "2026-02-15",
+      "min_role": "maintainer",
+      "status": "active",
+      "sha256": "96516715c66c7b108ad0fe4667551c74287322f7b77625eedadac412a91712d2",
+      "sections": [
+        "release-overview",
+        "release-legend",
+        "release-round",
+        "release-pause",
+        "release-replay",
+        "release-register",
+        "release-handover",
+        "release-review"
+      ]
+    }
+  ],
+  "schema": {
+    "container": "JSON array of case objects",
+    "required_fields": [
+      "accepted_claims",
+      "category",
+      "expected_abstention",
+      "expected_facts",
+      "forbidden_strings",
+      "id",
+      "question",
+      "rationale",
+      "reference_answer",
+      "role",
+      "support_quotes",
+      "support_sections"
+    ],
+    "roles": [
+      "reader",
+      "maintainer"
+    ],
+    "array_fields": [
+      "expected_facts",
+      "support_sections",
+      "support_quotes",
+      "forbidden_strings",
+      "accepted_claims"
+    ],
+    "regex_engine": "Python re.fullmatch with re.IGNORECASE, any accepted_claims alternative",
+    "expected_facts_role": "Literal canonical diagnostic phrases; regex-supported paraphrases need not contain these literal strings.",
+    "refusal_contract": "Empty expected_facts, support_sections, support_quotes, accepted_claims and reference_answer; explicit valid insufficient-evidence refusal required.",
+    "evidence_contract": "All support_quotes in union of cited current accessible passages; every cited section in support_sections; every citation resolves with exact offsets."
+  },
+  "counts": {
+    "dev": {
+      "cases": 12,
+      "answerable": 8,
+      "expected_refusals": 4,
+      "categories": {
+        "absent_fact": 2,
+        "current_version": 2,
+        "paraphrase": 2,
+        "premise_correction": 2,
+        "quoted_hostile": 2,
+        "role_restriction": 2
+      },
+      "roles": {
+        "maintainer": 2,
+        "reader": 10
+      }
+    },
+    "challenge": {
+      "cases": 24,
+      "answerable": 16,
+      "expected_refusals": 8,
+      "categories": {
+        "absent_fact": 4,
+        "current_version": 4,
+        "paraphrase": 4,
+        "premise_correction": 4,
+        "quoted_hostile": 4,
+        "role_restriction": 4
+      },
+      "roles": {
+        "maintainer": 4,
+        "reader": 20
+      }
+    }
+  },
+  "acceptance": {
+    "established_before_challenge_opening": true,
+    "criteria_document": "docs/QUALITY-PASS.md",
+    "criteria_document_sha256": "e4a2829a422a0ed5823dd111a49ff319afbaf9cd70bbd94924cea6e9743a5f0e",
+    "maximum_substantive_development_iterations": 2,
+    "final_evaluations": 1,
+    "existing_generated_rows": 192,
+    "existing_expected_refusals": 48,
+    "existing_minimum_explicit_correct_refusals": 48,
+    "existing_answerable_rows": 144,
+    "existing_minimum_nonrefused_answerable_rows": 116,
+    "challenge_minimum_explicit_refusal_correctness": 0.95,
+    "challenge_minimum_oracle_verified_supported_complete_answer_coverage": 0.85,
+    "maximum_unverified_nonrefused_challenge_answers": 0,
+    "maximum_invalid_outputs": 0,
+    "maximum_disclosures": 0,
+    "citation_resolution_required": 1.0,
+    "empty_citation_denominator": "unmeasured",
+    "security_and_lifecycle_checks_required": true,
+    "quotation_default_retained": true,
+    "interpretation": "Oracle verified / not verified; rejection is not proof of falsehood. Report per-method and aggregate rates with exact denominators."
+  },
+  "author_validation": {
+    "source_files_matching_manifest": 24,
+    "source_hash_mismatches": 0,
+    "answerable_reference_matches": 24,
+    "refusal_empty_oracles": 12,
+    "exact_accessible_support_quote_checks": 24,
+    "false_factual_prefix_suffix_rejections": 48,
+    "new_normalized_question_count": 36,
+    "old_normalized_question_collisions": 0,
+    "all_answer_patterns_compile": true,
+    "unrestricted_wildcard_patterns": 0,
+    "application_or_model_evaluation_performed": false
+  }
+}
