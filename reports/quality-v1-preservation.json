@@ -1,0 +1,29 @@
+{
+  "scope": "Pre-pass frozen reports; all must remain byte-identical",
+  "files": {
+    "reports/actual-access-matrix-v2.json": "88a44e951e96ec84f50a9af27975371d70a8f001dc1bfb6f138210511ee36a4e",
+    "reports/actual-access-matrix-v3.json": "217b34caade43aa5a95d0499ac1a3752fd6768bbff6f0ef7590a3af28b21bb56",
+    "reports/actual-access-matrix-v4.json": "bd0f2e3cb8f23318e203ecee69352eaabe4493aa61366a62d2911f2e7589eea5",
+    "reports/actual-access-matrix.json": "067d4b3f50cff93db784d50868dd9fb3b83e18830854281363e6f5402ef4f868",
+    "reports/evaluation-v1.json": "1e401e09aac23c47a6d7978cbda9a2e869716dfb4bcccc2b73dd596139839bf2",
+    "reports/evaluation-v2.json": "8a5a27b1f1b7db8aa8bcb600ad508e0864968bc546d2c346adccca24ce8678b0",
+    "reports/evaluation-v3.json": "0c75c73f0afe93758753a0f0385084564511dbf69e86241002331117412fe8a3",
+    "reports/evaluation-v4.json": "b5b10cffe7fa0d48c4e6a0f66e230487b01e756fcd5da625fe3686ed58f1fbdd",
+    "reports/local-smoke-v2.json": "5614c3208a69f1d4b3f5ca2c08c9587b625357497e6b8cd06fb556c3cef507da",
+    "reports/local-smoke-v3.json": "e7c95a2a998ea553d77dca384125d718c726801e05f0a2cdd01d694b6a55d13c",
+    "reports/local-smoke-v4.json": "99aa7727c22532142922e6bf2cce1911b8176eb0da335a71fdc74692addb4d3c",
+    "reports/local-smoke.json": "75c920f52fba3c00489b49a9c178bc10a5100ed110ad1d340c03bb18dd3a30be",
+    "reports/review-fixture-test-extractive.json": "c20fbe18d8e8e0c3c5ad92e57e722af646e8f6a7317f2f1bff36ef5c98bdd80e",
+    "reports/review-local-test-extractive.json": "66a5a213bbf3806d5aba24f6cb05430e3f1f3d61da14c6ce94262b9491c33f91",
+    "reports/review-local-test-generated.json": "c122fe6c6528d29d158153b82111c0af22fcff26fa63a3445a2f66318812678f",
+    "reports/review-v2-fixture-test-extractive.json": "8365586f7014aa224c5139f471bde6fa7511c9155a800df23489fb7f64b78ca1",
+    "reports/review-v2-local-test-extractive.json": "e408438ddc0de200ae0e7d03c993c41b03a5ff9c02c88e18b922078d793d4944",
+    "reports/review-v2-local-test-generated.json": "c122fe6c6528d29d158153b82111c0af22fcff26fa63a3445a2f66318812678f",
+    "reports/review-v3-fixture-test-extractive.json": "8365586f7014aa224c5139f471bde6fa7511c9155a800df23489fb7f64b78ca1",
+    "reports/review-v3-local-test-extractive.json": "e408438ddc0de200ae0e7d03c993c41b03a5ff9c02c88e18b922078d793d4944",
+    "reports/review-v3-local-test-generated.json": "fabfeb027d2368ea4c503d0235dfc839790795463b246fb681d75b306bc477ce",
+    "reports/review-v4-fixture-test-extractive.json": "8365586f7014aa224c5139f471bde6fa7511c9155a800df23489fb7f64b78ca1",
+    "reports/review-v4-local-test-extractive.json": "e408438ddc0de200ae0e7d03c993c41b03a5ff9c02c88e18b922078d793d4944",
+    "reports/review-v4-local-test-generated.json": "37f7b1c0e85dbcfa754e12067c575e3185a2bfc6fa026b0c14777c43a51ee9ec"
+  }
+}
