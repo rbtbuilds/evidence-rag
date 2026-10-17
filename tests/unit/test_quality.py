@@ -111,9 +111,13 @@ def test_frozen_inputs_and_reference_oracles_reject_drift(tmp_path: Path) -> Non
 
 
 def test_baseline_adapter_preserves_original_prompt_and_exact_evidence() -> None:
+    from evidence_rag.models.generation import GENERATION_SETTINGS
     from scripts.quality_baseline_worker import baseline_messages
 
     frozen = json.loads(Path("config/quality-baseline-v4.json").read_text())
+    assert {k: v for k, v in frozen["generation_settings"].items() if k != "abstention_policy"} == {
+        k: v for k, v in GENERATION_SETTINGS.items() if k != "abstention_policy"
+    }
     messages = baseline_messages("What is the limit?", [source()])
     assert messages[0] == {"role": "system", "content": frozen["system"]}
     assert json.loads(messages[1]["content"]) == {

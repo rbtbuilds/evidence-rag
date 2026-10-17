@@ -31,6 +31,7 @@ test("actual local Qwen answers supported facts and refuses unsupported question
     await expect(page.getByLabel("Execution profile")).toContainText(
       "Local models",
     );
+    await expect(page.getByLabel("Answer mode")).toHaveValue("extractive");
     await page.getByLabel("Retrieval method").selectOption("bm25");
     await page.getByLabel("Answer mode").selectOption("local");
     await page
@@ -53,12 +54,14 @@ test("actual local Qwen answers supported facts and refuses unsupported question
       body.citations.some((citation) => citation.quote.includes("35 units")),
     ).toBe(true);
     if (capture) await page.screenshot({ path: join(capture, "supported.png") });
+    if (capture) await page.waitForTimeout(3000);
     await page
       .getByRole("link", { name: /Circulation manual - v2/ })
       .first()
       .click();
     await expect(page.getByLabel("Cited quotation")).toContainText("35 units");
     if (capture) await page.screenshot({ path: join(capture, "citation.png") });
+    if (capture) await page.waitForTimeout(5000);
     await page.getByRole("button", { name: "Back to answer" }).click();
     for (const question of [
       "Which lunar alloy is used?",
@@ -74,19 +77,22 @@ test("actual local Qwen answers supported facts and refuses unsupported question
       await page.getByRole("button", { name: "Ask question", exact: true }).click();
       const refused = (await (await refusedResponse).json()) as Answer;
       expect(refused.execution_profile).toBe("local");
-      expect(refused.abstained).toBe(true);
-      expect(refused.reason).toBe("insufficient_evidence");
-      expect(refused.answer).toBe("");
-      expect(refused.citations).toEqual([]);
-      await expect(page.getByTestId("answer")).toContainText("Insufficient evidence");
-      await expect(page.getByTestId("answer").getByRole("link")).toHaveCount(0);
-      if (capture) await page.screenshot({ path: join(capture, "refusal.png") });
+      // Collect every failure and finish the cache flow; soft assertions still fail the test.
+      expect.soft(refused.abstained).toBe(true);
+      expect.soft(refused.reason).toBe("insufficient_evidence");
+      expect.soft(refused.answer).toBe("");
+      expect.soft(refused.citations).toEqual([]);
+      await expect.soft(page.getByTestId("answer")).toContainText("Insufficient evidence");
+      await expect.soft(page.getByTestId("answer").getByRole("link")).toHaveCount(0);
+      if (capture) await page.screenshot({ path: join(capture, "unsupported.png") });
+      if (capture) await page.waitForTimeout(2000);
     }
     await page
       .getByLabel("Question", { exact: true })
       .fill("What is the circulation display limit?");
     await page.getByRole("button", { name: "Ask question", exact: true }).click();
     await expect(page.getByTestId("answer")).toContainText("35");
+    if (capture) await page.waitForTimeout(2000);
   } finally {
     await context.close();
   }

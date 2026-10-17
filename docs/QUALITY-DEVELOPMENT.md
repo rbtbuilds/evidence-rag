@@ -40,3 +40,33 @@ disclosure. A real frozen-input test caught a criteria-path variable collision
 before candidate inference; the failing log is retained. The corrected scorer
 passes its checks. Actual matrix reports now require a fresh, contained output
 name rather than overwriting prior evidence.
+
+## Second iteration and frozen selection
+
+Iteration 2 required matching subject/attribute and a complete factual sentence,
+including a current correction for yes/no questions and a counted noun for
+quantities. It retained 12/16 proper development refusals and 32/32 answerable
+responses, but only 8/32 answers matched the frozen finite oracle. Many misses
+were supported paraphrases outside its wording families: for example, `In the
+circulation storyboard, one round takes seven imaginary ticks.` This is why an
+oracle rejection is not labelled automatically false. The private-subject/public-
+value substitution still occurred and is a genuine grounding error.
+
+The eight-pair native test fixed correction/unit completeness but again answered
+the quoted-request value question (one failed test, 25.29 seconds). The actual
+API matrix then failed its reader-refusal assertion at BM25/active/reader
+(24.63 seconds), before completing the matrix. The preceding forbidden-marker
+check passed; this failure is not proof of private-source disclosure. No complete
+96-request result is claimed for that attempt. Its log remains separate.
+
+Iteration 2 is rejected. `config/quality-iteration2.json` and
+`reports/quality-development-v2.json` retain the exact second configuration and
+diagnostic counts. The first candidate is restored byte-for-byte from commit
+`2a29dc8`; its system text and settings match `quality-iteration1.json` exactly.
+This selects one of two tested configurations; it does not create a third
+development iteration. No further prompt/model tuning is permitted in this pass.
+
+The selected candidate is experimental and has known completeness and grounding
+limitations. The unchanged acceptance criteria still apply to the one frozen
+final run; it cannot promote generation by discarding failed cases or loosening
+patterns. Exact quotations remain the default. Human metrics remain unmeasured.

@@ -26,6 +26,7 @@ from evidence_rag.evaluation.report import (
     EvaluationRow,
     PairDifference,
 )
+from evidence_rag.models.lease import ModelLease
 from evidence_rag.models.local import PROJECT, snapshots
 from evidence_rag.models.runner import ModelRunner, ModelSession
 from evidence_rag.retrieval.service import build_index
@@ -165,7 +166,12 @@ def review_sheet(rows: list[EvaluationRow], repo: Repository, output: Path) -> N
 
 
 def evaluate(
-    profile: Profile, split: str, generation: GenerationMode, output: Path
+    profile: Profile,
+    split: str,
+    generation: GenerationMode,
+    output: Path,
+    *,
+    lease: ModelLease | None = None,
 ) -> EvaluationReport:
     output = output.resolve()
     if not output.is_relative_to(PROJECT) or output.exists():
@@ -181,7 +187,7 @@ def evaluate(
         # Snapshots belong to the configured project runtime; the benchmark database is isolated.
         model_root = Settings.from_env().root
         if profile == "local":
-            with ModelRunner(model_root).session(
+            with ModelRunner(model_root, lease=lease).session(
                 "complete retrieval benchmark", timeout=600
             ) as session:
                 start = time.perf_counter()

@@ -18,9 +18,11 @@ from evidence_rag.contracts import QuestionRequest
 from evidence_rag.db.repository import AccessScope, Repository
 from evidence_rag.documents.chunking import chunk_document
 from evidence_rag.documents.ingest import seed
+from evidence_rag.evaluation.lease import BorrowedLease
 from evidence_rag.evaluation.quality import QUALITY_ROOT, load_cases, score_answer, sha256
 from evidence_rag.evaluation.run import MODES, evaluate
 from evidence_rag.models.generation import GENERATION_SETTINGS
+from evidence_rag.models.lease import ModelLease
 from evidence_rag.models.local import PROJECT, snapshots
 from evidence_rag.models.runner import ModelRunner, ModelSession
 from evidence_rag.retrieval.service import build_index
@@ -29,6 +31,7 @@ from evidence_rag.retrieval.types import IndexDraft
 
 def provenance() -> dict[str, object]:
     return {
+        "selection": "Iteration1 selected from two development configurations after exposed regression/access checks; challenge withheld until freeze.",
         "git_head": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "dirty_worktree": bool(
             subprocess.check_output(
@@ -77,7 +80,11 @@ def index(repo: Repository, session: ModelSession) -> None:
 
 
 def run_quality(
-    split: Literal["dev", "challenge"], policy: Literal["baseline", "candidate"], output: Path
+    split: Literal["dev", "challenge"],
+    policy: Literal["baseline", "candidate"],
+    output: Path,
+    *,
+    lease: ModelLease | None = None,
 ) -> dict[str, object]:
     cases = load_cases(split)
     if output.exists():
@@ -85,6 +92,7 @@ def run_quality(
     root = Settings.from_env().root
     runner = ModelRunner(
         root,
+        lease=lease,
         command=[sys.executable, "-m", "scripts.quality_baseline_worker"]
         if policy == "baseline"
         else None,
@@ -207,15 +215,20 @@ def main() -> None:
         raise ValueError("Freeze and commit source before the one final evaluation")
     # Exclusive marker makes a second final invocation an explicit error.
     marker = PROJECT / ".runtime/quality-v1-final-started.json"
-    with marker.open("x") as handle:
-        json.dump(frozen, handle, indent=2)
-    output.mkdir(parents=True)
-    run_quality("challenge", "baseline", output / "baseline")
-    run_quality("challenge", "candidate", output / "candidate")
-    evaluate("local", "test", "local", output / "regression")
-    if provenance() != frozen:
-        raise ValueError("Frozen evaluation provenance changed during execution")
-    (output / "complete.json").write_text(json.dumps(frozen, indent=2) + "\n")
+    owner = ModelLease().acquire("one frozen paired quality-v1 final evaluation")
+    try:
+        shared = BorrowedLease(owner)
+        with marker.open("x") as handle:
+            json.dump(frozen, handle, indent=2)
+        output.mkdir(parents=True)
+        run_quality("challenge", "baseline", output / "baseline", lease=shared)
+        run_quality("challenge", "candidate", output / "candidate", lease=shared)
+        evaluate("local", "test", "local", output / "regression", lease=shared)
+        if provenance() != frozen:
+            raise ValueError("Frozen evaluation provenance changed during execution")
+        (output / "complete.json").write_text(json.dumps(frozen, indent=2) + "\n")
+    finally:
+        owner.close()
 
 
 if __name__ == "__main__":

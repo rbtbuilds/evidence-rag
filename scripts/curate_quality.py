@@ -1,6 +1,7 @@
 """Retain small immutable quality evidence without relabelling narrow oracles."""
 
 import argparse
+import hashlib
 import json
 from collections import Counter
 from pathlib import Path
@@ -130,7 +131,30 @@ def main() -> None:
         "limits": "Oracle rejection is not proof of falsehood. Citation resolution is not entailment. Existing test is exposed regression evidence. Security/release checks are recorded separately.",
         "original_reports_preserved": len(old),
     }
+    answer_records = {
+        "execution_profile": "local",
+        "baseline_challenge": [
+            json.loads(line) for line in (root / "baseline/rows.jsonl").read_text().splitlines()
+        ],
+        "candidate_challenge": [
+            json.loads(line) for line in (root / "candidate/rows.jsonl").read_text().splitlines()
+        ],
+        "candidate_exposed_regression": [
+            row.model_dump(
+                include={"query_id", "question", "role", "expected_abstention", "answer"}
+            )
+            for row in regression.rows
+        ],
+        "scope": "Public fictional-data answer evidence. Timing/resource provenance and narrow-oracle limitations are in quality-v1.json. No human review is claimed.",
+    }
+    answer_bytes = (json.dumps(answer_records, indent=2) + "\n").encode()
+    retained["answer_records_sha256"] = hashlib.sha256(answer_bytes).hexdigest()
     destination = PROJECT / "reports/quality-v1.json"
+    answers_destination = PROJECT / "reports/quality-v1-answers.json"
+    if destination.exists() or answers_destination.exists():
+        raise ValueError("Never overwrite retained quality evidence")
+    with answers_destination.open("xb") as handle:
+        handle.write(answer_bytes)
     with destination.open("x") as handle:
         json.dump(retained, handle, indent=2)
         handle.write("\n")

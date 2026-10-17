@@ -31,8 +31,9 @@ class EvaluationManifest(BaseModel):
     seed: int = 17
     bootstrap_resamples: int = 2000
     tuning: str = (
-        "Model selected using development probes only; no score threshold tuning. "
-        "Frozen test is reused after prior disclosed runs: regression evidence, not fresh unseen data."
+        "Current quality pass used development candidates and exposed regression/access probes; "
+        "no score threshold tuning. The new challenge was withheld until configuration freeze. "
+        "The original frozen test is exposed regression evidence, not fresh unseen data."
     )
     context_budget: dict[str, int] = {
         "passages": 5,

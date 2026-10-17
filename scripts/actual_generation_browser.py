@@ -64,9 +64,9 @@ def main() -> None:
                     "EVIDENCE_TEST_ACTUAL_GENERATION": "1",
                 }
                 if os.environ.get("EVIDENCE_CAPTURE_DEMO") == "1":
-                    capture = ROOT / ".runtime/quality-demo-v1"
-                    capture.mkdir(mode=0o700)
+                    capture = Path(tempfile.mkdtemp(prefix="quality-demo-", dir=ROOT / ".runtime"))
                     env["EVIDENCE_DEMO_CAPTURE_DIR"] = str(capture)
+                    print(f"Authenticated-only demo capture: {capture}", flush=True)
                 completed = subprocess.run(
                     ["npm", "exec", "--", "playwright", "test", "local-generation.spec.ts"],
                     cwd=ROOT / "web",

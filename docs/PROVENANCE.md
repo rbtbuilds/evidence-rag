@@ -23,10 +23,10 @@ claims. All original frozen reports are preserved by SHA-256 in
 | Optional native generation | mlx-community/Qwen3-14B-4bit | a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4 | Apache-2.0 |
 
 The generator is a four-bit/group-64 conversion of Qwen/Qwen3-14B. Full file
-hashes, preparation paths, card/notice hashes and backend identities are in
+hashes, preparation paths, model-card hashes and backend identities are in
 `config/models.lock.json`. Local preparation downloads only public pinned
 assets; inference uses local files with remote code disabled. Model weights,
-download caches and local third-party notices are excluded from Git. The MIT
+download caches and downloaded model cards are excluded from Git. The MIT
 code licence does not relicense those assets. Historical candidate models and
 their failures are documented separately; they are not automatic fallbacks.
 
