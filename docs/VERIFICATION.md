@@ -37,3 +37,9 @@ The exposed-test targets were 48/48 proper refusals and at least 116/144 answera
 Use RUNBOOK.md for ordinary and explicit actual-model commands; EVALUATION.md defines denominators, frozen gates and final provenance. Model loads use pinned local snapshots under the shared machine lease. Busy means defer, not fixture fallback. The final comparison holds the lease across all phases and writes completion only after successful cleanup. No resident model server is retained.
 
 Human factual support/completeness, screen-reader use, real customer outcomes, broad generalisation, throughput and production authentication remain unmeasured. Accessible current citations are a mechanical guarantee, not proof of factual support. The new finite AI-authored oracle is narrower than general entailment and can reject correct paraphrases.
+
+## Complete artifact checkout
+
+`./scripts/clean_clone_check.sh` passed at `46fa2b4cf7577330a5eb84ce7b97ab6f1adb7f2f`: 36 ordinary Python packages installed, frozen web install, strict checks, 125 Python tests (2 actual tests deselected), 11 web tests, build/contracts/corpus, five genuine fixture browser flows (3.7s; one actual scenario skipped) and 192 fixture evaluation rows. The task-owned clone was removed. Log SHA-256: `713ad8da9156b270bd18b7859298567d398fd78ef7949f7fe4d8062e34993f93`. The host supplied Node 24/Chromium; this is checkout reproducibility on the same Mac, not a fresh operating system or hosted CI.
+
+The fixture evaluation produced 32/48 proper expected refusals and 143/144 answerable responses, with zero invalid/disclosed outputs and 236/236 resolving citations. These doubles/quotation results are distinct from native generation. Quoting a current accessible passage can still fail question relevance or refusal correctness. Later changes record verification evidence/formatting only; runtime source is unchanged from 9a324b8.

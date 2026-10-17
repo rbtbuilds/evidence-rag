@@ -19,3 +19,12 @@ RED: three failures in the focused seven-test run (one missing coordinator metho
 - The exposed original failure is a legitimate regression target, not an unseen holdout. It is used for diagnosis and candidate selection with disclosure. Cost if wrong: improvement can reflect regression familiarity; no broad generalisation claim follows.
 
 The selected native semantic regression remains failed on current-value correction and counted-noun completeness (one test, two failing pairs, 21.31 seconds). The user-limited two policy iterations are exhausted. Exact quotations remain the default; failure is retained, not waived or converted to a pass.
+
+## Execution closure
+
+Two additional execution rulings accompany the review boundaries above:
+
+- Stay in the expressly owned checkout with runtime-scoped bookkeeping and review before the frozen run. Cost: later documentation/evidence receives author audit rather than a second review cycle.
+- Stop quality development at the two-iteration limit and retain exact quotations; preserve the native semantic failures rather than weakening tests. Cost: optional generation can still produce unsupported/incomplete answers or unnecessary refusals.
+
+The final gate failed at 47/48 exposed-test refusals, 109/144 answerable responses and three finite-oracle unverified date rows. Full results and the supported-wording false-negative analysis are in QUALITY-RESULTS.md. The completed candidate checkout 46fa2b4 passed 125 offline Python/11 web tests, five fixture browser flows and 192 fixture rows; actual-model API/browser evidence stays separate. No deferred minors, third policy or second code review was introduced. The local branch is retained; no merge/push/publication is authorized.

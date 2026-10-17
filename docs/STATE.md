@@ -1,6 +1,6 @@
 # Evidence RAG state
 
-Updated: 2026-10-17. The bounded answer-quality experiment is complete; its gate failed. Exact quotations remain the default. Final publication-artifact audit and clean-checkout verification are in progress. No publication or generation promotion is claimed.
+Updated: 2026-10-17. The bounded answer-quality and local publication pass is complete. Its quality gate failed; exact quotations remain the default. The documented local repository is ready for publication review in its quotation mode, with experimental native generation clearly limited. No publication or generation promotion is claimed.
 
 ## Owned scope and recovery
 
@@ -36,5 +36,9 @@ All final blocks had zero invalid outputs/disclosures, embedding truncations, pa
 - Native paired semantic test remains FAILED: 1 test, two completeness pairs, 21.31s (bare No/current correction and 13/count-noun). Log .runtime/quality-native-selected-v1.log. Rejected iteration 2 also failed the quoted-request pair and actual reader-refusal assertion. No weakened test/xfail hides this evidence.
 - Fresh AI code review: two Important lease/disclosure-reporting defects reproduced RED, fixed GREEN in one author pass; focused 7/7 and full 125 Python/11 web passed. No critical/deferred-minor findings. QUALITY-REVIEW.md records boundaries and author rulings. No further policy/model change.
 - Final command: UV_CACHE_DIR="$PWD/.runtime/uv-cache" uv run --no-sync python -m scripts.quality_evaluate --phase final --output .runtime/quality-v1-final. Exit 0. Log .runtime/quality-v1-final.log; complete.json and start marker retained under ignored runtime. Write-once curation retained summary and all 384 fictional answer records without modifying originals.
+
+- Clean checkout: ./scripts/clean_clone_check.sh passed at 46fa2b4cf7577330a5eb84ce7b97ab6f1adb7f2f: 36 ordinary dependency installs, frozen npm install, Ruff, strict Pyright zero errors/warnings, 125 Python tests/2 deselected, strict TypeScript, 11 web tests, build/contracts/corpus, 5 browser passes/1 actual skip (3.7s), 192 fixture evaluation rows. The task-owned clone was removed. Log .runtime/quality-clean-checkout.log SHA-256 713ad8da9156b270bd18b7859298567d398fd78ef7949f7fe4d8062e34993f93. Existing host Node 24/Chromium were used; no native weights loaded. This is a clean checkout on this Mac, not a fresh operating system or hosted CI.
+- Fixture evaluation in that checkout: 32/48 proper refusals, 143/144 answerable responses, zero invalid/disclosure, 236/236 resolving citations. These are fixture results, separate from native quality. Exact quotations can still be irrelevant to an unsupported value question; their copied text is not a semantic correctness guarantee.
+- Publication artifact scan: 232 current tracked files, no token-pattern/path findings, local Markdown file references resolve, all 24 historical reports preserved. Git history was scanned heuristically; model/corpus/oracle/criteria hashes remain frozen. Demo asset hashes, source/scan scope and limits are in PUBLICATION-AUDIT.md. No remote is configured. Later changes record evidence/formatting only; application/model/test source remains identical to 9a324b8.
 
 Human factual support/completeness, screen-reader use, customer outcomes and broad generalisation remain unmeasured. No manual annotation/review work is assigned to Matthew. The deterministic quotation application and experimental native generator have separate evidence; a failed model gate does not become a passing claim through a citation score.
