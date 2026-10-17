@@ -1,32 +1,40 @@
 # Evidence RAG state
 
-Updated: 2026-10-17. The bounded quality pass is at its pre-final source review. No final challenge evaluation or quality promotion is claimed yet. Exact quotations remain the default.
+Updated: 2026-10-17. The bounded answer-quality experiment is complete; its gate failed. Exact quotations remain the default. Final publication-artifact audit and clean-checkout verification are in progress. No publication or generation promotion is claimed.
 
-## Scope and recovery
+## Owned scope and recovery
 
-Owned checkout/Git root: /Users/matthewgoralczyk/BentoLabs/portfolio/evidence-rag, branch feat/evidence-rag-v1. No remote, publication, push, deployment, paid use, model upload or external message. API 8115/web 5115 remain loopback. No sibling source was edited.
+Checkout/Git root: /Users/matthewgoralczyk/BentoLabs/portfolio/evidence-rag, branch feat/evidence-rag-v1. All commands use this child explicitly; the desktop chat may still display the resume workspace. API 8115/web 5115 stay loopback. No sibling source, parent coordination, vault or operations record was edited. No remote, push, deployment, paid use, model upload or external message.
 
-Matthew authorized a helper-managed parent backup because the installed helper registers portfolio as one unit. After correctly reported live-runtime drift, a temporary supported filter excluded ignored runtimes/browser output. The helper tracked audit passed, sync passed, and content verify reported identical (excludes aside). The temporary filter was removed. Recovery copy: /Volumes/BentoLabs/portfolio/evidence-rag at d01f3d723e19634e194a8af9ca22ebecfeacd878. Git fsck passed; all194 tracked files matched by SHA-256. Existing archived runtime copies are not claimed transaction-consistent. Details: QUALITY-PASS.md.
+Matthew authorized the helper-managed parent backup scope. The installed Bento helper tracked audit, sync and content verify passed after safely surfacing live sibling runtime drift and using a temporary supported exclusion filter. The unchanged temporary filter was removed. Recovery copy /Volumes/BentoLabs/portfolio/evidence-rag is at d01f3d723e19634e194a8af9ca22ebecfeacd878: Git fsck passed and all 194 tracked files matched SHA-256. Archived live runtimes are not claimed transaction-consistent. New commits are later than this pre-pass recovery point; no later archive sync is claimed. Full history: QUALITY-PASS.md.
 
-## Frozen inputs and bounded development
+## Frozen experiment and outcome
 
-All24 pre-pass reports are preserved by reports/quality-v1-preservation.json. The unchanged recorded baseline is46/48 proper expected refusals,109/144 answerable responses,35 unnecessary refusals,0 invalid outputs and120/120 resolved citations. Resolution is not factual support.
+Criteria were fixed before challenge opening. A separate clean-context AI agent authored 12 development and 24 challenge cases from the original fictional sources, with its limited required-guidance aggregate exposure disclosed. Inputs/oracles, criteria and source hashes were frozen; no human review or statistical independence is claimed. All 24 pre-pass JSON reports remain unchanged.
 
-The new quality-v1 set has12 development and24 challenge cases, authored by a separate clean-context AI agent from original fictional sources. It is not human-reviewed or statistically independent. Inputs, references, narrow whole-answer patterns and exact support quotes are frozen together. Criteria were fixed before challenge opening. QUALITY-PASS.md is an immutable historical criteria record because the dataset manifest hashes it; later outcomes belong in this state file and separate result documents.
+Two substantive policies were developed; the second regressed quoted-request handling and was rejected. Iteration 1 was restored byte-identically and selected for the frozen comparison. The one final invocation ran on clean 9a324b82e446f9ac3ddc6ff834846cd0e30c5d80 with unchanged end provenance: 96 baseline challenge, 96 candidate challenge and 192 exposed regression rows. One outer ML lease covered all phases; workers exited/joined before successful release and completion. No resident model process remained afterward. No third tuning iteration or post-final oracle change occurred.
 
-Two substantive policies were developed. Iteration1:12/16 proper development refusals,32/32 responses,24/32 finite-oracle verified complete answers. Iteration2:12/16,32/32,8/32 respectively; many finite-pattern misses were supported paraphrases, not proven false answers. It also regressed a native quoted-request refusal and the actual API reader-refusal check. It was rejected. Iteration1 was restored byte-identically from2a29dc8, with system/settings verified against its archived snapshot. No third tuning iteration is permitted. See QUALITY-DEVELOPMENT.md and separate development reports.
+| Evidence | Recorded baseline | Selected candidate |
+| --- | --- | --- |
+| Exposed-test proper refusals | 46/48 | 47/48 |
+| Exposed-test answerable responses | 109/144 | 109/144 |
+| Exposed-test unnecessary refusals | 35 | 35 |
+| Exposed-test resolving citations | 120/120 | 126/126 |
+| Challenge proper refusals | 30/32 | 32/32 |
+| Challenge answerable responses | 64/64 | 60/64 |
+| Challenge finite-oracle complete | 56/64 | 57/64 |
+| Challenge unverified responses | 10 | 3 |
 
-## Verification so far
+All final blocks had zero invalid outputs/disclosures, embedding truncations, passage drops and output-limit hits. Citation resolution is not factual support. Failed gates: exposed-test 48/48 refusal target, 116/144 response target and challenge zero-unverified requirement. Hybrid still returns the marker category from the hostile quotation for test-041; no private marker is disclosed. The three challenge unverified rows are supported bare date responses outside a pattern that admits The date. Their frozen rejections remain, with no adjusted aggregate metric. Four challenge refusals unnecessarily reject a current training-handover correction. Results/outputs: QUALITY-RESULTS.md and reports/quality-v1*.json.
 
-- ./scripts/check.sh: Ruff, strict Pyright zero errors/warnings,123 Python tests with2 actual tests deselected, strict TypeScript,11 web tests, build, contracts and corpus passed. Latest log: .runtime/quality-review-source-check.log.
-- Fixture browser:5 passed,1 actual scenario explicitly skipped; genuine API sessions, role/cache isolation, import/replace/delete, stale links, themes, sizes and focus. Log: .runtime/quality-fixture-browser.log.
-- Selected actual API matrix:96 requests passed in85.72s, all four retrieval methods, two roles/modes/cache states and active/replaced/deleted sources;32 proper local reader/deleted refusals,16 authorised current answers, zero forbidden disclosures. Retained: reports/actual-access-quality-v1.json. This acceptance run had publication tooling/docs uncommitted; exact test source hash is retained.
-- Actual browser generation:1 scenario passed in19.1s (20.1s runner); paced capture passed in35.6s (36.6s runner). Supported35/current v2 source, three proper unsupported refusals including the quoted request, and cached supported answer. No intercepted fetch or fake generation. Video docs/demo/quality-v1.mp4 is34.92s with capture-only reading pauses; login code entry is outside the recorded context. Three screenshots and sampled video frames were inspected with AI assistance, not human review.
-- Native semantic regression remains failed on the selected policy's current-value correction and counted-noun completeness. No passing claim is made. The rejected second policy failed on quoted-request grounding. Actual source/access checks remain separate from these semantic results.
-- Final orchestration acquires one outer ML lease before its exclusive checkpoint and serially borrows it across all phases. Three tests cover busy/no-checkpoint behavior, serial ownership and refusal to borrow a changed owner. ModelRunner still exits/joins its worker before releasing each borrowed handle; only the outer owner removes the lease.
+## Checks and recorded negative evidence
 
-## Remaining work in this active pass
+- ./scripts/check.sh at 9a324b8: Ruff, strict Pyright zero errors/warnings, 125 Python tests passed with 2 real-model tests deselected, strict TypeScript including tests/configuration, 11 web tests, build, contracts and corpus passed. Log .runtime/quality-review-fixed-check.log.
+- Fixture browser: 5 passed, 1 actual scenario skipped. Genuine API sessions, role/cache isolation, import/replacement/deletion, stale links, escaped HTML, both themes/sizes and focus. Log .runtime/quality-fixture-browser.log.
+- Actual API matrix: 96 requests passed in 85.72s; 32 proper local reader/deleted refusals, 16 authorized current-marker answers, zero forbidden disclosure. Exact test hash and uncommitted-tooling context retained in reports/actual-access-quality-v1.json. Log .runtime/quality-actual-access-selected-v1.log.
+- Actual browser: 1 scenario passed in 19.1s (20.1s runner). Paced capture passed in 35.6s (36.6s runner), with current 35/v2 source, three proper unsupported refusals and supported cached answer. Login excluded from captured context; no fetch interception or persisted cookie/trace file. The 34.92s MP4/screenshots received AI-assisted sampled inspection. Logs .runtime/quality-actual-browser-v1.log and quality-actual-browser-paced-v1.log.
+- Native paired semantic test remains FAILED: 1 test, two completeness pairs, 21.31s (bare No/current correction and 13/count-noun). Log .runtime/quality-native-selected-v1.log. Rejected iteration 2 also failed the quoted-request pair and actual reader-refusal assertion. No weakened test/xfail hides this evidence.
+- Fresh AI code review: two Important lease/disclosure-reporting defects reproduced RED, fixed GREEN in one author pass; focused 7/7 and full 125 Python/11 web passed. No critical/deferred-minor findings. QUALITY-REVIEW.md records boundaries and author rulings. No further policy/model change.
+- Final command: UV_CACHE_DIR="$PWD/.runtime/uv-cache" uv run --no-sync python -m scripts.quality_evaluate --phase final --output .runtime/quality-v1-final. Exit 0. Log .runtime/quality-v1-final.log; complete.json and start marker retained under ignored runtime. Write-once curation retained summary and all 384 fictional answer records without modifying originals.
 
-One AI-assisted whole-pass code review and any material reporting/coordination fixes, one frozen paired final evaluation, publication documentation/audit and clean-checkout verification with the complete artifact set. Human factual-support/completeness, screen-reader use, customer impact and broad generalisation remain unmeasured. No annotation or review work is assigned to Matthew.
-
-The prior v4 implementation/evaluation record remains in Git at d01f3d7 and its immutable reports. It is historical rather than current completion evidence for this pass.
+Human factual support/completeness, screen-reader use, customer outcomes and broad generalisation remain unmeasured. No manual annotation/review work is assigned to Matthew. The deterministic quotation application and experimental native generator have separate evidence; a failed model gate does not become a passing claim through a citation score.

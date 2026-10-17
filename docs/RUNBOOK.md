@@ -59,9 +59,9 @@ After switching to local profile, use Rebuild index as maintainer before dense/h
 
 Local Qwen generation uses a single constrained pass with exact supplied IDs, at most two generated citations, 180 answer characters and 256 output tokens. Its template explicitly disables thinking; prompt and generation settings are versioned. The prompt requires an empty answer, no citations and insufficient_evidence true for missing facts. The server validator and current-version/access/publication checks remain strict.
 
-The local Qwen3 14B block correctly returned explicit empty insufficient-evidence refusals in 46/48 expected-abstention test method/question cases, compared with 0/48 in v3. It answered 109/144 answerable cases and unnecessarily refused 35; 0 outputs were invalid. All 120/120 emitted citations resolved to accessible current passages. These are abstention and format/access measurements, not human factual-support or completeness scores. Two remaining errors are the same reader question under BM25 and hybrid: the model treats a quoted hostile instruction as evidence for a calibration marker. No restricted marker is disclosed.
+On the exposed test, proper refusals changed from 46/48 to 47/48 and answerable responses from 109/144 to 109/144; unnecessary refusals changed from 35 to 35. On the new challenge, proper refusals changed from 30/32 to 32/32 and finite-oracle complete coverage from 56/64 to 57/64, while response coverage changed from 64/64 to 60/64.
 
-This is a conservative configuration: unnecessary refusals on supported facts remain a known limitation. Quotations remain the default. Review [evaluation](../EVALUATION.md) and [abstention diagnosis](ABSTENTION-REPAIR.md) before interpreting model quality. Model JSON/ID errors stay invalid_generation and cannot gain explicit-refusal credit.
+The pre-registered quality gate failed: regression_refusals, regression_coverage, challenge_no_unverified_answers. Exact quotations remain the default. No final-output tuning, oracle relaxation or third policy iteration occurred. See [current results](QUALITY-RESULTS.md) for finite-oracle limits and the remaining native completeness failures. Model JSON/ID errors stay invalid_generation and cannot gain explicit-refusal credit.
 
 To exercise the supported actual browser path, stop other owned servers and run:
 
@@ -97,4 +97,24 @@ npm --prefix web run test:e2e
 
 Dependencies/browsers install with network access; Python application tests then disable external sockets and allow loopback/Unix sockets. Browser tests launch a new temporary database and owned API/web processes on 8115/5115, pass test codes through child environment only, and stop only their own servers. Their traces/videos are disabled and stdout redacts test codes. Do not leave manual servers on these ports during acceptance checks.
 
-Ordinary CI excludes actual model work. The explicit command is `uv run --extra ml pytest -m real_model tests/integration/test_actual_disclosure.py -q -s`; it requires snapshots and the shared lease. Evaluation commands and interpretation are in [EVALUATION.md](../EVALUATION.md). Human citation review remains a separate pending step.
+Ordinary CI excludes actual model work. The explicit command is `uv run --extra ml pytest -m real_model tests/integration/test_actual_disclosure.py -q -s`; it requires snapshots and the shared lease. Evaluation commands and interpretation are in [EVALUATION.md](../EVALUATION.md). Human factual support/completeness remains unmeasured; no annotation work is assigned by this pass.
+
+## Frozen quality-v1 evidence
+
+The one-final driver and write-once curation commands are recorded in [QUALITY-RESULTS.md](QUALITY-RESULTS.md). Preserve its start marker, frozen inputs/oracles and retained reports. Do not delete them to rerun/tune quality-v1. A separately named research revision is required for later experiments.
+
+The actual API matrix now requires a fresh contained report filename. For an explicit replication choose an unused name, for example:
+
+```sh
+EVIDENCE_ACTUAL_REPORT=access-replication.json uv run --extra ml pytest -m real_model tests/integration/test_actual_disclosure.py -q -s
+```
+
+The native paired quality test is intentionally retained as observed negative evidence:
+
+```sh
+uv run --extra ml pytest -m real_model tests/integration/test_grounding_quality.py -q -s
+```
+
+Its selected-policy run failed on current-correction/count-noun completeness; ordinary CI excludes actual-model tests. No xfail or oracle relaxation hides that failure. Optional `EVIDENCE_CAPTURE_DEMO=1` on the actual browser helper creates a fresh private capture directory, records only an authenticated separate context and keeps trace/cookie files disabled. Retained demo assets are explicitly reviewed release artifacts, not all runtime recordings.
+
+If a benchmark worker cannot confirm exit after terminate/kill/join, its shared owner remains occupied. Inspect ownership and the actual process; do not delete the lock merely because the command failed. A final completion record is written only after successful cleanup.

@@ -8,6 +8,6 @@ Replacement swaps the active source and indexes in one transaction. Deletion log
 
 Local models use pinned safetensors snapshots, no remote code, local-only loading and bounded supervised workers. A valid citation checks identity/version/offsets; it does not prove a generated claim is entailed. Invalid model JSON or citation IDs cause abstention.
 
-Application logs contain route templates, status, request ID and duration. They omit questions, source bodies, cookies, codes and raw URLs. The app disables Uvicorn's raw access logger. Browser acceptance traces and videos are disabled because authentication steps carry ephemeral codes.
+Application logs contain route templates, status, request ID and duration. They omit questions, source bodies, cookies, codes and raw URLs. The app disables Uvicorn's raw access logger. Ordinary browser acceptance traces and videos are disabled because authentication carries ephemeral codes. The explicit demo capture signs in outside a separate recorded context, transfers cookies only in memory and retains only inspected fictional-data artifacts; it does not enable persisted traces or cookie files.
 
 For a vulnerability, contact the repository maintainer through a private channel they provide. Do not put credentials, private source text or exploitable details into a public issue. No public disclosure endpoint or hosted service has been configured in this local project.

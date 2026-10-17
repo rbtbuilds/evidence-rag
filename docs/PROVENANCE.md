@@ -41,3 +41,7 @@ context; cookies are transferred in memory and never retained as a release
 artifact. Capture/encoding commands, asset hashes and visual inspection belong
 in the publication audit. A demo is evidence of the shown local path, not a
 customer deployment or broad quality validation.
+
+The retained [dependency inventory](../reports/dependency-provenance.json) records 69 installed Python distributions (including optional ML), 161 locked web package entries and observed licence/notice hashes. Null metadata remains null. The inventory is not comprehensive legal clearance; dependencies retain their own notices and terms. The [publication audit](PUBLICATION-AUDIT.md) records explicit demo asset hashes and content checks.
+
+The typed decoding bridge uses the LM Format Enforcer core API and tokenizer-conversion algorithm. Installed 0.11.3 metadata identifies Noam Gat as author, declares MIT and points to the upstream repository at https://github.com/noamgat/lm-format-enforcer. This attribution supplements the dependency inventory; it does not relicense upstream work.

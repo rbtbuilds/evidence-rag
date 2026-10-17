@@ -1,27 +1,27 @@
-# Recorded evaluation evidence
+# Retained evidence
 
-[evaluation-v4.json](evaluation-v4.json) retains six canonical runs: development/test for fixture quotations, actual local quotations and native Qwen generation. All six canonical runs use clean source c4b3fffb049a448c4bddaefcfa23128188b0f8df, heading-window-v2, evidence-json-v4-abstention and the same frozen corpus/questions. They total 864 method/question rows. Model and dependency locks, raw hashes, machine, stage timings, per-role/stratum metrics and paired bootstrap intervals are retained. No forbidden-marker disclosure, embedding truncation or passage dropping occurred. The source commit is c4b3fffb049a448c4bddaefcfa23128188b0f8df. File hashes/revisions are in [models.lock.json](../config/models.lock.json); the exact original model lock remains archived separately.
+The current bounded pass is [quality-v1.json](quality-v1.json): one clean-source frozen final comparison, with 96 baseline challenge, 96 selected-candidate challenge and 192 exposed original-test rows. Its [answer records](quality-v1-answers.json) retain all public fictional outputs. The summary hashes those records and the raw blocks, and includes per-mode/role/category counts, pins, settings and resource observations. Human metrics stay null.
 
-| Split | Proper expected refusals | Answerable responses | Unnecessary refusals | Invalid output | Citations resolved | Output-limit hits |
+The pre-registered quality gate failed: regression_refusals, regression_coverage, challenge_no_unverified_answers. Exact quotations remain the default. No final-output tuning, oracle relaxation or third policy iteration occurred.
+
+| Challenge policy | Proper refusals | Answerable responses | Oracle-verified complete | Unverified responses | Invalid | Citations resolve |
 | --- | --- | --- | --- | --- | --- | --- |
-| Development | 24/24 | 51/72 | 21 | 0 | 55/55 | 0 |
-| Test | 46/48 | 109/144 | 35 | 0 | 120/120 | 0 |
+| Unchanged v4 baseline | 30/32 | 64/64 | 56/64 | 10 | 0 | 66/66 |
+| Selected candidate | 32/32 | 60/64 | 57/64 | 3 | 0 | 60/60 |
 
+| Exposed test | Proper refusals | Answerable responses | Invalid | Citations resolve |
+| --- | --- | --- | --- | --- |
+| Recorded v4 | 46/48 | 109/144 | 0 | 120/120 |
+| Selected candidate | 47/48 | 109/144 | 0 | 126/126 |
 
-The local Qwen3 14B block correctly returned explicit empty insufficient-evidence refusals in 46/48 expected-abstention test method/question cases, compared with 0/48 in v3. It answered 109/144 answerable cases and unnecessarily refused 35; 0 outputs were invalid. All 120/120 emitted citations resolved to accessible current passages. These are abstention and format/access measurements, not human factual-support or completeness scores. Two remaining errors are the same reader question under BM25 and hybrid: the model treats a quoted hostile instruction as evidence for a calibration marker. No restricted marker is disclosed.
+Interpret the finite oracle conservatively. Bare `date` can be source-supported yet fail a pattern that admits only `The date`; no adjusted aggregate metric replaces the frozen rejection. Citation resolution is not entailment. The exposed original test and reused fictional corpus do not establish generalisation or statistical independence. See [methods and failures](../docs/QUALITY-RESULTS.md).
 
-Legacy correct_abstentions can include invalid generation; explicit_correct_abstentions excludes it. answered_answerable_count/unnecessary_abstentions expose the conservative policy's coverage loss. These new counters are null for legacy reports that did not record them.
+[quality-development-v1.json](quality-development-v1.json) retains baseline/first-candidate development diagnostics; [quality-development-v2.json](quality-development-v2.json) retains the rejected second policy. Those working trees were dirty diagnostics; final source was clean 9a324b8. Selection used development and disclosed native/access regression evidence before opening challenge failures. No third policy exists.
 
-The reused frozen test is regression evidence after earlier disclosed runs, not a new unseen generalisation study. Policy/model selection used development evidence only; test outputs did not change the policy. The corpus is small, repetitive and fictional. The model still misses two expected refusals and sacrifices answerable response coverage; accepted answers can still be incomplete or unsupported. Exact quotations remain the default. Human source support/completeness, screen-reader use and customer impact remain unmeasured.
+[actual-access-quality-v1.json](actual-access-quality-v1.json) separately retains 96 actual API requests over methods, roles, answer modes, cache states and active/replaced/deleted sources. It passed 32 proper reader/deleted local refusals, 16 authorized local answers and zero forbidden disclosure; old links failed after mutation. It records the exact test hash/uncommitted-tooling context. Fixture barriers separately establish race ordering.
 
-Actual generation uses pinned Qwen3 14B, four-bit MLX on Apple Silicon with thinking disabled. CPU BGE/MiniLM remain unchanged. Timing uses warmed workers and cold answer caches; index/load/decode warmup is separate. Light development ran concurrently. Model, policy and backend changed together from the CPU baseline, so speed differences have no single-component attribution. Interactive uncached calls can reload weights.
+[quality-v1-preservation.json](quality-v1-preservation.json) protects all 24 pre-pass JSONs. Historical [evaluation-v4.json](evaluation-v4.json) uses clean c4b3fff and retains the recorded 46/48 refusal, 109/144 response, 35 unnecessary-refusal, 0 invalid, 120/120 resolving-citation baseline; its six fixture/actual blocks total 864 rows. V1/v2/v3, smoke/access reports and unfilled review sheets are unchanged. Old absent counters remain null, not invented zeros. Keys/weights/databases/codes/raw runtime logs remain ignored.
 
-The generated blocks recorded at most 9,229,360,168 peak accelerator bytes (8.60 GiB) and 2,376,171,520 sampled worker RSS bytes (2.21 GiB). Do not add these as independent allocations on unified memory. Native generation uses a 12 GiB detected-peak threshold and 256 MiB allocator cache guideline; sampled worker RSS remains capped at 6 GiB. MLX allocation limits are guidelines, so transient overshoot can precede detection.
+[dependency-provenance.json](dependency-provenance.json) inventories installed Python metadata/notice hashes and locked web licence labels, including optional ML dependencies. It is not a comprehensive legal audit or a grant of rights; root MIT does not relicense third-party assets. Model/card/file provenance remains in [models.lock.json](../config/models.lock.json).
 
-The three review-v4-*-test-*.json files are new anonymised 24-answer review sheets, six per method across the frozen strata. Keys remain ignored. Reviewer/date/support/completeness are null. No human review or substitute judge is claimed.
-
-[actual-access-matrix-v4.json](actual-access-matrix-v4.json) retains 96 serial actual API requests over roles, all methods, both answer modes, cache states and active/replaced/deleted sources. Local reader/deleted rows must explicitly refuse; authorised local active/replaced rows must answer the current marker. Emitted citations open while accessible/current; fixture barriers separately establish race ordering. [local-smoke-v4.json](local-smoke-v4.json) retains embedding/reranking/valid generation and resource measurements. These acceptance checks ran before source commit and were frozen unchanged; canonical evaluation and clean-clone checks used the clean committed source.
-
-Original v1/v2/v3 reports, review sheets, smoke and access artifacts are unchanged. The v2 baseline rejected every generation output; v3 repaired format and IDs but explicitly refused 0/48 expected-abstention test cases. Its sole legacy credit was an invalid output. [Generation-format repair](../docs/GENERATION-REPAIR.md) remains historical; [abstention repair](../docs/ABSTENTION-REPAIR.md) records new trials and review decisions. The archived original lock SHA-256 is 0576443c6287c8ca3fff8116a6f4a1a9aa97d1b2d04c4fc5c6f98a50f868f469.
-
-Raw paths and SHA-256 hashes are retained in the summary; bulk outputs remain ignored under .runtime. Reproduce with [EVALUATION.md](../EVALUATION.md). Weights, databases, credentials and private source text are excluded. All evidence remains local.
+All evidence remains local. No human review, hosted CI, customer pilot, push, model upload or deployment is claimed. [Publication audit](../docs/PUBLICATION-AUDIT.md) records content and demo checks.

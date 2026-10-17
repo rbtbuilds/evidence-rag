@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased - bounded answer quality and local publication pass (2026-10-17)
+
+Add general quoted-request/assertion handling, frozen separately AI-authored source-grounded dev/challenge sets, a strict full-answer/support oracle and paired baseline replay. Keep all access/version/deletion/cache/citation/publication guarantees and all 24 prior frozen reports. Fix shared benchmark cleanup after unconfirmed worker shutdown and case-insensitive disclosure accounting.
+
+On the exposed test, proper refusals changed from 46/48 to 47/48 and answerable responses from 109/144 to 109/144; unnecessary refusals changed from 35 to 35. On the new challenge, proper refusals changed from 30/32 to 32/32 and finite-oracle complete coverage from 56/64 to 57/64, while response coverage changed from 64/64 to 60/64.
+
+The pre-registered quality gate failed: regression_refusals, regression_coverage, challenge_no_unverified_answers. Exact quotations remain the default. No final-output tuning, oracle relaxation or third policy iteration occurred. Retain known native completeness failures and finite-pattern false negatives transparently. Add a genuine local model/browser demo, case study, licence/provenance inventory and local publication audit. Strict fixture checks and actual access/browser evidence are separate from experimental model quality. No public release occurred.
+
 ## Unreleased - local abstention repair (2026-10-16)
 
 Use pinned native Qwen3 14B four-bit generation with thinking disabled, an explicit empty-refusal/current-fact prompt and 180-character answer bound. Keep strict exact-ID/current-version/access/publication checks. Add separate proper-refusal, invalid-output and answerable-coverage counters, optional pinned MLX dependencies, full weight-file-set checks and non-finite-safe token masking.

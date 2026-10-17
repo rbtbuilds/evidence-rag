@@ -54,23 +54,31 @@ SQLite WAL transactions publish source metadata, exact Unicode chunks, vectors, 
 
 The web client uses generated OpenAPI TypeScript types plus Zod response validation. Source is escaped text, including HTML and hostile instructions. Both themes, mobile layout, error focus and dialog focus return are exercised in real Chromium. Authentication is explicitly a loopback demo, not a production identity provider.
 
-## Measured results and limits
+## Measured quality and its limits
 
-The local Qwen3 14B block correctly returned explicit empty insufficient-evidence refusals in 46/48 expected-abstention test method/question cases, compared with 0/48 in v3. It answered 109/144 answerable cases and unnecessarily refused 35; 0 outputs were invalid. All 120/120 emitted citations resolved to accessible current passages. These are abstention and format/access measurements, not human factual-support or completeness scores. Two remaining errors are the same reader question under BM25 and hybrid: the model treats a quoted hostile instruction as evidence for a calibration marker. No restricted marker is disclosed.
+The bounded quality pass compares an unchanged baseline with a general evidence-intent policy, using the same local Qwen3 14B snapshot and strict decoder. Two development iterations were allowed; the second regressed quoted-request handling, so the first was restored exactly before one frozen final evaluation. The pre-registered quality gate failed: regression_refusals, regression_coverage, challenge_no_unverified_answers. Exact quotations remain the default. No final-output tuning, oracle relaxation or third policy iteration occurred.
 
-| Split | Proper expected refusals | Answerable responses | Unnecessary refusals | Invalid output | Citations resolved | Output-limit hits |
+The exposed-test targets were 48/48 proper refusals and at least 116/144 answerable responses; observed 47/48 and 109/144 miss both. Hybrid still answers test-041 with `restricted calibration review marker`, citing the public training quotation instead of refusing a value question. No private marker is disclosed. The general grounding defect is reduced, not eliminated, and answerable response coverage did not improve.
+
+The new 24-question challenge was authored by a separate AI agent, with source-grounded answerability, complete reference answers, finite whole-answer patterns and required cited support. Inputs/oracles and acceptance criteria were frozen before final evaluation. Shared fictional sources and related facts mean it is not statistically independent. It is not human-reviewed.
+
+| Challenge policy | Proper refusals | Answerable responses | Oracle-verified complete | Unverified responses | Invalid | Citations resolve |
 | --- | --- | --- | --- | --- | --- | --- |
-| Development | 24/24 | 51/72 | 21 | 0 | 55/55 | 0 |
-| Test | 46/48 | 109/144 | 35 | 0 | 120/120 | 0 |
+| Unchanged v4 baseline | 30/32 | 64/64 | 56/64 | 10 | 0 | 66/66 |
+| Selected candidate | 32/32 | 60/64 | 57/64 | 3 | 0 | 60/60 |
 
+| Exposed test | Proper refusals | Answerable responses | Invalid | Citations resolve |
+| --- | --- | --- | --- | --- |
+| Recorded v4 | 46/48 | 109/144 | 0 | 120/120 |
+| Selected candidate | 47/48 | 109/144 | 0 | 126/126 |
 
-The selected generator is a pinned local four-bit Qwen3 14B model running through MLX on Apple Silicon, with thinking disabled. A short empty-refusal instruction and 180-character answer bound preserve the strict JSON/exact-ID decoder. The original 0.5B model and several smaller-model/classifier trials failed useful abstention checks; [diagnosis and decisions](docs/ABSTENTION-REPAIR.md) retain those failures and the coverage cost.
+Response coverage counts any non-refused answer. Narrow-oracle coverage additionally requires a complete permitted wording and all required supporting source quotes. A correct paraphrase can fail the finite oracle; a resolving citation alone never establishes factual support. Detailed counts, failures, pins, hashes, commands and the pre-registered verdict are in [quality results](docs/QUALITY-RESULTS.md) and [evaluation](EVALUATION.md).
 
-Actual retrieval recall@5 remains 1.0 for all four methods on 36 eligible test questions per method. Dense/hybrid MRR is 1.0 versus BM25/reranked hybrid 0.9861; MiniLM did not improve that ranking. Warm timings and all denominators are in [EVALUATION.md](EVALUATION.md). Native generation and the CPU baseline differ in model, policy and backend, so timing differences are not attributed to a single change.
+The native paired regression still fails on two completeness cases: a bare `No` omits a current-value correction, and `13` omits what was counted. A development failure also substitutes another subject's accessible public value for a private subject's missing fact. No access/citation rule was weakened to increase coverage. This small simulation does not establish broad factuality, human usefulness or customer impact.
 
-The reused frozen test is regression evidence after earlier disclosed runs, not a new unseen generalisation study. Policy/model selection used development evidence only; test outputs did not change the policy. The corpus is small, repetitive and fictional. The model still misses two expected refusals and sacrifices answerable response coverage; accepted answers can still be incomplete or unsupported. Exact quotations remain the default. Human source support/completeness, screen-reader use and customer impact remain unmeasured.
+The actual API lifecycle matrix passed 96 requests across four retrieval methods, both roles, answer modes, cache states and active/replaced/deleted documents. The actual browser capture exercises native Qwen, real BM25 and the API with no intercepted fetches. Watch the [35-second local demo](docs/demo/quality-v1.mp4); reading pauses are not inference timings. Both that model evidence and the fixture-only quickstart are labelled explicitly.
 
-[Recorded evidence](reports/README.md) separates fixture, actual-model and pending human-review results. The earlier [generation-format repair](docs/GENERATION-REPAIR.md), v3 baseline and original all-invalid reports remain unchanged. Citation identity/version/access/publication checks were not relaxed.
+See the [case study](docs/CASE-STUDY.md), [publication audit](docs/PUBLICATION-AUDIT.md) and [licence/provenance record](docs/PROVENANCE.md). All 24 pre-pass reports remain unchanged. Historical generation-format and abstention repairs are retained separately; the original test is exposed regression evidence, not a fresh holdout. Human factual support/completeness and screen-reader use remain unmeasured.
 
 ## Checks and operation
 
