@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from evidence_rag.evaluation.run import evaluate
 
 
@@ -52,3 +54,27 @@ def test_measured_output_limits_exclude_warmup(tmp_path: Path) -> None:
     report = run_rows(repo, Settings(tmp_path), "dev", "extractive", WarmSession(), 0)
     assert sum(row.generation_hit_limit for row in report.rows) == 0
     assert report.manifest.generation_limit_hits == 0
+
+
+def test_case_changed_forbidden_value_reaches_final_disclosure_gate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from evidence_rag.config import Settings
+    from evidence_rag.db.repository import Repository
+    from evidence_rag.documents.ingest import Question, load_questions, seed
+    from evidence_rag.evaluation import run
+    from scripts.curate_quality import regression_counts
+
+    question = load_questions("dev")[8].model_copy(update={"forbidden_strings": ["AMBER LOOP"]})
+
+    def synthetic_question(split: str) -> list[Question]:
+        return [question]
+
+    monkeypatch.setattr(run, "load_questions", synthetic_question)
+    repo = Repository(tmp_path / "casefold.sqlite3")
+    seed(repo)
+    report = run.run_rows(repo, Settings(tmp_path), "dev", "extractive", None, 0)
+    assert len(report.rows) == 4
+    assert all("amber loop" in row.answer.model_dump_json().casefold() for row in report.rows)
+    assert all(row.forbidden_disclosure for row in report.rows)
+    assert regression_counts(report)["forbidden_disclosures"] == 4

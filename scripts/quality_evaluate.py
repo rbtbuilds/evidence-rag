@@ -216,8 +216,8 @@ def main() -> None:
     # Exclusive marker makes a second final invocation an explicit error.
     marker = PROJECT / ".runtime/quality-v1-final-started.json"
     owner = ModelLease().acquire("one frozen paired quality-v1 final evaluation")
+    shared = BorrowedLease(owner)
     try:
-        shared = BorrowedLease(owner)
         with marker.open("x") as handle:
             json.dump(frozen, handle, indent=2)
         output.mkdir(parents=True)
@@ -226,9 +226,11 @@ def main() -> None:
         evaluate("local", "test", "local", output / "regression", lease=shared)
         if provenance() != frozen:
             raise ValueError("Frozen evaluation provenance changed during execution")
-        (output / "complete.json").write_text(json.dumps(frozen, indent=2) + "\n")
     finally:
-        owner.close()
+        shared.close()
+    with (output / "complete.json").open("x") as handle:
+        json.dump(frozen, handle, indent=2)
+        handle.write("\n")
 
 
 if __name__ == "__main__":

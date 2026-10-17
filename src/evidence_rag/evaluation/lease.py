@@ -24,6 +24,14 @@ class BorrowedLease(ModelLease):
         self.owner = owner
         self.slot = threading.BoundedSemaphore(1)
 
+    def close(self) -> None:
+        if not self.slot.acquire(blocking=False):
+            raise RuntimeError("Worker cleanup incomplete; retaining benchmark machine lease")
+        try:
+            self.owner.close()
+        finally:
+            self.slot.release()
+
     def acquire(self, purpose: str) -> LeaseHandle:
         if not self.slot.acquire(blocking=False):
             raise ModelBusy()

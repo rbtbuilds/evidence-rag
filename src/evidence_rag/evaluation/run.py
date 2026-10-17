@@ -283,7 +283,7 @@ def run_rows(
             pending = service.answer(scope, request, session)
             latency = (time.perf_counter() - start) * 1000
             valid = len(repo.check_citations(scope, [c.chunk_id for c in pending.answer.citations]))
-            text = pending.answer.model_dump_json()
+            text = pending.answer.model_dump_json().casefold()
             rows.append(
                 EvaluationRow(
                     query_id=question.id,
@@ -302,7 +302,9 @@ def run_rows(
                     mrr_at_5=mrr_at_k(
                         pending.retrieved_sections, set(question.relevant_sections), 5
                     ),
-                    forbidden_disclosure=any(value in text for value in question.forbidden_strings),
+                    forbidden_disclosure=any(
+                        value.casefold() in text for value in question.forbidden_strings
+                    ),
                     citations_valid=valid,
                     latency_ms=latency,
                     generated_tokens=session.generation_tokens - generated_tokens if session else 0,
