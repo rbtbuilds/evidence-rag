@@ -66,7 +66,14 @@ volume files under its portfolio archives at `20261017-212026`,
   prevents review fixes from consuming another final run. Cost if wrong:
   documentation-only final changes receive an author audit rather than a
   second code-review cycle.
-- Development iterations used: 0/2. Final evaluation: not started.
+- Task 2 RED: native six-pair regression failed on the exposed quoted-request
+  case (24.25 seconds); five other pairs passed. Unit scorer/adapter tests failed
+  before their modules existed, then passed 4/4. Raw logs are runtime-private.
+- Iteration 1 begins: clarify stated fictional facts, missing values, quoted
+  requests versus quotation questions, and current-fact corrections. One-pass
+  generation, unchanged model/decoder/limits and public validation. No challenge
+  content or output has been opened by the implementer.
+- Development iterations used: 1/2. Final evaluation: not started.
 
 ## Final evidence
 

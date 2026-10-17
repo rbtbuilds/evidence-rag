@@ -63,6 +63,10 @@ def main() -> None:
                     "EVIDENCE_TEST_MAINTAINER_CODE": codes["maintainer"],
                     "EVIDENCE_TEST_ACTUAL_GENERATION": "1",
                 }
+                if os.environ.get("EVIDENCE_CAPTURE_DEMO") == "1":
+                    capture = ROOT / ".runtime/quality-demo-v1"
+                    capture.mkdir(mode=0o700)
+                    env["EVIDENCE_DEMO_CAPTURE_DIR"] = str(capture)
                 completed = subprocess.run(
                     ["npm", "exec", "--", "playwright", "test", "local-generation.spec.ts"],
                     cwd=ROOT / "web",

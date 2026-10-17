@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import tempfile
 from pathlib import Path
 from typing import cast
@@ -16,7 +17,7 @@ from evidence_rag.config import Settings
 from evidence_rag.contracts import QuestionRequest, RetrievalMode, Role
 from evidence_rag.db.repository import AccessScope, Repository
 from evidence_rag.documents.chunking import CHUNKER_REVISION, Chunk
-from evidence_rag.documents.ingest import FIXTURES, seed, validate_corpus
+from evidence_rag.documents.ingest import FIXTURES, contained, seed, validate_corpus
 from evidence_rag.documents.jobs import JobService
 from evidence_rag.models.local import snapshots
 from evidence_rag.models.runner import ModelRunner, ModelSession
@@ -38,9 +39,19 @@ class BorrowedService(AnswerService):
         return super().answer(scope, request, self.shared)
 
 
+def new_report_path(root: Path, name: str) -> Path:
+    path = contained(root, name)
+    if path.exists():
+        raise ValueError("Choose a new actual-report name; existing evidence is immutable")
+    return path
+
+
 @pytest.mark.real_model
 def test_actual_models_respect_access_cache_and_lifecycle() -> None:
     root = Settings.from_env().root
+    report_path = new_report_path(
+        root, os.environ.get("EVIDENCE_ACTUAL_REPORT", "actual-access-matrix.json")
+    )
     corpus = validate_corpus()
     source = next(d for d in corpus.documents if d.logical_id == "calibration" and d.label == "v2")
     modes: tuple[RetrievalMode, ...] = ("bm25", "dense", "hybrid", "hybrid_rerank")
@@ -205,4 +216,5 @@ def test_actual_models_respect_access_cache_and_lifecycle() -> None:
         "scope": "Two roles, four retrieval modes, two generation modes, cold/warm cache, active/replaced/deleted source; serial actual API requests, no race claim. Local reader/deleted requests must explicitly refuse with empty answers and no citations; authorised active/replaced requests must answer the current marker. No prompt-obedience or entailment claim.",
         "rows": rows,
     }
-    (root / "actual-access-matrix.json").write_text(json.dumps(report, indent=2) + "\n")
+    with report_path.open("x") as handle:
+        handle.write(json.dumps(report, indent=2) + "\n")
