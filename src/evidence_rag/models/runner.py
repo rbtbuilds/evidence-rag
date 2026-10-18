@@ -214,21 +214,29 @@ class ModelRunner:
         self.lock_info: ModelLock | None = None
         self.slots = threading.BoundedSemaphore(3)
         self.serial = threading.Lock()
+        self.process_lock = threading.RLock()
+        self.cancel_epoch = 0
 
     def cancel(self) -> None:
-        process = self.process
-        if process:
-            if process.poll() is None:
-                process.terminate()
-                try:
-                    process.wait(timeout=3)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait(timeout=3)
-            for stream in (process.stdin, process.stdout, process.stderr):
-                if stream:
-                    stream.close()
-            self.process = None
+        with self.process_lock:
+            self.cancel_epoch += 1
+            self._stop_worker()
+
+    def _stop_worker(self) -> None:
+        with self.process_lock:
+            process = self.process
+            if process:
+                if process.poll() is None:
+                    process.terminate()
+                    try:
+                        process.wait(timeout=3)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        process.wait(timeout=3)
+                for stream in (process.stdin, process.stdout, process.stderr):
+                    if stream:
+                        stream.close()
+                self.process = None
 
     @contextmanager
     def admission(self, limit: float) -> Generator[None]:
@@ -241,12 +249,17 @@ class ModelRunner:
 
     @contextmanager
     def session(self, purpose: str, *, timeout: float | None = None) -> Generator[ModelSession]:
+        with self.process_lock:
+            cancel_epoch = self.cancel_epoch
         if not self.slots.acquire(blocking=False):
             raise DomainError(429, "queue_full")
         limit = timeout or self.timeout
         deadline = time.monotonic() + limit
         try:
             with self.admission(limit):
+                with self.process_lock:
+                    if cancel_epoch != self.cancel_epoch:
+                        raise DomainError(409, "model_cancelled")
                 if not self.command:
                     self.lock_info = snapshots(self.root)
                 handle = self.lease.acquire(purpose)
@@ -263,16 +276,20 @@ class ModelRunner:
                         "MKL_NUM_THREADS": "4",
                         "EVIDENCE_MODEL_ROOT": str(self.root),
                     }
-                    self.process = subprocess.Popen(
-                        self.command or [sys.executable, "-m", "evidence_rag.models.worker"],
-                        stdin=subprocess.PIPE,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.DEVNULL,
-                        env=env,
-                    )
-                    yield ModelSession(self, self.process, max(0, deadline - time.monotonic()))
+                    with self.process_lock:
+                        if cancel_epoch != self.cancel_epoch:
+                            raise DomainError(409, "model_cancelled")
+                        process = subprocess.Popen(
+                            self.command or [sys.executable, "-m", "evidence_rag.models.worker"],
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL,
+                            env=env,
+                        )
+                        self.process = process
+                    yield ModelSession(self, process, max(0, deadline - time.monotonic()))
                 finally:
-                    self.cancel()
+                    self._stop_worker()
                     handle.close()
         finally:
             self.slots.release()

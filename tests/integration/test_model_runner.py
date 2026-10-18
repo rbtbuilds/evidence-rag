@@ -154,3 +154,51 @@ def test_native_peak_within_the_documented_model_budget_is_accepted(tmp_path: Pa
         result = session.generate("What fact?", [])
         assert result.peak_accelerator_bytes == 9663676416
     assert runner.process is None and not (tmp_path / "lease").exists()
+
+
+def test_cancellation_during_startup_prevents_launch_and_allows_next_session(tmp_path: Path) -> None:
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+
+    from evidence_rag.models.lease import LeaseHandle
+
+    acquired = threading.Event()
+    resume = threading.Event()
+
+    class PausedLease(ModelLease):
+        def acquire(self, purpose: str) -> LeaseHandle:
+            handle = super().acquire(purpose)
+            acquired.set()
+            if not resume.wait(timeout=5):
+                handle.close()
+                raise RuntimeError("Startup barrier timed out")
+            return handle
+
+    path = tmp_path / "lease"
+    runner = ModelRunner(
+        tmp_path,
+        lease=PausedLease(path),
+        command=[sys.executable, "-c", "import time;time.sleep(5)"],
+    )
+
+    def start() -> str:
+        try:
+            with runner.session("cancel during startup"):
+                return "worker_started_after_cancellation"
+        except DomainError as error:
+            return error.code
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(start)
+        try:
+            assert acquired.wait(timeout=3)
+            runner.cancel()
+            assert runner.process is None
+        finally:
+            resume.set()
+        result = future.result(timeout=5)
+    assert result == "model_cancelled"
+    assert runner.process is None and not path.exists()
+    with runner.session("later operation") as session:
+        assert session.process.poll() is None
+    assert runner.process is None and not path.exists()
