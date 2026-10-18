@@ -32,8 +32,9 @@ their failures are documented separately; they are not automatic fallbacks.
 
 Python and web dependency versions are frozen in `uv.lock` and
 `web/package-lock.json`. Third-party dependencies retain their own terms.
-No third-party application implementation, client material, private source
-documents, model weights or credentials are included in the intended release.
+The tokenizer bridge adapts the attributed upstream algorithm with its full
+MIT notice in [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md). No client
+material, private source documents, model weights or credentials are included.
 
 Browser demo assets, when explicitly retained, depict this application's owned
 fictional data. Authentication codes are entered outside the recorded browser
@@ -44,4 +45,4 @@ customer deployment or broad quality validation.
 
 The retained [dependency inventory](../reports/dependency-provenance.json) records 69 installed Python distributions (including optional ML), 161 locked web package entries and observed licence/notice hashes. Null metadata remains null. The inventory is not comprehensive legal clearance; dependencies retain their own notices and terms. The [publication audit](PUBLICATION-AUDIT.md) records explicit demo asset hashes and content checks.
 
-The typed decoding bridge uses the LM Format Enforcer core API and tokenizer-conversion algorithm. Installed 0.11.3 metadata identifies Noam Gat as author, declares MIT and points to the upstream repository at https://github.com/noamgat/lm-format-enforcer. This attribution supplements the dependency inventory; it does not relicense upstream work.
+The typed decoding bridge uses the LM Format Enforcer core API and tokenizer-conversion algorithm. Installed 0.11.3 metadata identifies Noam Gat as author, declares MIT and points to the upstream repository at https://github.com/noamgat/lm-format-enforcer. The full upstream copyright and MIT permission notice are retained in THIRD-PARTY-NOTICES.md; the project licence does not replace upstream terms.

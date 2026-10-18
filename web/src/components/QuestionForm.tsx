@@ -60,6 +60,7 @@ export function QuestionForm({
           <label htmlFor="generation">Answer mode</label>
           <select
             id="generation"
+            aria-describedby="generation-help"
             value={generation}
             onChange={(event) =>
               setGeneration(event.target.value as typeof generation)
@@ -67,9 +68,14 @@ export function QuestionForm({
           >
             <option value="extractive">Exact quotations</option>
             <option value="local" disabled={profile !== "local"}>
-              Local generation
+              Experimental local generation
             </option>
           </select>
+          <p id="generation-help" className="meta">
+            Exact quotations are the default. Experimental local generation
+            failed its quality gate and can return unsupported or incomplete
+            answers.
+          </p>
         </div>
       </div>
       <button disabled={busy || profile === null}>

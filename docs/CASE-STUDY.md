@@ -38,4 +38,4 @@ The retained 35-second native browser capture shows a supported answer, the curr
 - Keep the machine lease across the complete comparison. A failed worker join must keep ownership occupied, not merely log an error and admit another benchmark.
 - Record failures plainly. Valid JSON, an openable citation and a confident answer are different properties.
 
-All development and code review were AI-assisted. Human factual support/completeness, screen-reader use, broad generalisation and customer impact are unmeasured. The repository is a local portfolio artifact; publication and hosted operation require separate authorization.
+All development and code review were AI-assisted. Human factual support/completeness, screen-reader use, broad generalisation and customer impact are unmeasured. The source is published as a portfolio artifact; the publication record identifies exact commits and checks. No hosted application or customer deployment is claimed.

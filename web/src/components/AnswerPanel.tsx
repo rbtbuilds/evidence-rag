@@ -26,7 +26,7 @@ export function AnswerPanel({
         <p className="meta">
           {answer.generation_mode === "extractive"
             ? "Exact source quotations"
-            : "Local generated answer"}{" "}
+            : "Experimental local generated answer"}{" "}
           / {answer.retrieval_mode.replaceAll("_", " ")}
         </p>
         <div className="answer-text">

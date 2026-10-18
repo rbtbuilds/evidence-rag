@@ -15,8 +15,9 @@ export function StatusNotice({ profile }: { profile: Profile | null }) {
         <>
           <strong>Local models</strong>
           <p>
-            Pinned local snapshots. Quotation and local generation are separate
-            answer modes; generated claims still need review.
+            Pinned local snapshots. Exact quotations are the default.
+            Experimental local generation failed its quality gate; generated
+            claims can be unsupported.
           </p>
         </>
       ) : (

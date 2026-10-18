@@ -1,5 +1,9 @@
 # Changelog
 
+## Public source publication - 2026-10-18
+
+Publish the reviewed local history at rbtbuilds/evidence-rag with main as default, deterministic fixture CI and a public clone quickstart. Keep exact quotations as default, label native generation experimental in the interface and retain the failed quality gate and all negative evidence. Publication and backup checkpoints are recorded in docs/PUBLICATION.md. No tagged release, deployment or weights upload.
+
 ## Unreleased - bounded answer quality and local publication pass (2026-10-17)
 
 Add general quoted-request/assertion handling, frozen separately AI-authored source-grounded dev/challenge sets, a strict full-answer/support oracle and paired baseline replay. Keep all access/version/deletion/cache/citation/publication guarantees and all 24 prior frozen reports. Fix shared benchmark cleanup after unconfirmed worker shutdown and case-insensitive disclosure accounting.

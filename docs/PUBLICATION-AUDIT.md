@@ -1,6 +1,6 @@
-# Local publication audit
+# Publication audit
 
-Publication authorization was not found. No remote is configured, and no GitHub repository, push, release, deployment, model upload, paid action or external message was performed. The child repository is the publication unit; parent legacy/client folders are excluded.
+Matthew explicitly authorized public rbtbuilds/evidence-rag creation, source/history push, main as default and hosted Actions on 2026-10-18. Publication status and commit-specific evidence are in [PUBLICATION.md](PUBLICATION.md). No deployment, tagged release, model upload or paid action is included. The child repository is the publication unit; parent legacy/client folders are excluded.
 
 ## Recovery and ownership
 
@@ -10,7 +10,7 @@ The installed Bento helper registers the parent portfolio. Matthew explicitly au
 
 Original source/docs, fictional Aster corpus and authored question/oracle sets use the MIT licence. Development, source inspection, dataset authorship and code review were AI-assisted. The separate challenge author had required-guidance aggregate exposure; data reuse precludes statistical independence. Human source-support/completeness, accessibility screen-reader tests and customer impact remain unmeasured.
 
-Third-party model snapshots and card/file hashes are in config/models.lock.json: BGE MIT, MiniLM Apache-2.0 and converted Qwen3 Apache-2.0. They are optional downloaded assets, not redistributed weights. Code MIT terms do not relicense those assets or dependencies. Python/web dependency versions are locked separately. A local installed-metadata inventory and package-lock licence-label summary were recorded as inventory, not comprehensive legal clearance. No third-party application code or real equipment/customer manuals were imported.
+Third-party model snapshots and card/file hashes are in config/models.lock.json: BGE MIT, MiniLM Apache-2.0 and converted Qwen3 Apache-2.0. They are optional downloaded assets, not redistributed weights. Code MIT terms do not relicense those assets or dependencies. Python/web dependency versions are locked separately. A local installed-metadata inventory and package-lock licence-label summary were recorded as inventory, not comprehensive legal clearance. The tokenizer bridge adapts an attributed LM Format Enforcer algorithm; its full upstream MIT notice is retained in THIRD-PARTY-NOTICES.md and was verified against installed and upstream 0.11.3 text. No real equipment/customer manuals were imported.
 
 The deliberate role-restricted marker strings in fictional fixtures/public evaluation records are test data, not credentials. Opaque runtime session/CSRF tokens and launch codes stay excluded. The committed .env.example contains only public profile/path settings. No weights, local databases, caches, cookies or raw model-worker logs are release artifacts.
 
@@ -18,7 +18,7 @@ The deliberate role-restricted marker strings in fictional fixtures/public evalu
 
 The current/history heuristic scan searches reachable blob content for private-key headers and recognizable GitHub, provider, Slack and AWS token patterns. A filename audit checks runtime/cache/environment/weight/database paths, with .env.example and application Python models modules distinguished from weight assets. The staged-artifact scan and later complete-checkout checks are recorded below. Zero matches is not proof that arbitrary secrets or private information cannot exist.
 
-Local Markdown references are checked after documentation is complete. HTTP links and future hosted CI are not exercised; no external publication is required for this local audit. Existing historical reports are hash-checked against the 24-file preservation record rather than rewritten. Criteria, sources, dataset inputs/oracles and model locks remain unchanged after final freeze.
+Local Markdown references are checked after documentation is complete. Historical local checks did not exercise HTTP links or hosted CI; the publication record separately records the current public checks. Existing historical reports are hash-checked against the 24-file preservation record rather than rewritten. Criteria, sources, dataset inputs/oracles and model locks remain unchanged after final freeze.
 
 ## Browser demonstration
 
@@ -48,6 +48,15 @@ The final quality run completed 384 local-model rows at clean 9a324b8 with uncha
 
 The complete publication candidate `46fa2b4cf7577330a5eb84ce7b97ab6f1adb7f2f` passed `./scripts/clean_clone_check.sh`: frozen ordinary installs, strict checks, 125 Python tests (2 real-model tests deselected), 11 web tests, build/contracts/corpus, 5 genuine fixture browser passes (1 actual scenario skipped), 192 fixture evaluation rows. No native weights were loaded. The same Mac supplied Node 24 and Chromium; no fresh-OS/hosted-CI claim follows. The owned temporary clone was removed. Log SHA-256: `713ad8da9156b270bd18b7859298567d398fd78ef7949f7fe4d8062e34993f93`. Fixture refusal correctness is 32/48, response coverage 143/144 and citation resolution 236/236, with zero invalid/disclosure; these are not native results or a claim that quotations guarantee relevance.
 
-The final source/application/test files are unchanged from 9a324b8. Later commits record documentation/evidence closure. Human metrics remain unmeasured, and the known native quality gate/semantic failures are retained without waiver. The branch stays local and no publication authorization is inferred.
+At that historical closure, source/application/test files were unchanged from 9a324b8. The publication pass adds explicit experimental UI labelling and regression tests; generation policy, models, frozen inputs and reports remain unchanged. Later commits record documentation/evidence closure. Human metrics remain unmeasured, and the known native quality gate/semantic failures are retained without waiver. This paragraph records the historical local checkpoint; the separately authorized public publication is recorded in PUBLICATION.md.
 
 Final post-candidate scan (2026-10-17T20:34:44Z, HEAD 46fa2b4 plus documentation closure): 232 current tracked files and 409 reachable historical blobs, zero token-pattern or forbidden-path findings, 56 existing local Markdown file references, all 24 original report hashes preserved. Scope is heuristic and excludes external URLs/anchor validity. Runtime scan details stay in .runtime/publication-final-scan.json; later closure text changes no application/model inputs.
+
+
+## Public publication pass (2026-10-18)
+
+The interface now labels local generation experimental beside the mode control and on generated answers, while quotation submission stays default. Two regressions were observed failing before the copy fix and passing afterward. Strict checks passed: 125 non-model Python tests (2 native deselected), 13 web tests, zero strict type errors, build/contracts/corpus. Five real-API fixture browser tests passed; one native test was explicitly skipped. No native evaluation was rerun or retuned.
+
+The current fixture screenshot is `docs/images/publication-fixture.png`, SHA-256 `b16376cf1037e47e269a719adeaad3159e731bcf9418d6ede98ce1004098c9ce`. It was captured automatically from the real fixture API/browser flow and inspected with AI assistance. The original screenshot and native recording remain unchanged; the latter predates the explicit experimental UI label and is captioned accordingly. Both themes and mobile/desktop widths were exercised. This is not human accessibility or factual support review.
+
+CodeRabbit's free 150-file limit rejected the complete 221-file review. It produced no completed review; no clean result is inferred and no credits were used. A fresh-context automated reviewer supplies the independent review instead, with findings and fixes recorded in PUBLICATION.md. Full upstream MIT notice for the adapted tokenizer conversion bridge is retained and byte-verified against the installed and upstream 0.11.3 licence.

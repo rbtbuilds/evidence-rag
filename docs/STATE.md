@@ -1,6 +1,12 @@
 # Evidence RAG state
 
-Updated: 2026-10-17. The bounded answer-quality and local publication pass is complete. Its quality gate failed; exact quotations remain the default. The documented local repository is ready for publication review in its quotation mode, with experimental native generation clearly limited. No publication or generation promotion is claimed.
+Updated: 2026-10-18. Publication is explicitly authorized and in progress at [rbtbuilds/evidence-rag](https://github.com/rbtbuilds/evidence-rag). Exact quotations remain default; native generation is visibly experimental and the failed quality gate is preserved. See [publication record](PUBLICATION.md) for verified commit/CI/backup checkpoints.
+
+Current pass: experimental disclosure regressions observed RED (2 failures) then GREEN; strict Ruff/Pyright/TypeScript including tests, 125 non-model Python tests (2 real-model deselected), 13 web tests, build/contracts/corpus passed. Five genuine fixture browser flows passed (1 native scenario skipped), covering access/cache isolation, import/replacement/deletion/stale sources, both themes and 360/900/1440 widths/focus. No native weights loaded and no new native result claimed. CodeRabbit free review rejected the whole 221-file range (150-file limit); a fresh-context AI reviewer is reviewing the complete application. Public create/push and parent helper backup follow review and clean-checkout verification.
+
+## Historical local checkpoint
+
+Historical local checkpoint (2026-10-17): The bounded answer-quality and local publication pass is complete. Its quality gate failed; exact quotations remain the default. The documented local repository is ready for publication review in its quotation mode, with experimental native generation clearly limited. No publication or generation promotion is claimed.
 
 ## Owned scope and recovery
 

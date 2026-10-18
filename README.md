@@ -2,15 +2,17 @@
 
 A local evidence workbench that answers questions from current document versions, shows exact source passages, and enforces reader/maintainer access before retrieval and response publication.
 
-![Fixture quotation workflow over owned fictional manuals](docs/images/workbench.png)
+![Fixture quotation workflow over owned fictional manuals](docs/images/publication-fixture.png)
 
-V1 is implemented locally. It includes four retrieval methods, a React interface, transactional replacement/deletion, server-side demo sessions and reproducible evaluation. No public repository, push, hosted deployment or customer pilot is claimed. The sample manuals describe an invented Aster trainer and are not real equipment instructions.
+V1 includes four retrieval methods, a React interface, transactional replacement/deletion, server-side demo sessions and reproducible evaluation. Source and history are published at [rbtbuilds/evidence-rag](https://github.com/rbtbuilds/evidence-rag). There is no hosted application or customer pilot. The sample manuals describe an invented Aster trainer and are not real equipment instructions.
 
 ## Run it
 
-From this checkout with uv, Python 3.12 and Node 24 LTS on PATH:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.12 and Node 24 LTS. Clone the public default branch and run:
 
 ```sh
+git clone --branch main https://github.com/rbtbuilds/evidence-rag.git
+cd evidence-rag
 export UV_CACHE_DIR="$PWD/.runtime/uv-cache"
 export npm_config_cache="$PWD/.runtime/npm-cache"
 uv sync --frozen
@@ -22,7 +24,7 @@ uv run uvicorn evidence_rag.app:create_default_app --factory --host 127.0.0.1 --
 
 In a second terminal run `npm --prefix web run dev`, then open `http://127.0.0.1:5115`. Use a launch code printed by `init`. Reader sees eight manuals; maintainer can also inspect four appendices and maintain documents. Ask `What is the circulation display limit?`, then open its v2 citation. Ask `Which lunar alloy is used?` for an abstention.
 
-The default fixture mode needs no account or model download. FTS5 is real; dense embeddings and reranking are deterministic test doubles, clearly labelled. Quotation answers copy source sentences. Optional actual BGE/MiniLM/Qwen snapshots are pinned separately; see the [runbook](docs/RUNBOOK.md).
+The default fixture mode needs no account or model download. FTS5 is real; dense embeddings and reranking are deterministic test doubles, clearly labelled. Quotation answers copy source sentences. Optional actual BGE/MiniLM/Qwen snapshots are pinned separately. Native generation is explicitly experimental and failed its quality gate; see the [runbook](docs/RUNBOOK.md).
 
 `init` refuses existing launch codes. Use explicit `reset` with the API stopped to rotate codes and revoke sessions. Do not reseed an existing corpus. Runtime files, databases, codes, models and bulk reports stay under the ignored `.runtime` directory.
 
@@ -76,7 +78,7 @@ Response coverage counts any non-refused answer. Narrow-oracle coverage addition
 
 The native paired regression still fails on two completeness cases: a bare `No` omits a current-value correction, and `13` omits what was counted. A development failure also substitutes another subject's accessible public value for a private subject's missing fact. No access/citation rule was weakened to increase coverage. This small simulation does not establish broad factuality, human usefulness or customer impact.
 
-The actual API lifecycle matrix passed 96 requests across four retrieval methods, both roles, answer modes, cache states and active/replaced/deleted documents. The actual browser capture exercises native Qwen, real BM25 and the API with no intercepted fetches. Watch the [35-second local demo](docs/demo/quality-v1.mp4); reading pauses are not inference timings. Both that model evidence and the fixture-only quickstart are labelled explicitly.
+The actual API lifecycle matrix passed 96 requests across four retrieval methods, both roles, answer modes, cache states and active/replaced/deleted documents. The actual browser capture exercises native Qwen, real BM25 and the API with no intercepted fetches. Watch the [35-second experimental native-generation demo](https://github.com/rbtbuilds/evidence-rag/raw/refs/heads/main/docs/demo/quality-v1.mp4); reading pauses are not inference timings. The recording predates the explicit experimental interface label; its model and results are unchanged. Both that model evidence and the fixture-only quickstart are labelled explicitly.
 
 See the [case study](docs/CASE-STUDY.md), [publication audit](docs/PUBLICATION-AUDIT.md) and [licence/provenance record](docs/PROVENANCE.md). All 24 pre-pass reports remain unchanged. Historical generation-format and abstention repairs are retained separately; the original test is exposed regression evidence, not a fresh holdout. Human factual support/completeness and screen-reader use remain unmeasured.
 
@@ -94,8 +96,8 @@ The check script runs Ruff, strict Pyright, socket-restricted fixture tests, str
 
 - [Operating and recovery runbook](docs/RUNBOOK.md)
 - [Verification evidence and remaining limits](docs/VERIFICATION.md)
-- [Current state](docs/STATE.md)
+- [Current state](docs/STATE.md) and [publication record](docs/PUBLICATION.md)
 - [Specification](docs/SPEC.md) and [implementation plan](docs/superpowers/plans/2026-10-15-v1.md)
 - [Contributing](CONTRIBUTING.md) and [security boundaries](SECURITY.md)
 
-Code, original docs and fictional data: [MIT](LICENSE). BGE is MIT; MiniLM and Qwen use Apache-2.0 terms recorded with their [pinned snapshot provenance](config/models.lock.json). Weights are not included. There are no enterprise connectors, OCR/PDF ingestion, hosted inference, real machinery instructions or private customer documents in v1.
+Code, original docs and fictional data: [MIT](LICENSE), with [third-party notices](THIRD-PARTY-NOTICES.md) retained. BGE is MIT; MiniLM and Qwen use Apache-2.0 terms recorded with their [pinned snapshot provenance](config/models.lock.json). Weights are not included. There are no enterprise connectors, OCR/PDF ingestion, hosted inference, real machinery instructions or private customer documents in v1.

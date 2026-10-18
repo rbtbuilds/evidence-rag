@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 import { StatusNotice, ErrorNotice } from "./components/StatusNotice";
 import { SessionForm } from "./components/SessionForm";
 import { AnswerPanel } from "./components/AnswerPanel";
+import { QuestionForm } from "./components/QuestionForm";
 
 describe("evidence workbench", () => {
   it("labels fixture doubles visibly", () => {
@@ -128,4 +129,52 @@ it("does not allow another sign in until sign out finishes", async () => {
     finish();
     vi.restoreAllMocks();
   }
+});
+
+it("keeps quotation submission as default and discloses experimental generation", async () => {
+  const ask = vi.fn();
+  render(<QuestionForm profile="local" busy={false} ask={ask} />);
+  const mode = screen.getByRole("combobox", { name: "Answer mode" });
+  expect(mode).toHaveValue("extractive");
+  expect(mode).toHaveAccessibleDescription(
+    /experimental.*failed.*quality gate/i,
+  );
+  expect(
+    screen.getByRole("option", { name: /experimental.*local generation/i }),
+  ).toBeEnabled();
+  await userEvent.type(
+    screen.getByRole("textbox", { name: "Question" }),
+    "What is the circulation display limit?",
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Ask question" }));
+  expect(ask).toHaveBeenCalledWith(
+    expect.objectContaining({ generation_mode: "extractive" }),
+  );
+  await userEvent.selectOptions(mode, "local");
+  await userEvent.click(screen.getByRole("button", { name: "Ask question" }));
+  expect(ask).toHaveBeenLastCalledWith(
+    expect.objectContaining({ generation_mode: "local" }),
+  );
+});
+
+it("labels a generated answer experimental even after its mode control changes", () => {
+  render(
+    <AnswerPanel
+      answer={{
+        request_id: "q",
+        execution_profile: "local",
+        retrieval_mode: "bm25",
+        generation_mode: "local",
+        answer: "35 units [1]",
+        abstained: false,
+        reason: null,
+        timings_ms: {},
+        citations: [],
+      }}
+      open={() => {}}
+    />,
+  );
+  expect(
+    screen.getByText(/experimental.*local generated answer/i),
+  ).toBeVisible();
 });
